@@ -10,13 +10,15 @@ import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PartyDashComponent } from './party-dash/party-dash.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { ProviderErrorComponent } from './provider-error/provider-error.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     PartyDashComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    ProviderErrorComponent
   ],
   imports: [
     BrowserModule,

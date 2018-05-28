@@ -1,13 +1,13 @@
-import { UtilModule } from './util.module';
+import { SharedModule } from './shared.module';
 
 describe('UtilModule', () => {
-  let utilModule: UtilModule;
+  let sharedModule: SharedModule;
 
   beforeEach(() => {
-    utilModule = new UtilModule();
+    sharedModule = new SharedModule();
   });
 
   it('should create an instance', () => {
-    expect(utilModule).toBeTruthy();
+    expect(sharedModule).toBeTruthy();
   });
 });
