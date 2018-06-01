@@ -11,7 +11,7 @@ const routes: Routes = [
     canActivate: [ProviderGuard],
   },
   {
-    path: '/provider-error',
+    path: 'provider-error',
     component: ProviderErrorComponent
   },
 ];
