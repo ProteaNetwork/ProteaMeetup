@@ -11,24 +11,24 @@ export class ProviderGuard implements CanActivate {
 
   constructor(private web3: Web3Service, private router: Router) {}
 
-  canActivate(
+  async canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      return this.queryServiceState();
+    state: RouterStateSnapshot): Promise<boolean> {
+      const valid = await this.queryServiceState();
+      if (!valid) {
+        this.router.navigate(['/provider-error']);
+      }
+      return valid;
   }
 
   private async queryServiceState() {
-    if (this.attempts > 0) {
+    for (let i = 0; i < this.attempts; i++) {
+      const delay = new Promise(resolve => setTimeout(resolve, 200));
+      await delay;
       if (this.web3.ready) {
         return true;
       }
-      this.attempts--;
-      setTimeout(() => {
-        this.queryServiceState();
-      }, 100);
-    } else {
-      this.router.navigate(['/provider-error']);
-      return false;
     }
+    return false;
   }
 }

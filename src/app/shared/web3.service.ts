@@ -57,7 +57,7 @@ export class Web3Service {
 
   private refreshAccounts() {
     this.web3.eth.getAccounts((err, accs) => {
-      console.log('Refreshing accounts');
+      // console.log('Refreshing accounts');
       if (err != null) {
         console.warn('There was an error fetching your accounts.');
         return;
@@ -79,4 +79,5 @@ export class Web3Service {
       this.ready = true;
     });
   }
+
 }
