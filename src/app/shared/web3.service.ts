@@ -1,12 +1,18 @@
-import {Injectable} from '@angular/core';
-import * as contract from 'truffle-contract';
+import { Injectable } from '@angular/core';
+import * as Web3 from 'web3';
+import * as TruffleContract from 'truffle-contract';
 import { Subject } from 'rxjs';
-import Web3 from 'web3';
 
 
+declare let require: any;
 declare let window: any;
 
-@Injectable()
+let tokenAbi = require('../../../build/contracts/ERC223StandardToken.json');
+let eventAbi = require('../../../build/contracts/TokenConference.json');
+
+@Injectable({
+  providedIn: 'root'
+})
 export class Web3Service {
   private web3: any;
   private accounts: string[];
@@ -43,7 +49,7 @@ export class Web3Service {
       return await this.artifactsToContract(artifacts);
     }
 
-    const contractAbstraction = contract(artifacts);
+    const contractAbstraction = TruffleContract(artifacts);
     contractAbstraction.setProvider(this.web3.currentProvider);
     return contractAbstraction;
 
