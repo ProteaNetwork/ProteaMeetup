@@ -1,5 +1,7 @@
+import { Observable, Subscription } from 'rxjs';
 import { Web3Service } from './../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-provider-error',
@@ -7,19 +9,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./provider-error.component.scss']
 })
 export class ProviderErrorComponent implements OnInit {
-  public errorMessage: string;
 
-  constructor(private web3: Web3Service) { }
+  constructor(private web3: Web3Service, private router: Router) {
+  }
 
   ngOnInit() {
     this.checkWeb3();
   }
 
+  // @TODO: Refactor to cleaner solution
   checkWeb3() {
-    console.log(this.web3.accountsObservable);
-    if (!this.web3.ready) {
-      this.errorMessage = 'Please install MetaMask or Cypherbrowser';
-    }
-    // setTimeout(this.checkWeb3(), 2000);
+    setTimeout(() => {
+      console.log('Checking', Date.now());
+      if (!this.web3.ready) {
+        this.checkWeb3();
+      } else {
+        this.router.navigate(['/']);
+      }
+    }, 500);
   }
 }

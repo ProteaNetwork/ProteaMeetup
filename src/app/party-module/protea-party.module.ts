@@ -6,6 +6,7 @@ import { AdminScreenComponent } from './admin-screen/admin-screen.component';
 import { AttendeeScreenComponent } from './attendee-screen/attendee-screen.component';
 import { PayoutScreenComponent } from './payout-screen/payout-screen.component';
 
+// @TODO: Convert controller to auxilary route
 @NgModule({
   imports: [
     CommonModule
