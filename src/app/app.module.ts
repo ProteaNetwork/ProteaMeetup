@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material.module';
+import { ProteaPartyModule } from './party-module/protea-party.module';
+import { SharedModule } from './shared/shared.module';
 
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -25,7 +27,9 @@ import { ProviderErrorComponent } from './provider-error/provider-error.componen
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     AppRoutingModule,
     MaterialModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ProteaPartyModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
