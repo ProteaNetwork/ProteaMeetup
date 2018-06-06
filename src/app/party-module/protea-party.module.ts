@@ -1,3 +1,4 @@
+import { SharedModule } from './../shared/shared.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PartyControllerComponent } from './party-controller/party-controller.component';
@@ -9,9 +10,11 @@ import { PayoutScreenComponent } from './payout-screen/payout-screen.component';
 // @TODO: Convert controller to auxilary route
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
   ],
   declarations: [PartyControllerComponent, InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent],
+  entryComponents: [ InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent],
   exports: [PartyControllerComponent]
 })
 export class ProteaPartyModule { }

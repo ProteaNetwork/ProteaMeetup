@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
-import { MaterialModule } from './material.module';
 import { ProteaPartyModule } from './party-module/protea-party.module';
 import { SharedModule } from './shared/shared.module';
 
@@ -26,7 +25,6 @@ import { ProviderErrorComponent } from './provider-error/provider-error.componen
     BrowserModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     AppRoutingModule,
-    MaterialModule,
     BrowserAnimationsModule,
     ProteaPartyModule,
     SharedModule

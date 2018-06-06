@@ -1,3 +1,27 @@
-<p>
-  init-screen works!
-</p>
+<div class="fetchArea">
+  <h3>
+    Access event
+  </h3>
+  <p>
+    If you are looking for a specific event, please input it's contract address and hit the fetch button.
+  </p>
+  <mat-form-field hintLabel="Please enter a valid address">
+    <input matInput #address maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+    <mat-hint align="end">{{ isValidAddress(address.value) ? "Valid" : "Invalid" }}</mat-hint>
+  </mat-form-field>
+  <button mat-raised-button [disabled]="!isValidAddress(address.value)">
+    Fetch event
+  </button>
+</div>
+<hr>
+<div class="deployArea">
+  <h3>
+    Create Event
+  </h3>
+  <p>
+    If you would like to create an event, please click the create button, your wallet provider should request you sign a contract deploying transaction.
+  </p>
+  <button mat-raised-button>
+    Deploy Party Contract
+  </button>
+</div>

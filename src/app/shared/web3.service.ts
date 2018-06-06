@@ -79,4 +79,8 @@ export class Web3Service {
     });
   }
 
+  public isValidAddress(address: string) {
+    return this.web3.isAddress(address);
+  }
+
 }

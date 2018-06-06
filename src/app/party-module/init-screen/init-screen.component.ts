@@ -1,3 +1,4 @@
+import { Web3Service } from './../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +7,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./init-screen.component.scss']
 })
 export class InitScreenComponent implements OnInit {
+  public address: string;
 
-  constructor() { }
+  constructor(private web3: Web3Service) { }
 
   ngOnInit() {
   }
 
+  isValidAddress(address: string) {
+    return this.web3.isValidAddress(address);
+  }
+
+  fetchContract() {
+
+  }
+
+  deployContract() {
+
+  }
 }
