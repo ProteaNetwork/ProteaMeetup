@@ -4,11 +4,9 @@ import * as TruffleContract from 'truffle-contract';
 import { Subject } from 'rxjs';
 
 
-declare let require: any;
 declare let window: any;
 
-let tokenAbi = require('../../../build/contracts/ERC223StandardToken.json');
-let eventAbi = require('../../../build/contracts/TokenConference.json');
+// let tokenAbi = require('../../../build/contracts/ERC223StandardToken.json');
 
 @Injectable({
   providedIn: 'root'

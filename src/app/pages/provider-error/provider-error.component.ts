@@ -1,5 +1,5 @@
 import { Observable, Subscription } from 'rxjs';
-import { Web3Service } from './../shared/web3.service';
+import { Web3Service } from './../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 

@@ -1,5 +1,9 @@
-import { Web3Service } from './../../shared/web3.service';
+import { Web3Service } from './../../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
+
+declare let require: any;
+let eventAbi = require('./../../../../../build/contracts/TokenConference.json');
+
 
 @Component({
   selector: 'app-init-screen',
@@ -19,7 +23,7 @@ export class InitScreenComponent implements OnInit {
   }
 
   fetchContract() {
-
+    const contract = this.web3.artifactsToContract(this.address);
   }
 
   deployContract() {

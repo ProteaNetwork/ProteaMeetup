@@ -1,0 +1,18 @@
+{
+    "ERC223CompliantToken":{
+      "initialSupply": 42000000,
+      "name": "ProteaToken",
+      "decimals": 2, 
+      "issuingAmount":200,
+      "symbol":"PTT"
+    },
+    "tokenConference":{
+      "name":"Test",
+      "deposit":200,
+      "limitOfParticipants": 20,
+      "coolingPeriod":2,
+      "token": "0x8cdaf0cd259887258bc13a92c0a6da92698644c0",
+      "encryption":""
+    }
+  }
+  

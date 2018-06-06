@@ -1,7 +1,6 @@
 import { Web3Service } from './web3.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProteaTokenContractComponent } from './components/protea-token-contract/protea-token-contract.component';
 import { MaterialModule } from '../material.module';
 
 @NgModule({
@@ -10,7 +9,7 @@ import { MaterialModule } from '../material.module';
     MaterialModule
   ],
   providers: [ Web3Service ],
-  declarations: [ ProteaTokenContractComponent ],
+  declarations: [  ],
   exports: [ MaterialModule]
 })
 export class SharedModule { }

@@ -1,4 +1,4 @@
-import { Web3Service } from './../../shared/web3.service';
+import { Web3Service } from './../../../shared/web3.service';
 import { Component, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { Type } from '@angular/compiler/src/core';
 

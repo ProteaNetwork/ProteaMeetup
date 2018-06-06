@@ -5,11 +5,11 @@ const fs = require('fs');
 const deployConfig = JSON.parse(fs.readFileSync('../config/deploy.json'));
 
 
-const initialSupply = deployConfig.CompliantToken.initialSupply;
-const name = deployConfig.CompliantToken.name;
-const decimalUnits = deployConfig.CompliantToken.decimals;
-const issuingAmount = deployConfig.CompliantToken.issuingAmount;
-const tokenSymbol = deployConfig.CompliantToken.symbol;
+const initialSupply = deployConfig.ERC223CompliantToken.initialSupply;
+const name = deployConfig.ERC223CompliantToken.name;
+const decimalUnits = deployConfig.ERC223CompliantToken.decimals;
+const issuingAmount = deployConfig.ERC223CompliantToken.issuingAmount;
+const tokenSymbol = deployConfig.ERC223CompliantToken.symbol;
 
 const conferenceName = deployConfig.tokenConference.name;
 const deposit = deployConfig.tokenConference.deposit;
