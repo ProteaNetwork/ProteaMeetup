@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { ProteaPartyModule } from './modules/party-module/protea-party.module';
 import { SharedModule } from './shared/shared.module';
+import { TokenModule } from './modules/token/token.module';
 
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -27,7 +28,8 @@ import { ProviderErrorComponent } from './pages/provider-error/provider-error.co
     AppRoutingModule,
     BrowserAnimationsModule,
     ProteaPartyModule,
-    SharedModule
+    SharedModule,
+    TokenModule
   ],
   providers: [],
   bootstrap: [AppComponent]

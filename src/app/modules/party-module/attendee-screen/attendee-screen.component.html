@@ -1,3 +1,28 @@
-<p>
-  attendee-screen works!
-</p>
+<div class="event-details">
+  <div class="label">
+    <h3>
+      {Event name}
+    </h3>
+  </div>
+  <div class="label">
+    <span>
+      Number tickets available:
+    </span>
+    {Confirmed} / {Total}
+  </div>
+  <div class="label">
+    <span>
+      RSVP stake:
+    </span>
+    {Stake required}
+  </div>
+</div>
+<div class="pending-rsvp">
+  check if stake available
+  <button mat-raised-button [disabled]="">
+    RSVP Now
+  </button>
+</div>
+<div class="rsvp-confirmed">
+  You have RSVP'd for {Event Name}
+</div>

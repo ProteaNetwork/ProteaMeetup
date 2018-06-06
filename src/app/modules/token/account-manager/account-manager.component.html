@@ -1,3 +1,40 @@
-<p>
-  account-manager works!
-</p>
+<div class="new-user">
+  <p>
+    Hi there!
+    <br> Thank you for checking out Protea Party!
+    <br> As a token of our thanks, please click the button for some complimentary Protea!
+  </p>
+  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+    Claim Gift
+  </button>
+</div>
+<div class="token-details">
+  <p>
+    Need a section if balanced and earned is 0
+  </p>
+  <div class="row">
+    <div class="label">
+      Earned
+    </div>
+    <div class="value">
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">
+      Balance
+    </div>
+    <div class="value">
+
+    </div>
+  </div>
+  <div class="row">
+    <mat-form-field hintLabel="Please enter a valid address">
+      <input matInput #sendAddress maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+      <mat-hint align="end">{{ isValidAddress(sendAddress.value) ? "Valid" : "Invalid" }}</mat-hint>
+    </mat-form-field>
+    <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+      Transfer tokens
+    </button>
+  </div>
+</div>

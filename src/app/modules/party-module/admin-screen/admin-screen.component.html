@@ -1,3 +1,73 @@
-<p>
-  admin-screen works!
-</p>
+<div class="event-details">
+  <div class="label">
+    <h3>
+      {Event name}
+    </h3>
+  </div>
+  <div class="label">
+    <span>
+      Total Staked:
+    </span>
+  </div>
+  <div class="label">
+    <span>
+      Number tickets available:
+    </span>
+    {Confirmed} / {Total}
+  </div>
+  <div class="label">
+    <span>
+      RSVP stake:
+    </span>
+    {Stake required}
+  </div>
+</div>
+<div class="controls">
+  <div class="control">
+    Fetch number then allow to change
+    <mat-form-field hintLabel="Please enter a valid address">
+      <input matInput #sendAddress maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+      <mat-hint align="end">{{ isValidAddress(sendAddress.value) ? "Valid" : "Invalid" }}</mat-hint>
+    </mat-form-field>
+    <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+      Change participant limit
+    </button>
+  </div>
+  <div class="attend-control">
+    <ul>
+      <li>Add name here as pending submission</li>
+    </ul>
+    <mat-form-field hintLabel="Please enter a valid address">
+      <input matInput #attendInput maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+      <mat-hint align="end">{{ isValidAddress(attendInput.value) ? "Valid" : "Invalid" }}</mat-hint>
+    </mat-form-field>
+    <button mat-raised-button [disabled]="!isValidAddress(attendInput.value)">
+      Add to list
+    </button>
+    <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+      Submit to event contract
+    </button>
+  </div>
+  disabled if ended or canceled
+  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+    End & Payback
+  </button>
+  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+    Cancel Event
+  </button>
+  disabled if waiting period not completed
+  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+    Clear Remaining ETH
+  </button>
+</div>
+<div class="checking-tools">
+  <div class="control">
+    <mat-form-field hintLabel="Please enter a valid address">
+      <input matInput #sendAddress maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+      <mat-hint align="end">{{ isValidAddress(sendAddress.value) ? "Valid" : "Invalid" }}</mat-hint>
+    </mat-form-field>
+    <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+      Check user state
+    </button>
+  </div>
+</div>

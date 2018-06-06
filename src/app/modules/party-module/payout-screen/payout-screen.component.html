@@ -1,3 +1,4 @@
-<p>
-  payout-screen works!
-</p>
+disable if paid already
+<button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+  Withdraw tokens
+</button>
