@@ -13,6 +13,7 @@ declare let window: any;
 export class Web3Service {
   private web3: any;
   private accounts: string[];
+  public network = 0;
   public ready = false;
   public accountsObservable = new Subject<string[]>();
 
@@ -81,11 +82,12 @@ export class Web3Service {
   }
 
   public checkNetwork() {
-    this.web3.version.getNetwork((err, netId) => {
-      if (netId !== '4') {
-        this.ready = false;
-      } else {
+    this.web3.version.getNetwork((err, netId: string) => {
+      if (netId === '4' || netId === '3') {
         this.ready = true;
+        this.network = parseInt(netId, 10);
+      } else {
+        this.ready = false;
       }
     });
   }

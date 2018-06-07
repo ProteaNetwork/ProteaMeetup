@@ -11,6 +11,8 @@ import { ContractsService } from '../../../shared/contracts.service';
 })
 export class AccountManagerComponent implements OnInit {
   public tokenContract: TruffleContract;
+  public balance = 0;
+  public issued = 0;
 
   constructor(private web3: Web3Service, private contracts: ContractsService) { }
 
@@ -19,5 +21,11 @@ export class AccountManagerComponent implements OnInit {
 
   isValidAddress(address: string) {
     return this.web3.isValidAddress(address);
+  }
+
+  // Controls
+  async claimTokens() {
+    const status = await this.contracts.faucet();
+    console.log(status);
   }
 }

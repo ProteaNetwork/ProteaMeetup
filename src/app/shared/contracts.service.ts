@@ -11,7 +11,8 @@ let eventAbi = require('./../../../build/contracts/TokenConference.json');
   providedIn: 'root'
 })
 export class ContractsService {
-  private tokenAddress: string;
+  private rinkebyTokenAddress = '0x6f5996f443de8675a8101071c28830e646a6f9f7';
+  private ropstenTokenAddress = '';
   private tokenContract: TruffleContract;
   private eventContact: TruffleContract;
 
@@ -25,7 +26,11 @@ export class ContractsService {
         this.tokenContract = this.web3.artifactsToContract(tokenAbi);
         this.eventContact = this.web3.artifactsToContract(eventAbi);
         console.log(this.tokenContract);
-        // this.tokenContract.at(this.tokenAddress);
+        if (this.web3.network === 4) {
+          // this.tokenContract.at(this.rinkebyTokenAddress);
+        } else if (this.web3.network === 3) {
+          // this.tokenContract.at(this.ropstenTokenAddress);
+        }
       } else {
         this.initToken();
       }
@@ -36,5 +41,9 @@ export class ContractsService {
     if (this.web3.isValidAddress(_address)) {
       this.eventContact.at(_address);
     }
+  }
+
+  async faucet() {
+    return await this.tokenContract.faucet();
   }
 }
