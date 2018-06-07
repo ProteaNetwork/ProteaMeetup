@@ -20,7 +20,6 @@ export class ProviderErrorComponent implements OnInit {
   // @TODO: Refactor to cleaner solution
   checkWeb3() {
     setTimeout(() => {
-      console.log('Checking', Date.now());
       if (!this.web3.ready) {
         this.checkWeb3();
       } else {

@@ -1,10 +1,6 @@
 import { Web3Service } from './../../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
 
-declare let require: any;
-let eventAbi = require('./../../../../../build/contracts/TokenConference.json');
-
-
 @Component({
   selector: 'app-init-screen',
   templateUrl: './init-screen.component.html',

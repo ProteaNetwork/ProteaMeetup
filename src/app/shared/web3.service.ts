@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 
 declare let window: any;
 
-// let tokenAbi = require('../../../build/contracts/ERC223StandardToken.json');
 
 @Injectable({
   providedIn: 'root'
@@ -73,12 +72,22 @@ export class Web3Service {
         this.accounts = accs;
       }
 
-      this.ready = true;
+      this.checkNetwork();
     });
   }
 
   public isValidAddress(address: string) {
     return this.web3.isAddress(address);
+  }
+
+  public checkNetwork() {
+    this.web3.version.getNetwork((err, netId) => {
+      if (netId !== '4') {
+        this.ready = false;
+      } else {
+        this.ready = true;
+      }
+    });
   }
 
 }
