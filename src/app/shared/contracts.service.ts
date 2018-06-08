@@ -19,7 +19,6 @@ export class ContractsService {
   constructor(private web3: Web3Service) {
     this.initToken();
   }
-
   private initToken() {
     setTimeout(() => {
       if (this.web3.ready) {
@@ -29,6 +28,7 @@ export class ContractsService {
         if (this.web3.network === 4) {
           // this.tokenContract.at(this.rinkebyTokenAddress);
         } else if (this.web3.network === 3) {
+          // @TODO: Ignore ropsten 
           // this.tokenContract.at(this.ropstenTokenAddress);
         }
       } else {
@@ -36,7 +36,7 @@ export class ContractsService {
       }
     }, 200);
   }
-  
+
   fetchEvent(_address: string) {
     if (this.web3.isValidAddress(_address)) {
       this.eventContact.at(_address);

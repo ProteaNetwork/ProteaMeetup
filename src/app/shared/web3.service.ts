@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import * as Web3 from 'web3';
+
 import * as TruffleContract from 'truffle-contract';
 import { Subject } from 'rxjs';
+import { UportService } from './uport.service';
 
 
 declare let window: any;
@@ -11,33 +12,23 @@ declare let window: any;
   providedIn: 'root'
 })
 export class Web3Service {
+ 
   private web3: any;
   private accounts: string[];
   public network = 0;
   public ready = false;
   public accountsObservable = new Subject<string[]>();
 
-  constructor() {
+  constructor(private uport: UportService) {
     window.addEventListener('load', (event) => {
       this.bootstrapWeb3();
     });
   }
 
   public bootstrapWeb3() {
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof window.web3 !== 'undefined') {
-      // Use Mist/MetaMask's provider
-      this.web3 = new Web3(window.web3.currentProvider);
-    } else {
-      console.log('No web3? You should consider trying MetaMask!');
-
-      // Hack to provide backwards compatibility for Truffle, which uses web3js 0.20.x
-      Web3.providers.HttpProvider.prototype.sendAsync = Web3.providers.HttpProvider.prototype.send;
-      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-      this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-    }
-
-    setInterval(() => this.refreshAccounts(), 100);
+    this.web3 = this.uport.getWeb3();
+    this.ready = true;
+    // setInterval(() => this.refreshAccounts(), 100);
   }
 
   public async artifactsToContract(artifacts) {
