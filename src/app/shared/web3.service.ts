@@ -67,12 +67,7 @@ export class Web3Service {
       this.checkNetwork();
     });
   }
-
-  public isValidAddress(address: string) {
-    return this.web3.isAddress(address);
-  }
-
-  public checkNetwork() {
+  public checkNetwork(): void {
     this.web3.version.getNetwork((err, netId: string) => {
       if (netId === '4' || netId === '3') {
         this.ready = true;
@@ -81,6 +76,20 @@ export class Web3Service {
         this.ready = false;
       }
     });
+  }
+
+  // Checks
+  public isValidAddress(address: string): boolean {
+    return this.web3.isAddress(address);
+  }
+
+  public async getCoinBase() {
+    let temp;
+     await this.web3.eth.getCoinbase((error, result) => {
+      console.log(result);
+      temp = result;
+    });
+    return temp;
   }
 
 }

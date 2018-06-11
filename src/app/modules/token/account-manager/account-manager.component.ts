@@ -24,6 +24,10 @@ export class AccountManagerComponent implements OnInit {
   }
 
   // Controls
+  async loginUport() {
+    const temp = await this.web3.getCoinBase();
+    console.log( "Derp", temp);
+  }
   async claimTokens() {
     const status = await this.contracts.faucet();
     console.log(status);
