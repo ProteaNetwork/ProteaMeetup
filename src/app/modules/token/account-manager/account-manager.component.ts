@@ -28,7 +28,6 @@ export class AccountManagerComponent implements OnInit {
 
   // Controls
   async claimTokens() {
-    const address = this.up
     const status = await this.contracts.faucet();
     console.log(status);
   }

@@ -1,6 +1,7 @@
 import { Web3Service } from './web3.service';
 import { Injectable } from '@angular/core';
 import { default as TruffleContract } from 'truffle-contract';
+import to from 'await-to-js';
 
 
 declare let require: any;
@@ -44,14 +45,17 @@ export class ContractsService {
     }
   }
 
-  async faucet() {
-    // this.tokenContract.Deployed().then(instance => {
 
-    // })
-    const result = await this.tokenContract.faucet((error, response) => {
-      if (error) { throw error; }
-      console.log('IT FREAKING WORKED', response);
+  // @TODO convert to async
+  faucet() {
+    this.tokenContract.faucet(async (_error, _txHash) => {
+      if (_error) { throw _error; }
+      // Request placed
+      let error, result;
+      [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+      console.log(error, result);
+      if (!result) { throw error; }
+      // Transation mined
     });
   }
-
 }

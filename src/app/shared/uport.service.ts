@@ -30,7 +30,7 @@ export class UportService {
     const decoded = MNID.decode(_address);
     return decoded.address;
   }
-  
+
   public requestCredentials(_requested: string[] = null, _verified: string[] = null): Promise<any> {
     const req = {
       requested: _requested,
