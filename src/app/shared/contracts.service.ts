@@ -24,7 +24,7 @@ export class ContractsService {
       if (this.web3.ready) {
         this.tokenContract = await this.web3.artifactsToContract(tokenAbi);
 
-        this.tokenContract.at(this.rinkebyTokenAddress);
+        this.tokenContract = this.tokenContract.at(this.rinkebyTokenAddress);
         this.eventContact = await this.web3.artifactsToContract(eventAbi);
         if (this.web3.network === 4) {
           // this.tokenContract.at(this.rinkebyTokenAddress);
@@ -45,8 +45,13 @@ export class ContractsService {
   }
 
   async faucet() {
-    const result = await this.tokenContract.faucet();
-    console.log(result)
+    // this.tokenContract.Deployed().then(instance => {
+
+    // })
+    const result = await this.tokenContract.faucet((error, response) => {
+      if (error) { throw error; }
+      console.log('IT FREAKING WORKED', response);
+    });
   }
 
 }

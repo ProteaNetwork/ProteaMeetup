@@ -10,11 +10,13 @@ import { ContractsService } from '../../../shared/contracts.service';
   styleUrls: ['./account-manager.component.scss']
 })
 export class AccountManagerComponent implements OnInit {
+  private userProfile: any;
   public tokenContract: TruffleContract;
   public balance = 0;
   public issued = 0;
 
-  constructor(private web3: Web3Service, private contracts: ContractsService) {
+  constructor(private web3: Web3Service, private contracts: ContractsService, ) {
+    this.userProfile = this.web3.userCredentials;
   }
 
   ngOnInit() {
@@ -26,6 +28,7 @@ export class AccountManagerComponent implements OnInit {
 
   // Controls
   async claimTokens() {
+    const address = this.up
     const status = await this.contracts.faucet();
     console.log(status);
   }

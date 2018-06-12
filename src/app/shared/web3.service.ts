@@ -16,12 +16,10 @@ const contract = require('truffle-contract');
 export class Web3Service {
 
   private web3: any;
-  private accounts: string[];
   public network = 0;
   public ready = false;
-  public accountsObservable = new Subject<string[]>();
 
-  private userCredentials: any;
+  public userCredentials: any;
 
   constructor(private uport: UportService) {
     window.addEventListener('load', (event) => {
@@ -58,17 +56,6 @@ export class Web3Service {
   // Checks
   public isValidAddress(address: string): boolean {
     return this.web3.isAddress(address);
-  }
-
-  public async getCoinBase() {
-    let temp;
-     await this.web3.eth.getCoinbase((error, result) => {
-      console.log(result);
-      temp = result;
-      this.ready = true;
-
-    });
-    return temp;
   }
 
   public async login() {

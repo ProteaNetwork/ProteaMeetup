@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Connect, SimpleSigner } from 'uport-connect';
+import { Connect, SimpleSigner, MNID } from 'uport-connect';
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +26,16 @@ export class UportService {
     return this.uport.getWeb3();
   }
 
+  public decodeMNID (_address: string) {
+    const decoded = MNID.decode(_address);
+    return decoded.address;
+  }
+  
   public requestCredentials(_requested: string[] = null, _verified: string[] = null): Promise<any> {
     const req = {
       requested: _requested,
-      verified: _verified
+      verified: _verified,
+      notifications: true
     };
 
     return new Promise(resolve => {
