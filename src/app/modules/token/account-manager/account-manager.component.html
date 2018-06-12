@@ -1,18 +1,13 @@
-<div class="get-user">
-  <button mat-raised-button (click)="loginUport()">
-    Log in with uPort to get started
-  </button>
-</div>
 <div class="new-user">
   <p>
     Hi there!
     <br> Thank you for checking out Protea Party!
     <br> As a token of our thanks, please click the button for some complimentary Protea!
   </p>
-  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+  <button mat-raised-button (click)="claimTokens()">
     Claim Gift
   </button>
-</div>
+</div> 
 <div class="token-details">
   <p>
     Need a section if balanced and earned is 0

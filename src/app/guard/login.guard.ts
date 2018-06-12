@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Web3Service } from './../shared/web3.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProviderGuard implements CanActivate {
+export class LoginGuard implements CanActivate {
   private attempts = 10;
 
   constructor(private web3: Web3Service, private router: Router) {}
 
-  async canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Promise<boolean> {
+  async canActivate(): Promise<boolean> {
       const valid = await this.queryServiceState();
       if (!valid) {
-        this.router.navigate(['/provider-error']);
+        this.router.navigate(['/login']);
       }
       return valid;
   }

@@ -14,7 +14,8 @@ export class AccountManagerComponent implements OnInit {
   public balance = 0;
   public issued = 0;
 
-  constructor(private web3: Web3Service, private contracts: ContractsService) { }
+  constructor(private web3: Web3Service, private contracts: ContractsService) {
+  }
 
   ngOnInit() {
   }
@@ -24,10 +25,6 @@ export class AccountManagerComponent implements OnInit {
   }
 
   // Controls
-  async loginUport() {
-    const temp = await this.web3.getCoinBase();
-    console.log( "Derp", temp);
-  }
   async claimTokens() {
     const status = await this.contracts.faucet();
     console.log(status);

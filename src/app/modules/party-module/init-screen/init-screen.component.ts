@@ -19,7 +19,6 @@ export class InitScreenComponent implements OnInit {
   }
 
   fetchContract() {
-    const contract = this.web3.artifactsToContract(this.address);
   }
 
   deployContract() {

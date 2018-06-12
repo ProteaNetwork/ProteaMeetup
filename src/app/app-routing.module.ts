@@ -1,18 +1,18 @@
+import { LoginComponent } from './pages/login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { ProviderErrorComponent } from './pages/provider-error/provider-error.component';
-import { ProviderGuard } from './guard/provider.guard';
+import { LoginGuard } from './guard/login.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: LandingPageComponent,
-    canActivate: [ProviderGuard],
+    canActivate: [LoginGuard],
   },
   {
-    path: 'provider-error',
-    component: ProviderErrorComponent
+    path: 'login',
+    component: LoginComponent
   },
 ];
 

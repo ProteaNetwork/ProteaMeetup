@@ -1,6 +1,6 @@
 import { Web3Service } from './web3.service';
 import { Injectable } from '@angular/core';
-import * as TruffleContract from 'truffle-contract';
+import { default as TruffleContract } from 'truffle-contract';
 
 
 declare let require: any;
@@ -20,15 +20,16 @@ export class ContractsService {
     this.initToken();
   }
   private initToken() {
-    setTimeout(() => {
+    setTimeout(async () => {
       if (this.web3.ready) {
-        this.tokenContract = this.web3.artifactsToContract(tokenAbi);
-        this.eventContact = this.web3.artifactsToContract(eventAbi);
-        console.log(this.tokenContract);
+        this.tokenContract = await this.web3.artifactsToContract(tokenAbi);
+
+        this.tokenContract.at(this.rinkebyTokenAddress);
+        this.eventContact = await this.web3.artifactsToContract(eventAbi);
         if (this.web3.network === 4) {
           // this.tokenContract.at(this.rinkebyTokenAddress);
         } else if (this.web3.network === 3) {
-          // @TODO: Ignore ropsten 
+          // @TODO: Ignore ropsten
           // this.tokenContract.at(this.ropstenTokenAddress);
         }
       } else {
@@ -44,6 +45,8 @@ export class ContractsService {
   }
 
   async faucet() {
-    return await this.tokenContract.faucet();
+    const result = await this.tokenContract.faucet();
+    console.log(result)
   }
+
 }

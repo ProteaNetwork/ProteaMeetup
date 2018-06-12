@@ -25,4 +25,18 @@ export class UportService {
   public getWeb3() {
     return this.uport.getWeb3();
   }
+
+  public requestCredentials(_requested: string[] = null, _verified: string[] = null): Promise<any> {
+    const req = {
+      requested: _requested,
+      verified: _verified
+    };
+
+    return new Promise(resolve => {
+      this.uport.requestCredentials(req).then((credentials) => {
+        console.log('User credentials', credentials);
+        resolve(credentials);
+      });
+    });
+  }
 }

@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { ProteaPartyModule } from './modules/party-module/protea-party.module';
 import { SharedModule } from './shared/shared.module';
@@ -12,7 +11,7 @@ import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PartyDashComponent } from './components/party-dash/party-dash.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { ProviderErrorComponent } from './pages/provider-error/provider-error.component';
+import { LoginComponent } from './pages/login/login.component';
 
 
 @NgModule({
@@ -20,7 +19,7 @@ import { ProviderErrorComponent } from './pages/provider-error/provider-error.co
     AppComponent,
     PartyDashComponent,
     LandingPageComponent,
-    ProviderErrorComponent
+    LoginComponent
   ],
   imports: [
     BrowserModule,
