@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Connect, SimpleSigner, MNID } from 'uport-connect';
+import { ICredentials } from './interface/credentials';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class UportService {
   private networkName = 'rinkeby';
   private address = '2oyGuNMuW1aCoxELjbg5FgqjccZREeHwNzq';
   private publicKey = '0x047ae6e19ba6791f09481c7030d95d6e89992446b62568c9aebbc28621dd9ed045f7c74cf2ee00844a9c4cd134eb1083e4062c03d166034c496b57d0f158bc0889';
+
+  private credentials: ICredentials;
 
   private uport: any;
 
@@ -38,11 +41,17 @@ export class UportService {
       notifications: true
     };
 
-    return new Promise(resolve => {
-      this.uport.requestCredentials(req).then((credentials) => {
-        console.log('User credentials', credentials);
+    return new Promise((reject, resolve) => {
+      if (this.credentials) { resolve(this.credentials); }
+
+      this.uport.requestCredentials(req).then((credentials: ICredentials) => {
+        this.credentials = credentials;
         resolve(credentials);
       });
     });
+  }
+
+  public getAddress() {
+    return this.decodeMNID(this.credentials.networkAddress);
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Subject } from 'rxjs';
 import { UportService } from './uport.service';
 
+import { ICredentials } from './interface/credentials';
 import to from 'await-to-js';
 
 declare let window: any;
@@ -19,7 +19,7 @@ export class Web3Service {
   public network = 0;
   public ready = false;
 
-  public userCredentials: any;
+  public address: string;
 
   constructor(private uport: UportService) {
     window.addEventListener('load', (event) => {
@@ -59,11 +59,13 @@ export class Web3Service {
   }
 
   public async login() {
-    let error, user;
-    [error, user] = await to(this.uport.requestCredentials(['name', 'avatar', 'phone']));
+    let user: ICredentials, error: any;
+
+    [user, error] = await to(this.uport.requestCredentials(['name', 'avatar', 'phone']));
     if (!user) { return false; }
 
-    this.userCredentials = user;
+    this.address = this.uport.getAddress();
+    console.log('post login');
     this.ready = true;
     return true;
   }

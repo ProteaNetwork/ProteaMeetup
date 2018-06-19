@@ -11,11 +11,11 @@ export class LoginGuard implements CanActivate {
   constructor(private web3: Web3Service, private router: Router) {}
 
   async canActivate(): Promise<boolean> {
-      const valid = await this.queryServiceState();
-      if (!valid) {
-        this.router.navigate(['/login']);
-      }
-      return valid;
+    const valid = await this.queryServiceState();
+    if (!valid) {
+      this.router.navigate(['/login']);
+    }
+    return valid;
   }
 
   private async queryServiceState() {
