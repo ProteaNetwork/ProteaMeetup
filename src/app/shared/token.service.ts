@@ -45,7 +45,7 @@ export class TokenService {
       // Request placed
       let error, result;
       [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-      console.log(error, result); 
+      console.log(error, result);
       if (!result) { throw error; }
       // Transation mined
     });
