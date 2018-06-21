@@ -1,23 +1,21 @@
 <div class="new-user">
   <p>
-    Hi there!
+    if Issued = 0 Hi there!
     <br> Thank you for checking out Protea Party!
     <br> As a token of our thanks, please click the button for some complimentary Protea!
   </p>
   <button mat-raised-button (click)="claimTokens()">
     Claim Gift
   </button>
-</div> 
+</div>
 <div class="token-details">
-  <p>
-    Need a section if balanced and earned is 0
-  </p>
+  if issued > 0
   <div class="row">
     <div class="label">
       Earned
     </div>
     <div class="value">
-
+      {{ issued }}
     </div>
   </div>
   <div class="row">
@@ -25,7 +23,7 @@
       Balance
     </div>
     <div class="value">
-
+      {{ balance }}
     </div>
   </div>
   <div class="row">
@@ -37,4 +35,20 @@
       Transfer tokens
     </button>
   </div>
+</div>
+
+<div class="debug">
+  <button mat-raised-button (click)="loadBalance()">
+    loadBalance
+  </button>
+  <button mat-raised-button (click)="loadTotal()">
+    LoadTotal
+  </button>
+  <button mat-raised-button (click)="resetAccount()">
+    Reset
+  </button>
+  <button mat-raised-button (click)="loadBalances()">
+    Attempt Loading again
+  </button>
+
 </div>

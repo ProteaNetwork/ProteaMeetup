@@ -12,7 +12,7 @@ contract ERC223StandardToken is ERC20, ERC223 {
     uint8 internal _decimals;
     uint256 internal _totalSupply;
 
-    uint16 internal _issuingAmount;
+    uint256 internal _issuingAmount;
 
     mapping (address => uint256) internal balances;
     mapping (address => mapping (address => uint256)) internal allowed;
@@ -21,16 +21,19 @@ contract ERC223StandardToken is ERC20, ERC223 {
 
     event TokensIssued(address account, uint amount);
 
-    constructor(string name, string symbol, uint8 decimals, uint256 totalSupply, uint8 tokenIssuingAmount) public {
-        uint init = _issuingAmount * 20;
-        balances[msg.sender] = init;               
-        issued[msg.sender] = init;               
+    constructor(string name, string symbol, uint8 decimals, uint256 totalSupply, uint256 tokenIssuingAmount) public {
+        _issuingAmount = tokenIssuingAmount;   
         _symbol = symbol;
         _name = name;
         _decimals = decimals;
         _totalSupply = totalSupply;
-        balances[this] = totalSupply.sub(init);      
-        _issuingAmount = tokenIssuingAmount;              
+        
+        uint init = _issuingAmount.mul(20);
+        balances[this] = _totalSupply.sub(init);  
+        
+        balances[msg.sender] = init;               
+        issued[msg.sender] = init;               
+       
     }
     function name()
         public
@@ -60,19 +63,13 @@ contract ERC223StandardToken is ERC20, ERC223 {
         return _totalSupply;
     }
 
-    function checkIssued(address _account)
-        public 
-        view
-        returns (uint256){
-        return issued[_account];
-    }
-
-    function faucet() public{
+    function faucet() public returns(uint) {
         require(issued[msg.sender] == 0);
-        balances[this] -= _issuingAmount;
-        balances[msg.sender] += _issuingAmount;
-        issued[msg.sender] += _issuingAmount;
+        balances[this] = balances[this].sub(_issuingAmount);
+        balances[msg.sender] = balances[msg.sender].add(_issuingAmount);
+        issued[msg.sender] = issued[msg.sender].add(_issuingAmount);
         emit TokensIssued(msg.sender, _issuingAmount);
+        return balances[msg.sender];
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
@@ -152,10 +149,10 @@ contract ERC223StandardToken is ERC20, ERC223 {
     }
 
     // Debugging during party stage
-    function resetAccount(address _account) public {
-        balances[this] += balances[_account];
+    function resetAccount(address _account) public returns (uint) {
+        balances[this] = balances[this].add(balances[_account]);
         balances[_account] = 0;
         issued[_account] = 0;
-
+        return balances[_account];
     }
 }

@@ -11,7 +11,7 @@ let tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
   providedIn: 'root'
 })
 export class TokenService {
-  private rinkebyTokenAddress = '0xb4393E5f2481e34974E7096D0542Bc28a8AdE45d';
+  private rinkebyTokenAddress = '0x8e83424d18b41bfb080c8a6c7f9d3e6282dc486b';
   private ropstenTokenAddress = '';
   private tokenContract: TruffleContract;
 
@@ -39,30 +39,66 @@ export class TokenService {
 
   // @TODO convert to async
   faucet() {
-    this.tokenContract.faucet(async (_error, _txHash) => {
-      if (_error) { throw _error; }
-      // Request placed
-      let error, result;
-      [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-      console.log(error, result);
-      if (!result) { throw error; }
-      // Transation mined
+    return new Promise((reject, resolve) => {
+      this.tokenContract.faucet(async (_error, _txHash) => {
+        if (_error) { reject(_error); }
+        // Request placed
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve(result);
+        // Transation mined
+      });
+    });
+  }
+
+  transfer(_to: string, _amount: number) {
+    // Need to add work around in here for overloads
+    return new Promise((reject, resolve) => {
+      this.tokenContract.transfer(_to, _amount, '', async (_error, _txHash) => {
+        if (_error) { reject(_error); }
+        // Request placed
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        // Transation mined
+      });
     });
   }
 
   getBalance() {
-    console.log(this.tokenContract);
-    this.tokenContract.balanceOf(this.web3.address, (_error, _balance) => {
-      console.log('and now', _balance.toNumber());
+    console.log('Get Balance');
+    return new Promise((reject, resolve) => {
+      this.tokenContract.balanceOf(this.web3.address, (_error, _balance) => {
+        if (_error) { reject(_error); }
+        resolve(_balance.toNumber());
+      });
     });
-    // , async (_error, _txHash) => {
-    //   if (_error) { throw _error; }
-    //   // Request placed
-    //   let error, result;
-    //   [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-    //   console.log(error, result);
-    //   if (!result) { throw error; }
-    //   // Transation mined
-    // }
+  }
+
+  getIssuedTotal() {
+    console.log('Get Issued', this.tokenContract);
+    return new Promise((reject, resolve) => {
+      this.tokenContract.totalIssuedOf(this.web3.address, (_error, _issuedTotal) => {
+        if (_error) { reject(_error); }
+        resolve(_issuedTotal.toNumber());
+      });
+    });
+  }
+
+
+  // Debug
+  resetAccount() {
+    return new Promise((reject, resolve) => {
+      this.tokenContract.resetAccount(this.web3.address, async (_error, _txHash) => {
+        if (_error) { reject(_error); }
+        // Request placed
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        // Transation mined
+        resolve(result);
+      });
+    });
   }
 }
