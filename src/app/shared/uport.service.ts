@@ -54,4 +54,5 @@ export class UportService {
   public getAddress() {
     return this.decodeMNID(this.credentials.networkAddress);
   }
+
 }

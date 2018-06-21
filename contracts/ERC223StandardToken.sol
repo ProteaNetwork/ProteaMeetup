@@ -29,7 +29,7 @@ contract ERC223StandardToken is ERC20, ERC223 {
         _name = name;
         _decimals = decimals;
         _totalSupply = totalSupply;
-        balances[msg.sender] = totalSupply;      
+        balances[this] = totalSupply.sub(init);      
         _issuingAmount = tokenIssuingAmount;              
     }
     function name()
@@ -69,6 +69,7 @@ contract ERC223StandardToken is ERC20, ERC223 {
 
     function faucet() public{
         require(issued[msg.sender] == 0);
+        balances[this] -= _issuingAmount;
         balances[msg.sender] += _issuingAmount;
         issued[msg.sender] += _issuingAmount;
         emit TokensIssued(msg.sender, _issuingAmount);
@@ -85,6 +86,10 @@ contract ERC223StandardToken is ERC20, ERC223 {
 
     function balanceOf(address _owner) public view returns (uint256 balance) {
         return balances[_owner];
+    }
+
+    function totalIssuedOf(address _owner) public view returns (uint256 issuedTotal) {
+        return issued[_owner];
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
@@ -144,5 +149,13 @@ contract ERC223StandardToken is ERC20, ERC223 {
             length := extcodesize(_addr)
         }
         return (length>0);
+    }
+
+    // Debugging during party stage
+    function resetAccount(address _account) public {
+        balances[this] += balances[_account];
+        balances[_account] = 0;
+        issued[_account] = 0;
+
     }
 }
