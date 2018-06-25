@@ -68,7 +68,7 @@ export class TokenService {
 
   getBalance() {
     console.log('Get Balance');
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       this.tokenContract.balanceOf(this.web3.address, (_error, _balance) => {
         if (_error) { reject(_error); }
         resolve(_balance.toNumber());
@@ -78,7 +78,7 @@ export class TokenService {
 
   getIssuedTotal() {
     console.log('Get Issued', this.tokenContract);
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       this.tokenContract.totalIssuedOf(this.web3.address, (_error, _issuedTotal) => {
         if (_error) { reject(_error); }
         resolve(_issuedTotal.toNumber());
@@ -89,7 +89,7 @@ export class TokenService {
 
   // Debug
   resetAccount() {
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       this.tokenContract.resetAccount(this.web3.address, async (_error, _txHash) => {
         if (_error) { reject(_error); }
         // Request placed

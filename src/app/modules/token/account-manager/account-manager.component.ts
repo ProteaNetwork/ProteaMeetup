@@ -16,7 +16,7 @@ export class AccountManagerComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.loadBalances();
+    this.loadBalances();
   }
 
   isValidAddress(address: string) {
