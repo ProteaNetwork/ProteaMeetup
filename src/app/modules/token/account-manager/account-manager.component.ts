@@ -26,34 +26,23 @@ export class AccountManagerComponent implements OnInit {
   // Controls
 
   loadBalances() {
-    console.log('in init');
-    // Need to refactor this
-    this.tokenService.getIssuedTotal().then((_totalIssued: number) => {
-      this.issued = _totalIssued;
-      console.log('TokenService succeded', this.issued);
-      if (this.issued > 0) {
-        this.tokenService.getBalance().then((_balance: number) => {
-          this.balance = _balance;
-        });
-      }
-    });
+    this.loadBalance();
+    this.loadTotal();
   }
 
   loadTotal() {
     this.tokenService.getIssuedTotal().then((_totalIssued: number) => {
       this.issued = _totalIssued;
-      console.log('success', _totalIssued);
     }, (error: any) => {
-      console.log('error', error);
+      console.error('Load Total Error', error);
     });
   }
 
   loadBalance() {
     this.tokenService.getBalance().then((_balance: number) => {
       this.balance = _balance;
-      console.log('success', this.balance);
     }, (error: any) => {
-      console.log('error', error);
+      console.error('Load balance error', error);
     });
   }
 
@@ -61,7 +50,7 @@ export class AccountManagerComponent implements OnInit {
     this.tokenService.faucet().then((_result: number) => {
       this.balance = _result;
     }, (error) => {
-      console.log(error);
+      console.error('Claim total error', error);
     });
   }
 

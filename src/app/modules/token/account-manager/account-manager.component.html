@@ -1,6 +1,11 @@
-<div class="new-user">
+<div class="buffering" *ngIf="issued == -1">
   <p>
-    if Issued = 0 Hi there!
+    Contacting contract
+  </p>
+</div>
+<div class="new-user" *ngIf="issued == 0">
+  <p>
+    Hi there!
     <br> Thank you for checking out Protea Party!
     <br> As a token of our thanks, please click the button for some complimentary Protea!
   </p>
@@ -8,8 +13,7 @@
     Claim Gift
   </button>
 </div>
-<div class="token-details">
-  if issued > 0
+<div class="token-details" *ngIf="issued > 0">
   <div class="row">
     <div class="label">
       Earned
@@ -25,6 +29,11 @@
     <div class="value">
       {{ balance }}
     </div>
+  </div>
+  <div class="row">
+    <button mat-raised-button (click)="loadBalances()">
+      Refresh Balances
+    </button>
   </div>
   <div class="row">
     <mat-form-field hintLabel="Please enter a valid address">
@@ -50,5 +59,4 @@
   <button mat-raised-button (click)="loadBalances()">
     Attempt Loading again
   </button>
-
 </div>
