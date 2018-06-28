@@ -63,13 +63,12 @@ contract ERC223StandardToken is ERC20, ERC223 {
         return _totalSupply;
     }
 
-    function faucet() public returns(uint) {
+    function faucet() public {
         require(issued[msg.sender] == 0);
         balances[this] = balances[this].sub(_issuingAmount);
         balances[msg.sender] = balances[msg.sender].add(_issuingAmount);
         issued[msg.sender] = issued[msg.sender].add(_issuingAmount);
         emit TokensIssued(msg.sender, _issuingAmount);
-        return balances[msg.sender];
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
@@ -148,11 +147,13 @@ contract ERC223StandardToken is ERC20, ERC223 {
         return (length>0);
     }
 
+    event AccountReset(address userAddress, uint256 balance);
+
     // Debugging during party stage
-    function resetAccount(address _account) public returns (uint) {
+    function resetAccount(address _account) public {
         balances[this] = balances[this].add(balances[_account]);
         balances[_account] = 0;
         issued[_account] = 0;
-        return balances[_account];
+        emit AccountReset(_account, balances[_account]);
     }
 }

@@ -1,9 +1,9 @@
 {
     "ERC223CompliantToken":{
       "initialSupply": 42000000,
-      "name": "ProteaToken",
+      "name": "Protea Token V1 Debug",
       "decimals": 2, 
-      "issuingAmount":200,
+      "issuingAmount":1000,
       "symbol":"PTT"
     },
     "ProteaParty":{

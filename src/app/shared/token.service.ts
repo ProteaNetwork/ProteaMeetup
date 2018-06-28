@@ -11,8 +11,7 @@ let tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
   providedIn: 'root'
 })
 export class TokenService {
-  private rinkebyTokenAddress = '0x8e83424d18b41bfb080c8a6c7f9d3e6282dc486b';
-  private ropstenTokenAddress = '';
+  private rinkebyTokenAddress = '0x689065ac51ca79c891f5b9292b5da15231858baa';
   private tokenContract: TruffleContract;
 
 
@@ -23,12 +22,6 @@ export class TokenService {
     if (this.web3.ready) {
       this.tokenContract = await this.web3.artifactsToContract(tokenAbi);
       this.tokenContract = this.tokenContract.at(this.rinkebyTokenAddress);
-      if (this.web3.network === 4) {
-        // this.tokenContract.at(this.rinkebyTokenAddress);
-      } else if (this.web3.network === 3) {
-        // @TODO: Ignore ropsten
-        // this.tokenContract.at(this.ropstenTokenAddress);
-      }
     } else {
       setTimeout(() => {
         this.initToken();
@@ -46,6 +39,11 @@ export class TokenService {
         let error, result;
         [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.tokenContract.TokensIssued.watch((evError, evResult) => {
+          if (!evResult) { reject(evError); }
+          console.log(evResult);
+          resolve(evResult.args);
+        });
         resolve(result);
         // Transation mined
       });
@@ -97,7 +95,11 @@ export class TokenService {
         [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         // Transation mined
-        resolve(result);
+        this.tokenContract.AccountReset.watch((evError, evResult) => {
+          if (!evResult) { reject(evError); }
+          console.log(evResult);
+          resolve(evResult.args);
+        });
       });
     });
   }
