@@ -1,6 +1,5 @@
-import { Web3Service } from './../../../shared/web3.service';
-import { Component, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { Type } from '@angular/compiler/src/core';
+import { Component, OnInit } from '@angular/core';
+import { EventService } from '../../../shared/event.service';
 
 @Component({
   selector: 'app-party-controller',
@@ -10,18 +9,31 @@ import { Type } from '@angular/compiler/src/core';
 export class PartyControllerComponent implements OnInit {
   private address: string;
 
-  private state = 'init';
+  // @TODO: swap to enum
+  public state = 'init';
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver,
-    private viewContainerRef: ViewContainerRef, private web3: Web3Service) { }
+  constructor(private events: EventService) { }
 
   ngOnInit() {
   }
 
 
-  private renderScreen(component: any) {
-    const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-    const ref = this.viewContainerRef.createComponent(factory);
-    ref.changeDetectorRef.detectChanges();
+  async onFetch(_address: string) {
+    console.log("in control on fetch")
+    if (await this.events.fetchEvent(_address)) {
+      console.log('event is ready');
+      if (this.events.userAdmin) {
+        this.state = 'admin';
+      } else {
+        if (this.events.eventEnded) {
+          this.state = 'payout';
+        } else {
+          this.state = 'attendee';
+        }
+      }
+    } else {
+      // Error
+    }
   }
 }
+

@@ -9,7 +9,7 @@
     <input matInput #address maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
     <mat-hint align="end">{{ isValidAddress(address.value) ? "Valid" : "Invalid" }}</mat-hint>
   </mat-form-field>
-  <button mat-raised-button [disabled]="!isValidAddress(address.value)">
+  <button mat-raised-button (click)="fetchContract()" [disabled]="!isValidAddress(address.value) || loading">
     Fetch event
   </button>
 </div>
@@ -21,7 +21,7 @@
   <p>
     If you would like to create an event, please click the create button, your wallet provider should request you sign a contract deploying transaction.
   </p>
-  <button mat-raised-button>
+  <button mat-raised-button [disabled]="loading">
     Deploy Party Contract
   </button>
 </div>

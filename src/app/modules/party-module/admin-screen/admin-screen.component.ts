@@ -1,3 +1,4 @@
+import { Web3Service } from './../../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminScreenComponent implements OnInit {
 
-  constructor() { }
+  constructor(private web3: Web3Service) { }
+
+  isValidAddress(address: string) {
+    return this.web3.isValidAddress(address);
+  }
 
   ngOnInit() {
   }

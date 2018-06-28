@@ -1,4 +1,10 @@
+<!-- If checks here -->
 <p>
-  party-controller works!
+  state: {{ state }}
 </p>
-<app-init-screen></app-init-screen>
+
+<app-init-screen *ngIf="state == 'init'" (contractAddress)="onFetch($event)"></app-init-screen>
+
+<app-admin-screen></app-admin-screen>
+<app-attendee-screen></app-attendee-screen>
+<app-payout-screen></app-payout-screen>

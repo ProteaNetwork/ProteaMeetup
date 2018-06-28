@@ -132,7 +132,7 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
         emit WithdrawEvent(msg.sender, payoutAmount);
     }
 
-    // /* Constants */
+    // /* Views */
     function totalBalance() view public returns(uint256) {
         return token.balanceOf(this);
     }

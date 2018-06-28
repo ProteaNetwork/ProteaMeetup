@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Web3Service } from './../../../shared/web3.service';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-payout-screen',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PayoutScreenComponent implements OnInit {
 
-  constructor() { }
+  @Input() payoutReady: boolean;
+
+  constructor(private web3: Web3Service) { }
 
   ngOnInit() {
+
+  }
+
+  isValidAddress(address: string) {
+    return this.web3.isValidAddress(address);
   }
 
 }

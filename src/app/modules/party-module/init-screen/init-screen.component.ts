@@ -1,5 +1,5 @@
 import { Web3Service } from './../../../shared/web3.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-init-screen',
@@ -7,7 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./init-screen.component.scss']
 })
 export class InitScreenComponent implements OnInit {
+  public loading = false;
   public address: string;
+
+  @Output() contractAddress = new EventEmitter<string>();
 
   constructor(private web3: Web3Service) { }
 
@@ -19,6 +22,9 @@ export class InitScreenComponent implements OnInit {
   }
 
   fetchContract() {
+    this.loading = true;
+    console.log('loading');
+    this.contractAddress.emit(this.address);
   }
 
   deployContract() {
