@@ -11,6 +11,7 @@ import { Component, OnInit } from '@angular/core';
 export class AccountManagerComponent implements OnInit {
   public balance = -1;
   public issued = -1;
+  private transacting = false;
 
   constructor(private web3: Web3Service, private tokenService: TokenService ) {
   }
@@ -47,18 +48,30 @@ export class AccountManagerComponent implements OnInit {
   }
 
   claimTokens() {
-    this.tokenService.faucet().then((_result: number) => {
-      this.balance = _result;
-    }, (error) => {
-      console.error('Claim total error', error);
-    });
+    if (!this.transacting) {
+      this.transacting = true;
+        this.tokenService.faucet().then((_result: number) => {
+          this.balance = _result;
+          this.transacting = false;
+        }, (error) => {
+          this.transacting = false;
+          console.error('Claim total error', error);
+      });
+    }
   }
 
   resetAccount() {
-    this.tokenService.resetAccount().then((_balance: number) => {
-      this.balance = _balance;
-      this.issued = 0;
-    });
+    if (!this.transacting) {
+      this.transacting = true;
+      this.tokenService.resetAccount().then((_balance: number) => {
+          this.balance = _balance;
+          this.issued = 0;
+          this.transacting = false;
+        }, (error) => {
+          this.transacting = false;
+          console.error('Claim total error', error);
+      });
+    }
   }
 
 }

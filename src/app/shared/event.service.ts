@@ -57,6 +57,23 @@ export class EventService {
     return this.eventReady;
   }
 
+  public async deployEvent() {
+    const deploy = new Promise((resolve, reject) => {
+      this.factoryContract.deployParty(async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        this.factoryContract.ProteaPartyDeployed.watch((evError, evResult) => {
+          if (!evResult) { reject(evError); }
+          console.log(evResult);
+          resolve(evResult.args);
+        });
+        resolve(result);
+        // Transation mined
+      });
+    });
+  }
+
   private async fetchState() {
     let clean = true;
     // Event state

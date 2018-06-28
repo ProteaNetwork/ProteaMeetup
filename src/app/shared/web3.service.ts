@@ -95,4 +95,27 @@ export class Web3Service {
         throw new Error('Invalid Type: ' + txHash);
     }
   }
+
+  async setListener(_address: string, _block: number) {
+    const filterOptions = this.web3.eth.filter({
+      fromBlock: _block,
+      toBlock: _block + 100,
+      address: _address
+    });
+    const filter = this.web3.eth.filter(filterOptions);
+
+    const response = new Promise((reject, resolve) => {
+      filter.get(function(error, result) {
+        if (!error) {
+            console.log(result);
+            resolve(result);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    const event = await response;
+    console.log(typeof(event));
+    return event;
+  }
 }

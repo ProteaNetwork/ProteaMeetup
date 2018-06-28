@@ -13,7 +13,7 @@ let tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
 export class TokenService {
   private rinkebyTokenAddress = '0x689065ac51ca79c891f5b9292b5da15231858baa';
   private tokenContract: TruffleContract;
-
+  private transacting = false;
 
   constructor(private web3: Web3Service) {
     this.initToken();
@@ -33,20 +33,34 @@ export class TokenService {
   // @TODO convert to async
   faucet() {
     return new Promise((reject, resolve) => {
-      this.tokenContract.faucet(async (_error, _txHash) => {
-        if (_error) { reject(_error); }
-        // Request placed
-        let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-        if (!result) { reject(error); }
-        this.tokenContract.TokensIssued.watch((evError, evResult) => {
-          if (!evResult) { reject(evError); }
-          console.log(evResult);
-          resolve(evResult.args);
+      if (!this.transacting) {
+        this.transacting = true;
+
+        // this.tokenContract.TokensIssued([{}], { fromBlock: 0, toBlock: 'latest' }).get((err, response) => {
+        //   if (err) {
+        //     console.log('watch resolved', err);
+        //     reject(err);
+        //   } else {
+        //     console.log('Watch response:', response);
+        //     this.transacting = false;
+        //     resolve(response.args);
+        //   }
+        // });
+
+        this.tokenContract.faucet(async (_error, _txHash) => {
+          if (_error) { reject(_error); }
+          // Request placed
+          let error, result;
+          [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+          if (!result) { reject(error); }
+          console.log('made it past the TX mining', result);
+          // Transation mined
+
+          const eventResponse =  await this.web3.setListener(this.rinkebyTokenAddress, result.blocknumber);
+          console.log('Event response:', eventResponse);
+          resolve(eventResponse);
         });
-        resolve(result);
-        // Transation mined
-      });
+      }
     });
   }
 
@@ -84,23 +98,32 @@ export class TokenService {
     });
   }
 
-
   // Debug
   resetAccount() {
     return new Promise((resolve, reject) => {
-      this.tokenContract.resetAccount(this.web3.address, async (_error, _txHash) => {
-        if (_error) { reject(_error); }
-        // Request placed
-        let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-        if (!result) { reject(error); }
-        // Transation mined
-        this.tokenContract.AccountReset.watch((evError, evResult) => {
-          if (!evResult) { reject(evError); }
-          console.log(evResult);
-          resolve(evResult.args);
+      if (!this.transacting) {
+        this.transacting = true;
+
+        // this.tokenContract.AccountReset([{}], { fromBlock: 0, toBlock: 'latest' }).get((err, response) => {
+        //   if (err) { reject(err); }
+        //   console.log(response);
+        //   this.transacting = false;
+        //   resolve(response.args);
+        // });
+
+        this.tokenContract.resetAccount(this.web3.address, async (_error, _txHash) => {
+          if (_error) { reject(_error); }
+          // Request placed
+          let error, result;
+          [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+          if (!result) { reject(error); }
+          // Transation mined
+
+          const eventResponse =  await this.web3.setListener(this.rinkebyTokenAddress, result.blocknumber);
+          console.log('Event response:', eventResponse);
+          resolve(eventResponse);
         });
-      });
+      }
     });
   }
 }

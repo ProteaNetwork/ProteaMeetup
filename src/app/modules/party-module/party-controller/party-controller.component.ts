@@ -35,5 +35,9 @@ export class PartyControllerComponent implements OnInit {
       // Error
     }
   }
+
+  async onDeploy() {
+    
+  }
 }
 
