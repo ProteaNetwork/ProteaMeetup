@@ -5,7 +5,7 @@ import "./ERC223/ERC223.sol";
 import "./ERC223/ERC223Receiver.sol";
 import "./zeppelin/lifecycle/Destructible.sol";
 
-contract TokenConference is Destructible, GroupAdmin, ERC223Receiver {
+contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
     ERC223 internal token;
 
     // TODO: Could save gas changing to private on some
@@ -137,19 +137,19 @@ contract TokenConference is Destructible, GroupAdmin, ERC223Receiver {
         return token.balanceOf(this);
     }
 
-    function isRegistered(address _addr) constant public returns(bool) {
+    function isRegistered(address _addr) view public returns(bool) {
         return participants[_addr].addr != address(0);
     }
 
-    function isAttended(address _addr) constant public returns(bool) {
+    function isAttended(address _addr) view public returns(bool) {
         return isRegistered(_addr) && participants[_addr].attended;
     }
 
-    function isPaid(address _addr) constant public returns(bool) {
+    function isPaid(address _addr) view public returns(bool) {
         return isRegistered(_addr) && participants[_addr].paid;
     }
 
-    function payout() constant public returns(uint256) {
+    function payout() view public returns(uint256) {
         if (attended == 0) return 0;
         return uint(totalBalance()) / uint(attended);
     }

@@ -13,6 +13,7 @@ const NETWORK_IDS = {
   kovan: 42
 };
 
+
 module.exports = {
   migrations_directory: "./migrations",
   networks: {
