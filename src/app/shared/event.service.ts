@@ -53,7 +53,7 @@ export class EventService {
   // Factory/Registery
   public fetchAdminEvents(_latest: boolean = false) {
     return new Promise((resolve, reject) => {
-      this.factoryContract.getUserEvents(this.web3.address, async (_error, _contractArray) => {
+      this.factoryContract.getUserEvents(this.web3.address, async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
         // If last requested
         resolve(_contractArray);
@@ -61,8 +61,8 @@ export class EventService {
     });
   }
 
-  public deployEvent(_name: string, _deposit: number, _limit: number, _coolingPeriod: number, _encryption: string) {
-    return new Promise((resolve, reject) => {
+  public deployEvent(_name: string, _deposit: number, _limit: number, _coolingPeriod: number, _encryption: string): Promise<string[]> {
+    return new Promise<string[]>((resolve, reject) => {
       this.factoryContract.deployParty(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
         let error, result;
         [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
