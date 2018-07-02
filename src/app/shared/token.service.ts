@@ -13,6 +13,7 @@ let tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
 export class TokenService {
   private rinkebyTokenAddress = '0x689065ac51ca79c891f5b9292b5da15231858baa';
   private tokenContract: TruffleContract;
+  // Duplicated bool in account manager as random double request were sent to device even with this
   private transacting = false;
 
   constructor(private web3: Web3Service) {
@@ -32,33 +33,19 @@ export class TokenService {
 
   // @TODO convert to async
   faucet() {
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       if (!this.transacting) {
         this.transacting = true;
-
-        // this.tokenContract.TokensIssued([{}], { fromBlock: 0, toBlock: 'latest' }).get((err, response) => {
-        //   if (err) {
-        //     console.log('watch resolved', err);
-        //     reject(err);
-        //   } else {
-        //     console.log('Watch response:', response);
-        //     this.transacting = false;
-        //     resolve(response.args);
-        //   }
-        // });
 
         this.tokenContract.faucet(async (_error, _txHash) => {
           if (_error) { reject(_error); }
           // Request placed
           let error, result;
           [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-          if (!result) { reject(error); }
-          console.log('made it past the TX mining', result);
+          if (!result.blockNumber) {reject(error); }
           // Transation mined
-
-          const eventResponse =  await this.web3.setListener(this.rinkebyTokenAddress, result.blocknumber);
-          console.log('Event response:', eventResponse);
-          resolve(eventResponse);
+          this.transacting = false;
+          resolve(result);
         });
       }
     });
@@ -66,7 +53,7 @@ export class TokenService {
 
   transfer(_to: string, _amount: number) {
     // Need to add work around in here for overloads
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       this.tokenContract.transfer(_to, _amount, '', async (_error, _txHash) => {
         if (_error) { reject(_error); }
         // Request placed
@@ -79,7 +66,6 @@ export class TokenService {
   }
 
   getBalance() {
-    console.log('Get Balance');
     return new Promise((resolve, reject) => {
       this.tokenContract.balanceOf(this.web3.address, (_error, _balance) => {
         if (_error) { reject(_error); }
@@ -89,7 +75,6 @@ export class TokenService {
   }
 
   getIssuedTotal() {
-    console.log('Get Issued', this.tokenContract);
     return new Promise((resolve, reject) => {
       this.tokenContract.totalIssuedOf(this.web3.address, (_error, _issuedTotal) => {
         if (_error) { reject(_error); }
@@ -103,25 +88,15 @@ export class TokenService {
     return new Promise((resolve, reject) => {
       if (!this.transacting) {
         this.transacting = true;
-
-        // this.tokenContract.AccountReset([{}], { fromBlock: 0, toBlock: 'latest' }).get((err, response) => {
-        //   if (err) { reject(err); }
-        //   console.log(response);
-        //   this.transacting = false;
-        //   resolve(response.args);
-        // });
-
         this.tokenContract.resetAccount(this.web3.address, async (_error, _txHash) => {
           if (_error) { reject(_error); }
           // Request placed
           let error, result;
           [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-          if (!result) { reject(error); }
+          if (!result.blockNumber) { reject(error); }
           // Transation mined
-
-          const eventResponse =  await this.web3.setListener(this.rinkebyTokenAddress, result.blocknumber);
-          console.log('Event response:', eventResponse);
-          resolve(eventResponse);
+          this.transacting = false;
+          resolve(result);
         });
       }
     });

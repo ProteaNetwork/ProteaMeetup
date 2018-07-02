@@ -50,12 +50,12 @@ export class AccountManagerComponent implements OnInit {
   claimTokens() {
     if (!this.transacting) {
       this.transacting = true;
-        this.tokenService.faucet().then((_result: number) => {
-          this.balance = _result;
-          this.transacting = false;
+      this.tokenService.faucet().then((_result) => {
+        this.transacting = false;
+        this.loadBalances();
         }, (error) => {
-          this.transacting = false;
-          console.error('Claim total error', error);
+        this.transacting = false;
+        console.error('Claim total error', error);
       });
     }
   }
@@ -63,10 +63,9 @@ export class AccountManagerComponent implements OnInit {
   resetAccount() {
     if (!this.transacting) {
       this.transacting = true;
-      this.tokenService.resetAccount().then((_balance: number) => {
-          this.balance = _balance;
-          this.issued = 0;
-          this.transacting = false;
+      this.tokenService.resetAccount().then((_result) => {
+        this.transacting = false;
+        this.loadBalances();
         }, (error) => {
           this.transacting = false;
           console.error('Claim total error', error);
