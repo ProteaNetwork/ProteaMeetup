@@ -65,7 +65,6 @@ export class Web3Service {
     if (!user) { return false; }
 
     this.address = this.uport.getAddress();
-    console.log('post login');
     this.ready = true;
     return true;
   }
@@ -88,7 +87,7 @@ export class Web3Service {
 
     if (Array.isArray(txHash)) {
         return Promise.all(txHash.map(
-            oneTxHash => this.web3.eth.getTransactionReceiptMined(oneTxHash, interval)));
+            oneTxHash => this.getTransactionReceiptMined(oneTxHash, interval)));
     } else if (typeof txHash === 'string') {
         return new Promise(transactionReceiptAsync);
     } else {

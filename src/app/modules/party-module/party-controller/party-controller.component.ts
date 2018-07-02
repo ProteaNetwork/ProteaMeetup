@@ -17,6 +17,13 @@ export class PartyControllerComponent implements OnInit {
   ngOnInit() {
   }
 
+  async checkEvents() {
+    this.events.fetchAdminEvents().then(result => {
+      console.log('Events Fetched', result);
+    }, error => {
+      console.log('Event Fetch Error', error);
+    });
+  }
 
   async onFetch(_address: string) {
     console.log("in control on fetch")
@@ -37,7 +44,12 @@ export class PartyControllerComponent implements OnInit {
   }
 
   async onDeploy() {
-    
+     this.events.deployEvent('Testing', 200, 12, 2, '').then(result => {
+      console.log('Events Fetched', result);
+      this.checkEvents();
+    }, error => {
+      console.log('Event Fetch Error', error);
+    });
   }
 }
 

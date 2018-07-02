@@ -35,7 +35,9 @@ export class EventService {
   private factoryContract: TruffleContract;
   private eventContract: TruffleContract;
 
-  constructor(private web3: Web3Service) { }
+  constructor(private web3: Web3Service) {
+    this.initFactory();
+  }
 
   private async initFactory() {
     if (this.web3.ready) {
@@ -48,6 +50,32 @@ export class EventService {
     }
   }
 
+  // Factory/Registery
+  public fetchAdminEvents(_latest: boolean = false) {
+    return new Promise((resolve, reject) => {
+      this.factoryContract.getUserEvents(this.web3.address, async (_error, _contractArray) => {
+        if (!_contractArray) { reject(_error); }
+        // If last requested
+        resolve(_contractArray);
+      });
+    });
+  }
+
+  public deployEvent(_name: string, _deposit: number, _limit: number, _coolingPeriod: number, _encryption: string) {
+    return new Promise((resolve, reject) => {
+      this.factoryContract.deployParty(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        // Run fetch latest
+        resolve(result);
+        // Transation mined
+      });
+    });
+  }
+
+
+  // Event functions
   public async fetchEvent(_address: string) {
     // @TODO: need to run a call to confirm the contract before setting
     this.eventContract = await this.web3.artifactsToContract(eventAbi);
@@ -55,23 +83,6 @@ export class EventService {
     console.log(this.eventContract);
     await this.fetchState();
     return this.eventReady;
-  }
-
-  public async deployEvent() {
-    const deploy = new Promise((resolve, reject) => {
-      this.factoryContract.deployParty(async (_error, _txHash) => {
-        let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
-        if (!result) { reject(error); }
-        this.factoryContract.ProteaPartyDeployed.watch((evError, evResult) => {
-          if (!evResult) { reject(evError); }
-          console.log(evResult);
-          resolve(evResult.args);
-        });
-        resolve(result);
-        // Transation mined
-      });
-    });
   }
 
   private async fetchState() {
