@@ -180,6 +180,7 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
         emit ClearEvent(owner, leftOver);
     }
 
+    // Need to add checks in here
     function setLimitOfParticipants(uint _limitOfParticipants) external onlyOwner onlyActive {
         limitOfParticipants = _limitOfParticipants;
     }

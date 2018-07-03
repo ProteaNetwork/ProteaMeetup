@@ -1,25 +1,26 @@
 <div class="event-details">
   <div class="label">
     <h3>
-      [Event name]
+      {{event?.name}}
     </h3>
   </div>
   <div class="label">
     <span>
       Total Staked:
     </span>
+
   </div>
   <div class="label">
     <span>
       Number tickets available:
     </span>
-     [Confirmed] / [Total]
+     {{event?.limitOfParticipants - event?.registered}} / {{event?.limitOfParticipants}}
   </div>
   <div class="label">
     <span>
       RSVP stake:
     </span>
-    [Stake required]
+    {{event?.deposit}}
   </div>
 </div>
 <div class="controls">
@@ -48,11 +49,10 @@
       Submit to event contract
     </button>
   </div>
-  disabled if ended or canceled
-  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+  <button mat-raised-button [disabled]="event?.ended">
     End & Payback
   </button>
-  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+  <button mat-raised-button [disabled]="event?.ended">
     Cancel Event
   </button>
   disabled if waiting period not completed
@@ -63,10 +63,10 @@
 <div class="checking-tools">
   <div class="control">
     <mat-form-field hintLabel="Please enter a valid address">
-      <input matInput #sendAddress maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+      <input matInput #checkUser maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
       <mat-hint align="end">{{ isValidAddress(sendAddress.value) ? "Valid" : "Invalid" }}</mat-hint>
     </mat-form-field>
-    <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+    <button mat-raised-button [disabled]="!isValidAddress(checkUser.value)">
       Check user state
     </button>
   </div>

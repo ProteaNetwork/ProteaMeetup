@@ -35,7 +35,7 @@ export class PartyControllerComponent implements OnInit {
       if (this.eventService.userAdmin) {
         this.state = 'admin';
       } else {
-        if (this.eventService.eventEnded) {
+        if (this.eventService.event.ended) {
           this.state = 'payout';
         } else {
           this.state = 'attendee';

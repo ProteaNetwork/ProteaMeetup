@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../../shared/event.service';
+import { ProteaParty } from '../../../shared/interface/event';
 
 @Component({
   selector: 'app-attendee-screen',
@@ -7,18 +8,12 @@ import { EventService } from '../../../shared/event.service';
   styleUrls: ['./attendee-screen.component.scss']
 })
 export class AttendeeScreenComponent implements OnInit {
-  public name: string;
-  public registered: number;
-  public limit: number;
-  public deposit: number;
+  public event: ProteaParty;
   public userRegistered: boolean;
 
   constructor(private events: EventService) {
-    this.name = this.events.eventName;
-    this.deposit = this.events.eventDeposit;
-    this.registered = this.events.eventRegistered;
-    this.limit = this.events.eventLimit;
     this.userRegistered = this.events.userRegistered;
+    this.event = this.events.event;
   }
 
   ngOnInit() {

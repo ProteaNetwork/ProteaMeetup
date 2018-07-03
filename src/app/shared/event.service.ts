@@ -1,13 +1,14 @@
 import { Web3Service } from './web3.service';
 import { Injectable } from '@angular/core';
+import { ProteaParty } from './interface/event';
 
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
 
 
 declare let require: any;
-let factoryAbi = require('./../../../build/contracts/ProteaPartyFactory.json');
-let eventAbi = require('./../../../build/contracts/ProteaParty.json');
+const factoryAbi = require('./../../../build/contracts/ProteaPartyFactory.json');
+const eventAbi = require('./../../../build/contracts/ProteaParty.json');
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +18,7 @@ export class EventService {
 
   // @TODO: change to state object
   public eventReady = false;
-  public eventEnded: boolean;
-
-  // Event stats
-  public eventName: string;
-  public eventDeposit: number;
-  public eventLimit: number;
-  public eventRegistered: number;
-  public eventAttended: number;
+  public event = new ProteaParty();
 
   // User states
   public userAdmin: boolean;
@@ -50,7 +44,7 @@ export class EventService {
     }
   }
 
-  // Factory/Registery
+  // Factory/Registry
   public fetchAdminEvents(_latest: boolean = false) {
     return new Promise((resolve, reject) => {
       this.factoryContract.getUserEvents(this.web3.address, async (_error, _contractArray: string[]) => {
@@ -85,6 +79,7 @@ export class EventService {
     return this.eventReady;
   }
 
+  // @TODO: Refactor completely
   private async fetchState() {
     let clean = true;
     // Event state
@@ -95,7 +90,7 @@ export class EventService {
           clean = false;
           reject(false);
         }
-        this.eventName = _name.toString();
+        this.event.name = _name.toString();
         resolve(_name);
       });
     });
@@ -108,7 +103,7 @@ export class EventService {
           clean = false;
           reject(false);
         }
-        this.eventEnded = <boolean>_status.toString();
+        this.event.ended = <boolean>_status.toString();
         resolve(_status);
       });
     });
@@ -121,7 +116,7 @@ export class EventService {
           clean = false;
           reject(false);
         }
-        this.eventLimit = _limit.toNumber();
+        this.event.limitOfParticipants = _limit.toNumber();
         resolve(_limit);
       });
     });
@@ -135,7 +130,7 @@ export class EventService {
           clean = false;
           reject(false);
         }
-        this.eventRegistered = _registered.toNumber();
+        this.event.registered = _registered.toNumber();
         resolve(_registered);
       });
     });
@@ -148,7 +143,7 @@ export class EventService {
           clean = false;
           reject(false);
         }
-        this.eventAttended = _attended.toNumber();
+        this.event.attended = _attended.toNumber();
         resolve(_attended);
       });
     });
@@ -209,5 +204,185 @@ export class EventService {
 
     this.eventReady = clean;
   }
+
+  // Attendee controls
+  public withdraw() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.withdraw(async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve();
+      });
+    });
+  }
+
+  // Get view data
+  public getEventName() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.name((_error, _name) => {
+        if (_error) {
+          console.error('ended error', _error);
+          reject(false);
+        }
+        this.event.name = _name.toString();
+        resolve(_name);
+      });
+    });
+  }
+
+  public getLimit() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.limitOfParticipants((_error, _limit) => {
+        if (_error) {
+          console.error('limitOfParticipants error', _error);
+          reject(false);
+        }
+        this.event.limitOfParticipants = _limit.toNumber();
+        resolve(_limit);
+      });
+    });
+  }
+
+  public checkEnded() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.ended((_error, _status) => {
+        if (_error) {
+          console.error('ended error', _error);
+          reject(false);
+        }
+        this.event.ended = <boolean>_status.toString();
+        resolve(_status);
+      });
+    });
+  }
+
+  public checkAttended() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.isAttended(this.web3.address, (_error, _status) => {
+        if (_error) {
+          console.error('isAttended Error', _error);
+          reject(false);
+        }
+        this.userAttended = <boolean>_status.toString();
+        resolve(_status);
+      });
+    });
+  }
+
+  public checkPaid() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.isPaid(this.web3.address, (_error, _status) => {
+        if (_error) {
+          console.error('isPaid Error', _error);
+          reject(false);
+        }
+        this.userPaid = <boolean>_status.toString();
+        resolve(_status);
+      });
+    });
+  }
+
+  public checkRegistered() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.isRegistered(this.web3.address, (_error, _status) => {
+        if (_error) {
+          console.error('isRegistered Error', _error);
+          reject(false);
+        }
+        this.userRegistered = <boolean>_status.toString();
+        resolve(_status);
+      });
+    });
+  }
+
+  public getPayout() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.payout((_error, _payout) => {
+        if (_error) {
+          console.error('Get Payout Error', _error);
+          reject(false);
+        }
+        this.event.payout = _payout.toNumber();
+        resolve(_payout);
+      });
+    });
+  }
+
+  public getTotalBalance() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.totalBalance((_error, _balance) => {
+        if (_error) {
+          console.error('Get Payout Error', _error);
+          reject(false);
+        }
+        this.event.payout = _balance.toNumber();
+        resolve(_balance);
+      });
+    });
+  }
+
+  // Admin
+  public manualConfirmAttend(_addresses: string[]) {
+    return new Promise((resolve, reject) => {
+      if (_addresses.length === 0) {
+        reject('No addresses added');
+      }
+      this.eventContract.attend(_addresses, async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve();
+      });
+    });
+  }
+
+  public setLimit(_newLimit: number) {
+    return new Promise((resolve, reject) => {
+      if (_newLimit === this.event.limitOfParticipants || _newLimit < this.event.registered) {
+        reject('New limit invalid');
+      }
+      this.eventContract.setLimitOfParticipants(_newLimit, async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve();
+      });
+    });
+  }
+
+  public paybackEnd() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.payback(async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve();
+      });
+    });
+  }
+
+  public cancel() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.cancel(async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve();
+      });
+    });
+  }
+
+  public clear() {
+    return new Promise((resolve, reject) => {
+      this.eventContract.clear(async (_error, _txHash) => {
+        let error, result;
+        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        if (!result) { reject(error); }
+        resolve();
+      });
+    });
+  }
+
 }
 

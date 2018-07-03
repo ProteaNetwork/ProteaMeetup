@@ -19,6 +19,7 @@ export class TokenService {
   constructor(private web3: Web3Service) {
     this.initToken();
   }
+
   private async initToken() {
     if (this.web3.ready) {
       this.tokenContract = await this.web3.artifactsToContract(tokenAbi);
@@ -29,7 +30,6 @@ export class TokenService {
       }, 200);
     }
   }
-
 
   // @TODO convert to async
   faucet() {
