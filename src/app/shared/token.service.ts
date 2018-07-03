@@ -5,7 +5,7 @@ import to from 'await-to-js';
 
 
 declare let require: any;
-let tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
+const tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
 
 @Injectable({
   providedIn: 'root'
