@@ -7,8 +7,6 @@ import { EventService } from '../../../shared/event.service';
   styleUrls: ['./party-controller.component.scss']
 })
 export class PartyControllerComponent implements OnInit {
-  private address: string;
-
   // @TODO: swap to enum
   public state = 'init';
 
@@ -21,11 +19,15 @@ export class PartyControllerComponent implements OnInit {
   }
 
   checkEvents() {
-    this.eventService.fetchAdminEvents().then((results: string[]) => {
-      console.log(results);
-      this.events = results;
-    }, error => {
-      console.log('Event Fetch Error', error);
+    return new Promise((resolve, reject) => {
+      this.eventService.fetchAdminEvents().then((results: string[]) => {
+        console.log(results);
+        this.events = results;
+        resolve();
+      }, error => {
+        console.log('Event Fetch Error', error);
+        reject(error);
+      });
     });
   }
 
@@ -46,12 +48,12 @@ export class PartyControllerComponent implements OnInit {
     }
   }
 
-  async onDeploy() {
-     this.eventService.deployEvent('Testing', 200, 12, 2, '').then(result => {
-      // need to run mining
-      this.checkEvents();
+  async onDeploy(_eventData: any) {
+    this.eventService.deployEvent(_eventData.name, _eventData.deposit, _eventData.limit, _eventData.cooldown, '').then(async result => {
+      await this.checkEvents();
+      this.onFetch(this.events[this.events.length - 1]);
     }, error => {
-      console.log('Event Fetch Error', error);
+      console.log('Event Deploy Error', error);
     });
   }
 }

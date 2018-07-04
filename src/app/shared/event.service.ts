@@ -14,7 +14,7 @@ const eventAbi = require('./../../../build/contracts/ProteaParty.json');
   providedIn: 'root'
 })
 export class EventService {
-  private rinkebyFactoryAddress = '0x8B594E94BF0464f88C0d741B0feB26375E377EbE';
+  private rinkebyFactoryAddress = '0x68f384b61566ebf74f3c79289eef9c78ad03a457';
 
   // @TODO: change to state object
   public eventReady = false;
@@ -108,6 +108,10 @@ export class EventService {
       });
     });
     await ended;
+
+    if (this.event.ended) {
+      
+    }
 
     const limit = new Promise((resolve, reject) => {
       this.eventContract.limitOfParticipants((_error, _limit) => {
@@ -339,13 +343,17 @@ export class EventService {
 
   public setLimit(_newLimit: number) {
     return new Promise((resolve, reject) => {
+      console.log('in the request');
       if (_newLimit === this.event.limitOfParticipants || _newLimit < this.event.registered) {
         reject('New limit invalid');
       }
       this.eventContract.setLimitOfParticipants(_newLimit, async (_error, _txHash) => {
+        console.log('got the hash');
         let error, result;
         [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        console.log('its mined', error, result);
         if (!result) { reject(error); }
+        this.event.limitOfParticipants = _newLimit;
         resolve();
       });
     });
@@ -382,6 +390,35 @@ export class EventService {
         resolve();
       });
     });
+  }
+
+  public async getCoolingEndPeriod() {
+    let endDate: number;
+    const endAt = new Promise((resolve, reject) => {
+      this.eventContract.endedAt((_error, _endAt) => {
+        if (_error) {
+          console.error('Get Payout Error', _error);
+          reject(false);
+        }
+        endDate = _endAt.toNumber();
+        this.event.endAt = endDate;
+        resolve();
+      });
+    });
+    await endAt;
+    const coolingPeriod = new Promise((resolve, reject) => {
+      this.eventContract.coolingPeriod((_error, _coolingPeriod) => {
+        if (_error) {
+          console.error('Get Payout Error', _coolingPeriod);
+          reject(false);
+        }
+        endDate += _coolingPeriod.toNumber();
+        resolve();
+      });
+    });
+    await coolingPeriod;
+    this.event.cooledDown = endDate;
+    return endDate;
   }
 
 }

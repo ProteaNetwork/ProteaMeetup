@@ -27,7 +27,23 @@
   <p>
     If you would like to create an event, please click the create button, your wallet provider should request you sign a contract deploying transaction.
   </p>
-  <button mat-raised-button [disabled]="loading">
+  <mat-form-field hintLabel="Please enter the event name">
+    <input matInput #name placeholder="Protea Meetup"  [(ngModel)]="eventData.name">
+    <mat-hint align="end">{{ name.value.length < 3  ? "Name is too short" : ""}}</mat-hint>
+  </mat-form-field>
+  <mat-form-field hintLabel="Please enter the limit of participants">
+    <input matInput #limit type="number"  [(ngModel)]="eventData.limit">
+    <mat-hint align="end">{{ limit.value < 1 ? "Please increase the limit" : "" }}</mat-hint>
+  </mat-form-field>
+  <mat-form-field hintLabel="Please enter the required deposit">
+    <input matInput #deposit type="number" [(ngModel)]="eventData.deposit">
+    <mat-hint align="end">{{ deposit.value < 10 ? "Please increase the deposit" : "" }}</mat-hint>
+  </mat-form-field>
+  <mat-form-field hintLabel="Please enter the withdraw period in days">
+    <input matInput #cooldown type="number"  [(ngModel)]="eventData.cooldown">
+    <mat-hint align="end">{{ cooldown.value < 1 ? "A minimum of 1 day is required" : "" }}</mat-hint>
+  </mat-form-field>
+  <button mat-raised-button (click)="deployContract()" [disabled]="loading">
     Deploy Party Contract
   </button>
 </div>

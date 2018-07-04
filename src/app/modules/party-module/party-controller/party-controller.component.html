@@ -3,7 +3,7 @@
   state: {{ state }}
 </p>
 
-<app-init-screen *ngIf="state == 'init'" [deployedEvents]="events" (contractAddress)="onFetch($event)"></app-init-screen>
+<app-init-screen *ngIf="state == 'init'" [deployedEvents]="events" (publishContract)="onDeploy($event)" (contractAddress)="onFetch($event)"></app-init-screen>
 
 <app-admin-screen></app-admin-screen>
 <app-attendee-screen></app-attendee-screen>

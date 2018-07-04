@@ -10,7 +10,7 @@ import { ProteaParty } from '../../../shared/interface/event';
 })
 export class AdminScreenComponent implements OnInit {
   public event: ProteaParty;
-  public attending: string[];
+  public attending: string[] = [];
   public loading = false;
 
   constructor(private web3: Web3Service, private eventService: EventService) {
@@ -23,6 +23,17 @@ export class AdminScreenComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  public async changeLimit(_newLimit: number) {
+    if (!this.loading) {
+      this.loading = true;
+      await this.eventService.setLimit(_newLimit);
+      console.log(this.event);
+      this.event = this.eventService.event;
+      // Display confirmation of sorts
+      this.loading = false;
+    }
   }
 
   public addToSubmission(_address: string) {
@@ -57,6 +68,18 @@ export class AdminScreenComponent implements OnInit {
       this.loading = false;
     }
   }
+
+
+  public async clearEvent() {
+    if (!this.loading && this.event.ended) {
+      this.loading = true;
+      await this.eventService.cancel();
+      // Display confirmation of sorts
+      this.loading = false;
+    }
+  }
+
+  
 
   // Consideration: Do I need the destroy feature, possibly to prevent cluttering the ui
 }

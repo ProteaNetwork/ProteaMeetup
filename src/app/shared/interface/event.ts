@@ -9,6 +9,8 @@ export class ProteaParty {
     public payout = 0;
     public ended = false;
     public totalBalance = 0;
+    public endAt = 0;
+    public cooledDown = 0;
 
     public constructor(init?: Partial<ProteaParty>) {
         Object.assign(this, init);

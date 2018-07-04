@@ -26,11 +26,11 @@
 <div class="controls">
   <div class="control">
     Fetch number then allow to change
-    <mat-form-field hintLabel="Please enter a valid address">
+    <mat-form-field>
       <input matInput type="number" #newLimit [placeholder]="event.limitOfParticipants">
       <mat-hint align="end">{{ newLimit.value === event.limitOfParticipants || event.registered > newLimit.value ? "Valid" : "Invalid" }}</mat-hint>
     </mat-form-field>
-    <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+    <button mat-raised-button (click)="changeLimit(newLimit.value)" [disabled]="newLimit.value === event.limitOfParticipants || event.registered > newLimit.value">
       Change participant limit
     </button>
   </div>
@@ -40,24 +40,22 @@
     </ul>
     <mat-form-field hintLabel="Please enter a valid address">
       <input matInput #attendInput maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
-      <mat-hint align="end">{{ isValidAddress(attendInput.value) ? "Valid" : "Invalid" }}</mat-hint>
-      <mat-hint align="end">{{ attending.indexOf(attendInput.value) => 0 ? "User address already added" : "" }}</mat-hint>
     </mat-form-field>
-    <button mat-raised-button (click)="addToSubmission(attendInput.value)" [disabled]="attending.indexOf(attendInput.value) => 0 || !isValidAddress(attendInput.value)">
+    <button mat-raised-button (click)="addToSubmission(attendInput.value)" [disabled]="attending.indexOf(attendInput.value) >= 0 || !isValidAddress(attendInput.value)">
       Add to list
     </button>
     <button mat-raised-button (click)="manualSubmitAttendance()" [disabled]="attending.length > 0">
       Submit to event contract
     </button>
   </div>
-  <button mat-raised-button [disabled]="event?.ended">
+  <button mat-raised-button (click)="endEvent()" [disabled]="event?.ended">
     End & Payback
   </button>
-  <button mat-raised-button [disabled]="event?.ended">
+  <button mat-raised-button (click)="cancelEvent()" [disabled]="event?.ended">
     Cancel Event
   </button>
   disabled if waiting period not completed
-  <button mat-raised-button [disabled]="!isValidAddress(sendAddress.value)">
+  <button mat-raised-button  [disabled]="true">
     Clear Remaining ETH
   </button>
 </div>
@@ -65,7 +63,7 @@
   <div class="control">
     <mat-form-field hintLabel="Please enter a valid address">
       <input matInput #checkUser maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
-      <mat-hint align="end">{{ isValidAddress(sendAddress.value) ? "Valid" : "Invalid" }}</mat-hint>
+      <mat-hint align="end">{{ isValidAddress(checkUser.value) ? "Valid" : "Invalid" }}</mat-hint>
     </mat-form-field>
     <button mat-raised-button [disabled]="!isValidAddress(checkUser.value)">
       Check user state

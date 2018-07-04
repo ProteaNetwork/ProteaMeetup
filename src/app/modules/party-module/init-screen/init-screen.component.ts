@@ -9,9 +9,16 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 export class InitScreenComponent {
   public loading = false;
   public events: string[];
+  public eventData = {
+    name: '',
+    limit: 0,
+    deposit: 0,
+    cooldown: 0
+  };
 
   @Input() deployedEvents: string[];
   @Output() contractAddress = new EventEmitter<string>();
+  @Output() publishContract = new EventEmitter<object>();
 
   constructor(private web3: Web3Service) { }
 
@@ -25,6 +32,9 @@ export class InitScreenComponent {
   }
 
   deployContract() {
-
+    // @TODO need to update to unix time stamps
+    if (this.eventData.deposit > 0 && this.eventData.cooldown > 0 && this.eventData.cooldown) {
+      this.publishContract.emit(this.eventData);
+    }
   }
 }

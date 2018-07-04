@@ -29,6 +29,7 @@ contract ProteaPartyFactory {
             _coolingPeriod, 
             tokenContract, 
             _encryption);
+        party.transferOwnership(msg.sender);
         
         deployed[msg.sender].push(address(party));
 
