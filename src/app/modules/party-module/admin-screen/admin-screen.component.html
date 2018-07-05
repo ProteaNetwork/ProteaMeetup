@@ -44,7 +44,7 @@
     <button mat-raised-button (click)="addToSubmission(attendInput.value)" [disabled]="attending.indexOf(attendInput.value) >= 0 || !isValidAddress(attendInput.value)">
       Add to list
     </button>
-    <button mat-raised-button (click)="manualSubmitAttendance()" [disabled]="attending.length > 0">
+    <button mat-raised-button (click)="manualSubmitAttendance()" [disabled]="!attending.length > 0">
       Submit to event contract
     </button>
   </div>
@@ -54,7 +54,6 @@
   <button mat-raised-button (click)="cancelEvent()" [disabled]="event?.ended">
     Cancel Event
   </button>
-  disabled if waiting period not completed
   <button mat-raised-button  [disabled]="true">
     Clear Remaining ETH
   </button>

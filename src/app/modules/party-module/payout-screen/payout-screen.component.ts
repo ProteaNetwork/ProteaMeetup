@@ -1,5 +1,5 @@
-import { Web3Service } from './../../../shared/web3.service';
-import { Component, OnInit, Input } from '@angular/core';
+import { EventService } from './../../../shared/event.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-payout-screen',
@@ -7,17 +7,17 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./payout-screen.component.scss']
 })
 export class PayoutScreenComponent implements OnInit {
+  public userPaid = false;
 
-  @Input() payoutReady: boolean;
+  constructor(private eventService: EventService) { }
 
-  constructor(private web3: Web3Service) { }
-
-  ngOnInit() {
-
+  async ngOnInit() {
+    await this.eventService.checkPaid();
+    this.userPaid = this.eventService.userPaid;
   }
 
-  isValidAddress(address: string) {
-    return this.web3.isValidAddress(address);
+  public async withdrawTokens() {
+    await this.eventService.withdraw();
+    this.userPaid = this.eventService.userPaid;
   }
-
 }
