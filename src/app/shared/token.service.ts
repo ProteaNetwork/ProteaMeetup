@@ -66,7 +66,7 @@ export class TokenService {
   }
 
   getBalance() {
-    return new Promise((resolve, reject) => {
+    return new Promise<number>((resolve, reject) => {
       this.tokenContract.balanceOf(this.web3.address, (_error, _balance) => {
         if (_error) { reject(_error); }
         resolve(_balance.toNumber());

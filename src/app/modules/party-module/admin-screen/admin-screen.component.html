@@ -27,7 +27,7 @@
   <div class="control">
     Fetch number then allow to change
     <mat-form-field>
-      <input matInput type="number" #newLimit [placeholder]="event.limitOfParticipants">
+      <input matInput type="number" #newLimit [min]="event.registered" [placeholder]="event.limitOfParticipants">
       <mat-hint align="end">{{ newLimit.value === event.limitOfParticipants || event.registered > newLimit.value ? "Valid" : "Invalid" }}</mat-hint>
     </mat-form-field>
     <button mat-raised-button (click)="changeLimit(newLimit.value)" [disabled]="newLimit.value === event.limitOfParticipants || event.registered > newLimit.value">

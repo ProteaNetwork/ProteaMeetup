@@ -1,3 +1,4 @@
+import { TokenService } from './../../../shared/token.service';
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../../shared/event.service';
 import { ProteaParty } from '../../../shared/interface/event';
@@ -9,13 +10,24 @@ import { ProteaParty } from '../../../shared/interface/event';
 })
 export class AttendeeScreenComponent implements OnInit {
   public event: ProteaParty;
-  public userRegistered: boolean;
+  public userRsvp: boolean;
+  public balance = 0;
 
-  constructor(private events: EventService) {
-    this.userRegistered = this.events.userRegistered;
-    this.event = this.events.event;
+  constructor(private eventService: EventService, private tokenService: TokenService) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.balance = await this.tokenService.getBalance();
+    this.userRsvp = this.eventService.userRegistered;
+    this.event = this.eventService.event;
+  }
+
+  async rsvp() {
+    await this.tokenService.transfer(this.event.address, this.event.deposit);
+    await this.eventService.checkRegistered();
+    this.userRsvp = this.eventService.userRegistered;
+    this.balance = await this.tokenService.getBalance();
+    this.event = this.eventService.event;
+
   }
 }

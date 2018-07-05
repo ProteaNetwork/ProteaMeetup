@@ -71,6 +71,7 @@ export class Web3Service {
 
 
   getTransactionReceiptMined(txHash: string, interval: number = null) {
+    // @TODO: error handling on rejection from uport
     const transactionReceiptAsync = (resolve, reject) => {
       this.web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
         if (error) {
@@ -95,26 +96,8 @@ export class Web3Service {
     }
   }
 
-  async setListener(_address: string, _block: number) {
-    const filterOptions = this.web3.eth.filter({
-      fromBlock: _block,
-      toBlock: _block + 100,
-      address: _address
-    });
-    const filter = this.web3.eth.filter(filterOptions);
-
-    const response = new Promise((reject, resolve) => {
-      filter.get(function(error, result) {
-        if (!error) {
-            console.log(result);
-            resolve(result);
-        } else {
-          reject(error);
-        }
-      });
-    });
-    const event = await response;
-    console.log(typeof(event));
-    return event;
+  public extractLogDataFromReceipt(_receipt: any, _topic: string) {
+    // @TODO: get hash decoding funcions
+    // @TODO: make general decode function
   }
 }

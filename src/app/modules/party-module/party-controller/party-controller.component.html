@@ -5,13 +5,6 @@
 
 <app-init-screen *ngIf="state == 'init'" [deployedEvents]="events" (publishContract)="onDeploy($event)" (contractAddress)="onFetch($event)"></app-init-screen>
 
-<app-admin-screen></app-admin-screen>
-<app-attendee-screen></app-attendee-screen>
-<app-payout-screen></app-payout-screen>
-
-<button mat-raised-button (click)="checkEvents()">
-  Check events
-</button>
-<button mat-raised-button (click)="onDeploy()">
-  Deploy
-</button>
+<app-admin-screen  *ngIf="state !== 'init'"></app-admin-screen>
+<app-attendee-screen *ngIf="state !== 'init'"></app-attendee-screen>
+<app-payout-screen *ngIf="state !== 'init'"></app-payout-screen>

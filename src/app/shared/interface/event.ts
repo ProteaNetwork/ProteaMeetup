@@ -1,4 +1,5 @@
 export class ProteaParty {
+    public address = '';
     public name  = '';
     public limitOfParticipants = 0;
     public coolingPeriod = 0;
@@ -8,6 +9,7 @@ export class ProteaParty {
     public encryption = '';
     public payout = 0;
     public ended = false;
+    public cancelled = false;
     public totalBalance = 0;
     public endAt = 0;
     public cooledDown = 0;
