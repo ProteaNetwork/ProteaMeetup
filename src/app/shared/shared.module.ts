@@ -1,5 +1,4 @@
 import { TokenService } from './token.service';
-import { Web3Service } from './web3.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../material.module';
@@ -12,7 +11,7 @@ import { FormsModule } from '@angular/forms';
     MaterialModule,
     FormsModule
   ],
-  providers: [ Web3Service, TokenService, UportService ],
+  providers: [ TokenService, UportService ],
   declarations: [  ],
   exports: [ MaterialModule, FormsModule]
 })

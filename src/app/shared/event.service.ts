@@ -1,9 +1,10 @@
-import { Web3Service } from './web3.service';
 import { Injectable } from '@angular/core';
 import { ProteaParty } from './interface/event';
 
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { UportService } from './uport.service';
 
 
 declare let require: any;
@@ -18,24 +19,19 @@ export class EventService {
 
   // @TODO: change to state object
   public eventReady = false;
-  public event = new ProteaParty();
-
-  // User states
-  public userAdmin: boolean;
-  public userRegistered: boolean;
-  public userAttended: boolean;
-  public userPaid: boolean;
+  private _event: BehaviorSubject<ProteaParty>;
+  public readonly event$: Observable<ProteaParty> = this._event.asObservable();
 
   private factoryContract: TruffleContract;
   private eventContract: TruffleContract;
 
-  constructor(private web3: Web3Service) {
+  constructor(private uportService: UportService) {
     this.initFactory();
   }
 
   private async initFactory() {
-    if (this.web3.ready) {
-      this.factoryContract = await this.web3.artifactsToContract(factoryAbi);
+    if (this.uportService.ready) {
+      this.factoryContract = await this.uportService.artifactsToContract(factoryAbi);
       this.factoryContract = this.factoryContract.at(this.rinkebyFactoryAddress);
     } else {
       setTimeout(() => {
@@ -47,7 +43,7 @@ export class EventService {
   // Factory/Registry
   public fetchAdminEvents(_latest: boolean = false) {
     return new Promise((resolve, reject) => {
-      this.factoryContract.getUserEvents(this.web3.address, async (_error, _contractArray: string[]) => {
+      this.factoryContract.getUserEvents(this.uportService.getAddress, async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
         // If last requested
         resolve(_contractArray);
@@ -59,9 +55,8 @@ export class EventService {
     return new Promise<string[]>((resolve, reject) => {
       this.factoryContract.deployParty(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
-        console.log('Event publish receipt', result);
         // Run fetch latest
         resolve(result);
         // Transation mined
@@ -73,10 +68,9 @@ export class EventService {
   // Event functions
   public async fetchEvent(_address: string) {
     // @TODO: need to run a call to confirm the contract before setting
-    this.eventContract = await this.web3.artifactsToContract(eventAbi);
+    this.eventContract = await this.uportService.artifactsToContract(eventAbi);
     this.eventContract = this.eventContract.at(_address);
     await this.fetchState();
-    return this.eventReady;
   }
 
   // Attendee controls
@@ -84,7 +78,7 @@ export class EventService {
     return new Promise((resolve, reject) => {
       this.eventContract.withdraw(async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         resolve();
       });
@@ -93,105 +87,156 @@ export class EventService {
 
   // Get view data
   public getEventName() {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       this.eventContract.name((_error, _name) => {
         if (_error) {
-          console.error('ended error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.event.name = _name.toString();
-        resolve(_name);
+        resolve(_name.toString());
       });
     });
   }
 
   public getLimit() {
-    return new Promise((resolve, reject) => {
+    return new Promise<number>((resolve, reject) => {
       this.eventContract.limitOfParticipants((_error, _limit) => {
         if (_error) {
-          console.error('limitOfParticipants error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.event.limitOfParticipants = _limit.toNumber();
-        resolve(_limit);
+        resolve(_limit.toNumber());
+      });
+    });
+  }
+
+  public getDeposit() {
+    return new Promise<number>((resolve, reject) => {
+      this.eventContract.deposit((_error, _deposit) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve(_deposit.toNumber());
+      });
+    });
+  }
+
+  public getRegistered() {
+    return new Promise<number>((resolve, reject) => {
+      this.eventContract.registered((_error, _registered) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve(_registered.toNumber());
+      });
+    });
+  }
+
+  public getAttended() {
+    return new Promise<number>((resolve, reject) => {
+      this.eventContract.attended((_error, _attended) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve(_attended.toNumber());
+      });
+    });
+  }
+
+  public getCoolingPeriod() {
+    return new Promise<number>((resolve, reject) => {
+      this.eventContract.coolingPeriod((_error, _cooling) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve( _cooling.toNumber());
       });
     });
   }
 
   public checkEnded() {
-    return new Promise((resolve, reject) => {
+    return new Promise<boolean>((resolve, reject) => {
       this.eventContract.ended((_error, _status) => {
         if (_error) {
-          console.error('ended error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.event.ended = <boolean>_status.toString();
         resolve(_status);
       });
     });
   }
 
-  public checkAttended() {
-    return new Promise((resolve, reject) => {
-      this.eventContract.isAttended(this.web3.address, (_error, _status) => {
+  public checkCancelled() {
+    return new Promise<boolean>((resolve, reject) => {
+      this.eventContract.cancelled((_error, _status) => {
         if (_error) {
-          console.error('isAttended Error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.userAttended = <boolean>_status.toString();
-        resolve(_status);
+        resolve(<boolean>_status.toString());
       });
     });
   }
 
-  public checkPaid() {
-    return new Promise((resolve, reject) => {
-      this.eventContract.isPaid(this.web3.address, (_error, _status) => {
+  public hasAttended() {
+    return new Promise<boolean>((resolve, reject) => {
+      this.eventContract.isAttended(this.uportService.getAddress, (_error, _status) => {
         if (_error) {
-          console.error('isPaid Error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.userPaid = <boolean>_status.toString();
-        resolve(_status);
+        resolve(<boolean>_status.toString());
       });
     });
   }
 
-  public checkRegistered() {
-    return new Promise((resolve, reject) => {
-      this.eventContract.isRegistered(this.web3.address, (_error, _status) => {
+  public isAdmin() {
+    return new Promise<boolean>((resolve, reject) => {
+      this.eventContract.isAdmin(this.uportService.getAddress, (_error, _status) => {
         if (_error) {
-          console.error('isRegistered Error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.userRegistered = <boolean>_status.toString();
-        resolve(_status);
+        resolve(<boolean>_status.toString());
+      });
+    });
+  }
+
+  public isPaid() {
+    return new Promise<boolean>((resolve, reject) => {
+      this.eventContract.isPaid(this.uportService.getAddress, (_error, _status) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve(<boolean>_status.toString());
+      });
+    });
+  }
+
+  public isRegistered() {
+    return new Promise<boolean>((resolve, reject) => {
+      this.eventContract.isRegistered(this.uportService.getAddress, (_error, _status) => {
+        if (_error) {
+          console.error('isRegistered Error', );
+          reject(_error);
+        }
+        resolve(<boolean>_status.toString());
       });
     });
   }
 
   public getPayout() {
-    return new Promise((resolve, reject) => {
+    return new Promise<number>((resolve, reject) => {
       this.eventContract.payout((_error, _payout) => {
         if (_error) {
-          console.error('Get Payout Error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.event.payout = _payout.toNumber();
-        resolve(_payout);
+        resolve(_payout.toNumber());
       });
     });
   }
 
   public getTotalBalance() {
-    return new Promise((resolve, reject) => {
+    return new Promise<number>((resolve, reject) => {
       this.eventContract.totalBalance((_error, _balance) => {
         if (_error) {
-          console.error('Get Payout Error', _error);
-          reject(false);
+          reject(_error);
         }
-        this.event.payout = _balance.toNumber();
-        resolve(_balance);
+        resolve(_balance.toNumber());
       });
     });
   }
@@ -204,7 +249,7 @@ export class EventService {
       }
       this.eventContract.attend(_addresses, async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         resolve();
       });
@@ -213,14 +258,10 @@ export class EventService {
 
   public setLimit(_newLimit: number) {
     return new Promise((resolve, reject) => {
-      if (_newLimit === this.event.limitOfParticipants || _newLimit < this.event.registered) {
-        reject('New limit invalid');
-      }
       this.eventContract.setLimitOfParticipants(_newLimit, async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
-        this.event.limitOfParticipants = _newLimit;
         resolve();
       });
     });
@@ -230,7 +271,7 @@ export class EventService {
     return new Promise((resolve, reject) => {
       this.eventContract.payback(async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         resolve();
       });
@@ -241,7 +282,7 @@ export class EventService {
     return new Promise((resolve, reject) => {
       this.eventContract.cancel(async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         resolve();
       });
@@ -252,7 +293,7 @@ export class EventService {
     return new Promise((resolve, reject) => {
       this.eventContract.clear(async (_error, _txHash) => {
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         resolve();
       });
@@ -260,6 +301,7 @@ export class EventService {
   }
 
   public async getCoolingEndPeriod() {
+    // @TODO: refactor
     let endDate: number;
     const endAt = new Promise((resolve, reject) => {
       this.eventContract.endedAt((_error, _endAt) => {
@@ -268,7 +310,6 @@ export class EventService {
           reject(false);
         }
         endDate = _endAt.toNumber();
-        this.event.endAt = endDate;
         resolve();
       });
     });
@@ -284,185 +325,31 @@ export class EventService {
       });
     });
     await coolingPeriod;
-    this.event.cooledDown = endDate;
     return endDate;
   }
 
-  // @TODO: Refactor completely
   private async fetchState() {
-    let clean = true;
+    const event = new ProteaParty();
     // Event state
-    const name = new Promise((resolve, reject) => {
-      this.eventContract.name((_error, _name) => {
-        if (_error) {
-          console.error('ended error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.name = _name.toString();
-        resolve();
-      });
-    });
-    await name;
+    event.name =  await this.getEventName();
+    event.deposit = await this.getDeposit();
+    event.address = this.eventContract.address;
+    event.limitOfParticipants = await this.getLimit();
+    event.registered = await this.getRegistered();
+    event.attended = await this.getAttended();
+    event.ended = await this.checkEnded();
+    event.coolingPeriod = await this.getCoolingPeriod();
 
-    const deposit = new Promise((resolve, reject) => {
-      this.eventContract.deposit((_error, _depost) => {
-        if (_error) {
-          console.error('deposit error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.deposit = _depost.toNumber();
-        resolve();
-      });
-    });
-    await deposit;
 
-    const limit = new Promise((resolve, reject) => {
-      this.eventContract.limitOfParticipants((_error, _limit) => {
-        if (_error) {
-          console.error('limitOfParticipants error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.limitOfParticipants = _limit.toNumber();
-        resolve();
-      });
-    });
-    await limit;
-
-    const registered = new Promise((resolve, reject) => {
-      this.eventContract.registered((_error, _registered) => {
-        if (_error) {
-          console.error('registered error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.registered = _registered.toNumber();
-        resolve();
-      });
-    });
-    await registered;
-
-    const attended = new Promise((resolve, reject) => {
-      this.eventContract.attended((_error, _attended) => {
-        if (_error) {
-          console.error('attended Error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.attended = _attended.toNumber();
-        resolve();
-      });
-    });
-    await attended;
-
-    const ended = new Promise((resolve, reject) => {
-      this.eventContract.ended((_error, _status) => {
-        if (_error) {
-          console.error('ended error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.ended = <boolean>_status.toString();
-        resolve();
-      });
-    });
-    await ended;
-
-    if (this.event.ended) {
-      this.getCoolingEndPeriod();
-      this.getPayout();
+    if (event.ended) {
+      event.endAt = await this.getCoolingEndPeriod();
+      event.payout = await this.getPayout();
     }
 
-    const coolingPeriod = new Promise((resolve, reject) => {
-      this.eventContract.coolingPeriod((_error, _cooling) => {
-        if (_error) {
-          console.error('ended error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.coolingPeriod = _cooling.toNumber();
-        resolve();
-      });
-    });
-    await coolingPeriod;
+    event.cancelled = await this.checkCancelled();
 
+    this._event.next(event);
 
-
-    const cancelled = new Promise((resolve, reject) => {
-      this.eventContract.cancelled((_error, _status) => {
-        if (_error) {
-          console.error('cancelled error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.event.cancelled = <boolean>_status.toString();
-        resolve();
-      });
-    });
-    await cancelled;
-
-    if (this.event.ended) {
-      this.getCoolingEndPeriod();
-    }
-
-    // User states
-    const isAdmin = new Promise((resolve, reject) => {
-      this.eventContract.isAdmin(this.web3.address, (_error, _status) => {
-        if (_error) {
-          console.error('isAdmin Error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.userAdmin = <boolean>_status.toString();
-        resolve();
-      });
-    });
-    await isAdmin;
-
-    const isRegistered = new Promise((resolve, reject) => {
-      this.eventContract.isRegistered(this.web3.address, (_error, _status) => {
-        if (_error) {
-          console.error('isRegistered Error', _error);
-          clean = false;
-          reject(false);
-        }
-        console.log('is Registered', _status);
-        this.userRegistered = <boolean>_status.toString();
-        resolve();
-      });
-    });
-    await isRegistered;
-
-    const isPaid = new Promise((resolve, reject) => {
-      this.eventContract.isPaid(this.web3.address, (_error, _status) => {
-        if (_error) {
-          console.error('isPaid Error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.userPaid = <boolean>_status.toString();
-        resolve();
-      });
-    });
-    await isPaid;
-
-    const isAttended = new Promise((resolve, reject) => {
-      this.eventContract.isAttended(this.web3.address, (_error, _status) => {
-        if (_error) {
-          console.error('isAttended Error', _error);
-          clean = false;
-          reject(false);
-        }
-        this.userAttended = <boolean>_status.toString();
-        resolve();
-      });
-    });
-    await isAttended;
-    this.event.address = this.eventContract.address;
-    console.log('resolved', this.event);
-    this.eventReady = clean;
   }
 }
 
