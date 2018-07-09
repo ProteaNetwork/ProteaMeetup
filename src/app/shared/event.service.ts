@@ -5,6 +5,7 @@ import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UportService } from './uport.service';
+import { ProteaUser } from './interface/user';
 
 
 declare let require: any;
@@ -19,8 +20,10 @@ export class EventService {
 
   // @TODO: change to state object
   public eventReady = false;
-  private _event: BehaviorSubject<ProteaParty>;
-  public readonly event$: Observable<ProteaParty> = this._event.asObservable();
+  private _events: BehaviorSubject<ProteaParty[]>;
+  public readonly events$: Observable<ProteaParty[]> = this._events.asObservable();
+
+  private _currentEvent = -1;
 
   private factoryContract: TruffleContract;
   private eventContract: TruffleContract;
@@ -30,23 +33,23 @@ export class EventService {
   }
 
   private async initFactory() {
-    if (this.uportService.ready) {
-      this.factoryContract = await this.uportService.artifactsToContract(factoryAbi);
-      this.factoryContract = this.factoryContract.at(this.rinkebyFactoryAddress);
-    } else {
-      setTimeout(() => {
-        this.initFactory();
-      }, 200);
-    }
+    this.uportService.user$.subscribe(async (userObject: ProteaUser) => {
+      if (userObject.address !== '') {
+        this.factoryContract = await this.uportService.artifactsToContract(factoryAbi);
+        this.factoryContract = this.factoryContract.at(this.rinkebyFactoryAddress);
+      }
+    });
   }
 
   // Factory/Registry
-  public fetchAdminEvents(_latest: boolean = false) {
+  public fetchAdminEvents() {
     return new Promise((resolve, reject) => {
       this.factoryContract.getUserEvents(this.uportService.getAddress, async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
         // If last requested
-        resolve(_contractArray);
+        resolve(_contractArray.map((_address: string) => {
+          return new ProteaParty({address: _address});
+        }));
       });
     });
   }
@@ -71,6 +74,16 @@ export class EventService {
     this.eventContract = await this.uportService.artifactsToContract(eventAbi);
     this.eventContract = this.eventContract.at(_address);
     await this.fetchState();
+  }
+
+  public async getUserEventData(_userObject: ProteaUser) {
+    // User Event states states
+    const user = new ProteaUser(_userObject);
+    user.isAdmin = await this.isAdmin();
+    user.isRegistered = await this.isRegistered();
+    user.isPaid = await this.isPaid();
+    user.hasAttended = await this.hasAttended();
+    return user;
   }
 
   // Attendee controls

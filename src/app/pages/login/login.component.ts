@@ -1,34 +1,45 @@
-import { Web3Service } from './../../shared/web3.service';
-import { Component, OnInit } from '@angular/core';
+import { ProteaUser } from './../../shared/interface/user';
+import { UportService } from './../../shared/uport.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  userData: Subscription;
+  fetching = false;
 
-  constructor(private web3: Web3Service, private router: Router) {
+
+  constructor(private uportService: UportService, private router: Router) {
   }
 
   ngOnInit() {
     this.checkWeb3();
   }
 
+  ngOnDestroy() {
+    this.userData.unsubscribe();
+  }
+
   // @TODO: Refactor to cleaner solution
   // Change to observable
   checkWeb3() {
-    setTimeout(() => {
-      if (!this.web3.ready) {
-        this.checkWeb3();
-      } else {
+    this.userData = this.uportService.user$.subscribe((user: ProteaUser) => {
+      if (user.address !== '') {
         this.router.navigate(['/']);
       }
-    }, 500);
+    });
   }
 
-  loginUport() {
-    this.web3.login();
+  async loginUport() {
+    this.fetching = true;
+    await this.uportService.login();
+    // May need to leave it here unless we add an error, 
+    // depends on if one is availabel in uport connect
   }
 }

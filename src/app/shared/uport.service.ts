@@ -3,9 +3,6 @@ import { Connect, SimpleSigner, MNID } from 'uport-connect';
 import { ICredentials } from './interface/credentials';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProteaUser } from './interface/user';
-import { EventService } from './event.service';
-
-import to from 'await-to-js';
 
 declare let window: any;
 
@@ -15,7 +12,6 @@ declare let window: any;
 export class UportService {
   private web3: any;
   public network = 0;
-  public ready = false;
 
   private name = 'Protea Party V1';
   private clientId = '2oyGuNMuW1aCoxELjbg5FgqjccZREeHwNzq';
@@ -23,12 +19,12 @@ export class UportService {
   private networkName = 'rinkeby';
 
   private _user: BehaviorSubject <ProteaUser> ;
-  public user$: Observable <ProteaUser> = this._user.asObservable();
+  public readonly user$: Observable <ProteaUser> = this._user.asObservable();
 
 
   private uport: any;
 
-  constructor(private eventService: EventService) {
+  constructor() {
     this.uport = new Connect(this.name, {
       clientId: this.clientId,
       network: this.networkName,
@@ -65,7 +61,6 @@ export class UportService {
 
   public async login() {
     await this.requestCredentials(['name', 'avatar', 'phone']);
-    this.ready = true;
   }
 
   private requestCredentials(_requested: string[] = null, _verified: string[] = null): Promise < any > {
@@ -77,35 +72,15 @@ export class UportService {
 
     return new Promise((resolve, reject) => {
       this.uport.requestCredentials(req).then((credentials: ICredentials) => {
-<<<<<<< HEAD
         const user = new ProteaUser(this._user.getValue());
         user.MNID = credentials.networkAddress;
-        user.address = this.decodeAddress(credentials.networkAddress);
+        user.address = this.decodeMNID(credentials.networkAddress);
         user.name = credentials.name;
         user.phone = credentials.phone;
         this._user.next(user);
         resolve();
-=======
-        this.credentials = credentials;
-        console.log(this.credentials);
-        resolve(credentials);
->>>>>>> master
       });
     });
-  }
-
-  public decodeAddress(_networkAddress: string) {
-    return this.decodeMNID(_networkAddress);
-  }
-
-  public async getUserEventData() {
-    // User states
-    const user = new ProteaUser(this._user.getValue());
-    user.isAdmin = await this.eventService.isAdmin();
-    user.isRegistered = await this.eventService.isRegistered();
-    user.isPaid = await this.eventService.isPaid();
-    user.hasAttended = await this.eventService.hasAttended();
-    this._user.next(user);
   }
 
   public getTransactionReceiptMined(txHash: string, interval: number = null) {
