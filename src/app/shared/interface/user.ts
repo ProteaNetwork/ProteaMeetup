@@ -9,7 +9,8 @@ export class ProteaUser {
     public isRegistered = false;
     public hasAttended = false;
     public isPaid = false;
-    public balance = 0;
+    public balance = -1;
+    public issued = -1;
 
     public constructor(init?: Partial<ProteaUser>) {
         Object.assign(this, init);

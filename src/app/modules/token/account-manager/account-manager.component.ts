@@ -1,6 +1,8 @@
 import { UportService } from './../../../shared/uport.service';
 import { TokenService } from '../../../shared/token.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ProteaUser } from '../../../shared/interface/user';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -8,16 +10,24 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './account-manager.component.html',
   styleUrls: ['./account-manager.component.scss']
 })
-export class AccountManagerComponent implements OnInit {
-  public balance = -1;
-  public issued = -1;
+export class AccountManagerComponent implements OnInit, OnDestroy {
+  public user: ProteaUser;
+  private user$: Subscription;
+
   private transacting = false;
 
   constructor(private uportService: UportService, private tokenService: TokenService ) {
+    this.user$ = this.uportService.user$.subscribe((_user: ProteaUser) => {
+      this.user = _user;
+    });
   }
 
   ngOnInit() {
     this.loadBalances();
+  }
+
+  ngOnDestroy() {
+    this.user$.unsubscribe();
   }
 
   isValidAddress(address: string) {
@@ -26,25 +36,9 @@ export class AccountManagerComponent implements OnInit {
 
   // Controls
 
-  loadBalances() {
-    this.loadBalance();
-    this.loadTotal();
-  }
+  async loadBalances() {
+    this.uportService.updateUserObject(await this.tokenService.updateBalances(this.user));
 
-  loadTotal() {
-    this.tokenService.getIssuedTotal().then((_totalIssued: number) => {
-      this.issued = _totalIssued;
-    }, (error: any) => {
-      console.error('Load Total Error', error);
-    });
-  }
-
-  loadBalance() {
-    this.tokenService.getBalance().then((_balance: number) => {
-      this.balance = _balance;
-    }, (error: any) => {
-      console.error('Load balance error', error);
-    });
   }
 
   claimTokens() {
@@ -63,7 +57,7 @@ export class AccountManagerComponent implements OnInit {
   resetAccount() {
     if (!this.transacting) {
       this.transacting = true;
-      this.tokenService.resetAccount().then((_result) => {
+      this.tokenService.resetAccount(this.user.address).then((_result) => {
         this.transacting = false;
         this.loadBalances();
         }, (error) => {

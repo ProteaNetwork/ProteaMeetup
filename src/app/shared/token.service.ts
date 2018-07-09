@@ -2,6 +2,7 @@ import { UportService } from './uport.service';
 import { Injectable } from '@angular/core';
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
+import { ProteaUser } from './interface/user';
 
 
 declare let require: any;
@@ -21,15 +22,18 @@ export class TokenService {
   }
 
   private async initToken() {
-    // @TODO: Hook up to user object
-    if (this.uportService.ready) {
       this.tokenContract = await this.uportService.artifactsToContract(tokenAbi);
       this.tokenContract = this.tokenContract.at(this.rinkebyTokenAddress);
-    } else {
-      setTimeout(() => {
-        this.initToken();
-      }, 200);
-    }
+
+    // @TODO: Hook up to user object
+    // if (this.uportService.ready) {
+    //   this.tokenContract = await this.uportService.artifactsToContract(tokenAbi);
+    //   this.tokenContract = this.tokenContract.at(this.rinkebyTokenAddress);
+    // } else {
+    //   setTimeout(() => {
+    //     this.initToken();
+    //   }, 200);
+    // }
   }
 
   // @TODO convert to async
@@ -42,7 +46,7 @@ export class TokenService {
           if (_error) { reject(_error); }
           // Request placed
           let error, result;
-          [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+          [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
           if (!result.blockNumber) {reject(error); }
           // Transation mined
           this.transacting = false;
@@ -59,41 +63,48 @@ export class TokenService {
         if (_error) { reject(_error); }
         // Request placed
         let error, result;
-        [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+        [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         // Transation mined
       });
     });
   }
 
-  getBalance() {
+  private getBalance(_address: string) {
     return new Promise<number>((resolve, reject) => {
-      this.tokenContract.balanceOf(this.web3.address, (_error, _balance) => {
+      this.tokenContract.balanceOf(_address, (_error, _balance) => {
         if (_error) { reject(_error); }
         resolve(_balance.toNumber());
       });
     });
   }
 
-  getIssuedTotal() {
-    return new Promise((resolve, reject) => {
-      this.tokenContract.totalIssuedOf(this.web3.address, (_error, _issuedTotal) => {
+  private getIssuedTotal(_address: string) {
+    return new Promise<number>((resolve, reject) => {
+      this.tokenContract.totalIssuedOf(_address, (_error, _issuedTotal) => {
         if (_error) { reject(_error); }
         resolve(_issuedTotal.toNumber());
       });
     });
   }
 
+  public async updateBalances(_user: ProteaUser) {
+    const newUser = new ProteaUser(_user);
+    newUser.balance = await this.getBalance(newUser.address);
+    newUser.issued = await this.getIssuedTotal(newUser.address);
+    return newUser;
+  }
+
   // Debug
-  resetAccount() {
+  resetAccount(_address: string) {
     return new Promise((resolve, reject) => {
       if (!this.transacting) {
         this.transacting = true;
-        this.tokenContract.resetAccount(this.web3.address, async (_error, _txHash) => {
+        this.tokenContract.resetAccount(_address, async (_error, _txHash) => {
           if (_error) { reject(_error); }
           // Request placed
           let error, result;
-          [error, result] = await to(this.web3.getTransactionReceiptMined(_txHash));
+          [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
           if (!result.blockNumber) { reject(error); }
           // Transation mined
           this.transacting = false;

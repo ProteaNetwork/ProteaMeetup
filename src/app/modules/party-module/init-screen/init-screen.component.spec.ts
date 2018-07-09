@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InitScreenComponent } from './init-screen.component';
+import { InitScreenComponent } from '../init-screen/init-screen.component';
 
 describe('InitScreenComponent', () => {
   let component: InitScreenComponent;

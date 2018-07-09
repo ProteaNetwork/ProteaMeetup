@@ -1,7 +1,8 @@
+import { UportService } from './../../../shared/uport.service';
 import { EventService } from './../../../shared/event.service';
-import { Web3Service } from './../../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
 import { ProteaParty } from '../../../shared/interface/event';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-screen',
@@ -10,16 +11,19 @@ import { ProteaParty } from '../../../shared/interface/event';
 })
 export class AdminScreenComponent implements OnInit {
   public event: ProteaParty;
+  private event$: Subscription;
   public attending: string[] = [];
   public loading = false;
 
-  constructor(private web3: Web3Service, private eventService: EventService) {
-    this.event = this.eventService.event;
+  constructor(private uportService: UportService, private eventService: EventService) {
+    this.event$ = this.eventService.currentEvent$.subscribe((_currentEvent: ProteaParty) => {
+      this.event = _currentEvent;
+    });
   }
 
   // @TODO: remove when PoAtt is set up
   isValidAddress(address: string) {
-    return this.web3.isValidAddress(address);
+    return this.uportService.isValidAddress(address);
   }
 
   ngOnInit() {
@@ -29,8 +33,6 @@ export class AdminScreenComponent implements OnInit {
     if (!this.loading) {
       this.loading = true;
       await this.eventService.setLimit(_newLimit);
-      console.log(this.event);
-      this.event = this.eventService.event;
       // Display confirmation of sorts
       this.loading = false;
     }
@@ -78,8 +80,6 @@ export class AdminScreenComponent implements OnInit {
       this.loading = false;
     }
   }
-
-  
 
   // Consideration: Do I need the destroy feature, possibly to prevent cluttering the ui
 }

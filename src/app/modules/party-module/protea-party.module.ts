@@ -15,7 +15,15 @@ import { FetchComponent } from './fetch/fetch.component';
     CommonModule,
     SharedModule
   ],
-  declarations: [PartyControllerComponent, InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent, CreateComponent, FetchComponent],
+  declarations: [
+    PartyControllerComponent,
+    InitScreenComponent,
+    AdminScreenComponent,
+    AttendeeScreenComponent,
+    PayoutScreenComponent,
+    CreateComponent,
+    FetchComponent
+  ],
   entryComponents: [ InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent],
   exports: [PartyControllerComponent]
 })

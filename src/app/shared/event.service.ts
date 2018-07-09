@@ -119,6 +119,7 @@ export class EventService {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.fetchState();
         resolve();
       });
     });
@@ -290,6 +291,7 @@ export class EventService {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.fetchState();
         resolve();
       });
     });
@@ -301,6 +303,7 @@ export class EventService {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.fetchState();
         resolve();
       });
     });
@@ -312,6 +315,7 @@ export class EventService {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.fetchState();
         resolve();
       });
     });
@@ -323,6 +327,7 @@ export class EventService {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.fetchState();
         resolve();
       });
     });
@@ -334,6 +339,7 @@ export class EventService {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
+        this.fetchState();
         resolve();
       });
     });
@@ -366,7 +372,5 @@ export class EventService {
     await coolingPeriod;
     return endDate;
   }
-
-  
 }
 
