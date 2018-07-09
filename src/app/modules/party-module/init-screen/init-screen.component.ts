@@ -1,4 +1,3 @@
-import { Web3Service } from './../../../shared/web3.service';
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
@@ -10,7 +9,7 @@ export class InitScreenComponent {
 
   @Output() selection = new EventEmitter<string>();
 
-  constructor(private web3: Web3Service) { }
+  constructor() { }
 
   public fetch() {
     this.selection.emit('fetch');

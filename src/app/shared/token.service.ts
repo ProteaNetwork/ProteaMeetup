@@ -1,4 +1,4 @@
-import { Web3Service } from './web3.service';
+import { UportService } from './uport.service';
 import { Injectable } from '@angular/core';
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
@@ -16,13 +16,14 @@ export class TokenService {
   // Duplicated bool in account manager as random double request were sent to device even with this
   private transacting = false;
 
-  constructor(private web3: Web3Service) {
+  constructor(private uportService: UportService) {
     this.initToken();
   }
 
   private async initToken() {
-    if (this.web3.ready) {
-      this.tokenContract = await this.web3.artifactsToContract(tokenAbi);
+    // @TODO: Hook up to user object
+    if (this.uportService.ready) {
+      this.tokenContract = await this.uportService.artifactsToContract(tokenAbi);
       this.tokenContract = this.tokenContract.at(this.rinkebyTokenAddress);
     } else {
       setTimeout(() => {

@@ -18,12 +18,13 @@ const eventAbi = require('./../../../build/contracts/ProteaParty.json');
 export class EventService {
   private rinkebyFactoryAddress = '0x68f384b61566ebf74f3c79289eef9c78ad03a457';
 
-  // @TODO: change to state object
-  public eventReady = false;
+  // @TODO: Refactor, using array for displaying event info before fetching
+  // Purpose: when the registry is available, this can be used to populate the dashboard
   private _events: BehaviorSubject<ProteaParty[]>;
   public readonly events$: Observable<ProteaParty[]> = this._events.asObservable();
 
-  private _currentEvent = -1;
+  private _currentEvent: BehaviorSubject<ProteaParty>;
+  public readonly currentEvent$: Observable<ProteaParty> = this._currentEvent.asObservable();
 
   private factoryContract: TruffleContract;
   private eventContract: TruffleContract;
@@ -43,6 +44,7 @@ export class EventService {
 
   // Factory/Registry
   public fetchAdminEvents() {
+    // @TODO: this will need to be dynamic when registry architecture is up
     return new Promise((resolve, reject) => {
       this.factoryContract.getUserEvents(this.uportService.getAddress, async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
@@ -76,7 +78,31 @@ export class EventService {
     await this.fetchState();
   }
 
-  public async getUserEventData(_userObject: ProteaUser) {
+  private async fetchState() {
+    const event = new ProteaParty();
+    // Event state
+    event.name =  await this.getEventName();
+    event.deposit = await this.getDeposit();
+    event.address = this.eventContract.address;
+    event.limitOfParticipants = await this.getLimit();
+    event.registered = await this.getRegistered();
+    event.attended = await this.getAttended();
+    event.ended = await this.checkEnded();
+    event.coolingPeriod = await this.getCoolingPeriod();
+
+
+    if (event.ended) {
+      event.endAt = await this.getCoolingEndPeriod();
+      event.payout = await this.getPayout();
+    }
+
+    event.cancelled = await this.checkCancelled();
+
+    this._currentEvent.next(event);
+
+  }
+
+  public async fetchUserEventData(_userObject: ProteaUser) {
     // User Event states states
     const user = new ProteaUser(_userObject);
     user.isAdmin = await this.isAdmin();
@@ -341,28 +367,6 @@ export class EventService {
     return endDate;
   }
 
-  private async fetchState() {
-    const event = new ProteaParty();
-    // Event state
-    event.name =  await this.getEventName();
-    event.deposit = await this.getDeposit();
-    event.address = this.eventContract.address;
-    event.limitOfParticipants = await this.getLimit();
-    event.registered = await this.getRegistered();
-    event.attended = await this.getAttended();
-    event.ended = await this.checkEnded();
-    event.coolingPeriod = await this.getCoolingPeriod();
-
-
-    if (event.ended) {
-      event.endAt = await this.getCoolingEndPeriod();
-      event.payout = await this.getPayout();
-    }
-
-    event.cancelled = await this.checkCancelled();
-
-    this._event.next(event);
-
-  }
+  
 }
 

@@ -114,4 +114,8 @@ export class UportService {
     // @TODO: make general decode function
   }
 
+  // @TODO: Dislike this approach, need to refactor, issue is circular dependancy to have services do this directly
+  public updateUserObject(_user: ProteaUser) {
+    this._user.next(_user);
+  }
 }

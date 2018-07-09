@@ -1,5 +1,6 @@
+import { UportService } from './../../../shared/uport.service';
+import { ProteaParty } from './../../../shared/interface/event';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Web3Service } from '../../../shared/web3.service';
 
 @Component({
   selector: 'app-fetch',
@@ -10,14 +11,14 @@ export class FetchComponent  {
   public loading = false;
   public events: string[];
 
-  @Input() deployedEvents: string[];
+  @Input() deployedEvents: ProteaParty[];
   @Output() contractAddress = new EventEmitter<string>();
 
 
-  constructor(private web3: Web3Service) { }
+  constructor(private uportService: UportService) { }
 
   isValidAddress(address: string) {
-    return this.web3.isValidAddress(address);
+    return this.uportService.isValidAddress(address);
   }
 
   fetchContract(address: string) {

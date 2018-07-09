@@ -1,5 +1,5 @@
+import { UportService } from './../../../shared/uport.service';
 import { TokenService } from '../../../shared/token.service';
-import { Web3Service } from './../../../shared/web3.service';
 import { Component, OnInit } from '@angular/core';
 
 
@@ -13,7 +13,7 @@ export class AccountManagerComponent implements OnInit {
   public issued = -1;
   private transacting = false;
 
-  constructor(private web3: Web3Service, private tokenService: TokenService ) {
+  constructor(private uportService: UportService, private tokenService: TokenService ) {
   }
 
   ngOnInit() {
@@ -21,7 +21,7 @@ export class AccountManagerComponent implements OnInit {
   }
 
   isValidAddress(address: string) {
-    return this.web3.isValidAddress(address);
+    return this.uportService.isValidAddress(address);
   }
 
   // Controls
