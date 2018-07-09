@@ -9,6 +9,7 @@ import { EventService } from '../../../shared/event.service';
 export class PartyControllerComponent implements OnInit {
   // @TODO: swap to enum
   public state = 'init';
+  public loading = false;
 
   public events: string[];
 
@@ -30,9 +31,13 @@ export class PartyControllerComponent implements OnInit {
       });
     });
   }
+  onSelection (_state: string) {
+    this.state = _state;
+  }
 
 
   async onFetch(_address: string) {
+    this.loading = true;
     if (await this.eventService.fetchEvent(_address)) {
       if (this.eventService.userAdmin) {
         this.state = 'admin';
@@ -43,17 +48,24 @@ export class PartyControllerComponent implements OnInit {
           this.state = 'attendee';
         }
       }
+      this.loading = false;
+
     } else {
       // Error
+      this.loading = false;
     }
   }
 
   async onDeploy(_eventData: any) {
+    this.loading = true;
     this.eventService.deployEvent(_eventData.name, _eventData.deposit, _eventData.limit, _eventData.cooldown, '').then(async result => {
+      console.log('waiting')
       await this.checkEvents();
+      console.log('fetching')
       this.onFetch(this.events[this.events.length - 1]);
     }, error => {
       console.log('Event Deploy Error', error);
+      this.loading = false;
     });
   }
 }

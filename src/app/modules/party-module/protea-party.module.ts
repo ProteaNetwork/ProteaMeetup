@@ -6,6 +6,8 @@ import { InitScreenComponent } from './init-screen/init-screen.component';
 import { AdminScreenComponent } from './admin-screen/admin-screen.component';
 import { AttendeeScreenComponent } from './attendee-screen/attendee-screen.component';
 import { PayoutScreenComponent } from './payout-screen/payout-screen.component';
+import { CreateComponent } from './create/create.component';
+import { FetchComponent } from './fetch/fetch.component';
 
 // @TODO: Convert controller to auxilary route
 @NgModule({
@@ -13,7 +15,7 @@ import { PayoutScreenComponent } from './payout-screen/payout-screen.component';
     CommonModule,
     SharedModule
   ],
-  declarations: [PartyControllerComponent, InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent],
+  declarations: [PartyControllerComponent, InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent, CreateComponent, FetchComponent],
   entryComponents: [ InitScreenComponent, AdminScreenComponent, AttendeeScreenComponent, PayoutScreenComponent],
   exports: [PartyControllerComponent]
 })

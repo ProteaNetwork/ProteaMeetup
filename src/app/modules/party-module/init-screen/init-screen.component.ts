@@ -7,34 +7,16 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
   styleUrls: ['./init-screen.component.scss']
 })
 export class InitScreenComponent {
-  public loading = false;
-  public events: string[];
-  public eventData = {
-    name: '',
-    limit: 0,
-    deposit: 0,
-    cooldown: 0
-  };
 
-  @Input() deployedEvents: string[];
-  @Output() contractAddress = new EventEmitter<string>();
-  @Output() publishContract = new EventEmitter<object>();
+  @Output() selection = new EventEmitter<string>();
 
   constructor(private web3: Web3Service) { }
 
-  isValidAddress(address: string) {
-    return this.web3.isValidAddress(address);
+  public fetch() {
+    this.selection.emit('fetch');
   }
 
-  fetchContract(address: string) {
-    this.loading = true;
-    this.contractAddress.emit(address);
-  }
-
-  deployContract() {
-    // @TODO need to update to unix time stamps
-    if (this.eventData.deposit > 0 && this.eventData.cooldown > 0 && this.eventData.cooldown) {
-      this.publishContract.emit(this.eventData);
-    }
+  public create() {
+    this.selection.emit('create');
   }
 }

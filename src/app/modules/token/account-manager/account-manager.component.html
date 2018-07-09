@@ -1,10 +1,5 @@
-<div>
-  {{transacting}}
-</div>
-<div class="buffering" *ngIf="issued == -1">
-  <p>
-    Contacting contract
-  </p>
+<div class="buffering" [ngClass]="{active: transacting == true}">
+    <mat-spinner></mat-spinner>
 </div>
 <div class="new-user" *ngIf="issued == 0">
   <p>
@@ -17,28 +12,33 @@
   </button>
 </div>
 <div class="token-details" *ngIf="issued > 0">
-  <div class="row">
-    <div class="label">
-      Earned
+  <div class="row balances">
+    <div>
+      <div class="label mat-title">
+        Earned
+      </div>
+      <div class="value mat-body2">
+        {{ issued }}
+      </div>
     </div>
-    <div class="value">
-      {{ issued }}
+    <div>
+      <div class="label mat-title">
+        Balance
+      </div>
+      <div class="value mat-body2">
+        {{ balance }}
+      </div>
     </div>
   </div>
   <div class="row">
-    <div class="label">
-      Balance
-    </div>
-    <div class="value">
-      {{ balance }}
-    </div>
-  </div>
-  <div class="row">
-    <button mat-raised-button (click)="loadBalances()">
+    <button mat-raised-button class="refresh" (click)="loadBalances()">
       Refresh Balances
     </button>
   </div>
   <div class="row">
+    <p>
+      Here you can send token's to your friends to ERC223 compliant contracts
+    </p>
     <mat-form-field hintLabel="Please enter a valid address">
       <input matInput #sendAddress maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
       <mat-hint align="end">{{ isValidAddress(sendAddress.value) ? "Valid" : "Invalid" }}</mat-hint>
@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<div class="debug">
+<!-- <div class="debug">
   <button mat-raised-button (click)="loadBalance()">
     loadBalance
   </button>
@@ -62,4 +62,4 @@
   <button mat-raised-button (click)="loadBalances()">
     Attempt Loading again
   </button>
-</div>
+</div> -->
