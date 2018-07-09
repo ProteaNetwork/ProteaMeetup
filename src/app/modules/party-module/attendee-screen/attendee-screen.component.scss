@@ -1,6 +1,5 @@
-app-attendee-screen {
-    .event-details {}
-    label {
-        span {}
-    }
+.event-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around
 }

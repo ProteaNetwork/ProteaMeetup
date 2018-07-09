@@ -1,8 +1,17 @@
-app-admin-screen{
-    .controls{
-        > *{
-            display: block;
-            margin: 15px 0; 
-        }
+.controls {
+    >* {
+        display: block;
     }
+}
+.data {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+}
+mat-form-field {
+    display: block;
+    margin: 15px 0;
+}
+button {
+    margin: 5px;
 }

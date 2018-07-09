@@ -1,0 +1,24 @@
+<div class="fetchArea">
+  <h3>
+    Access event
+  </h3>
+  <p>
+    If you are looking for a specific event, please input it's contract address and hit the fetch button.
+  </p>
+  <mat-form-field *ngIf="deployedEvents?.length > 0">
+    <p>
+      You can select meet ups that you are owner of from the drop down
+    </p>
+    <mat-select [(value)]="selectedEvent.value">
+      <mat-option value="">Select one of your meetups</mat-option>
+      <mat-option *ngFor="let event of deployedEvents" [value]="event">{{event}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field hintLabel="Please enter a valid address">
+    <input matInput #selectedEvent maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
+    <mat-hint align="end">{{ isValidAddress(selectedEvent.value) ? "Valid" : "Invalid" }}</mat-hint>
+  </mat-form-field>
+  <button mat-raised-button (click)="fetchContract(selectedEvent.value)" [disabled]="!isValidAddress(selectedEvent.value) || loading">
+    Fetch event
+  </button>
+</div>

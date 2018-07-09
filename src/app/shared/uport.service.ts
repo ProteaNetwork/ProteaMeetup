@@ -22,9 +22,9 @@ export class UportService {
   private privateKey = 'bc10f80699eef7b564d47373eea7add5cf26de5ffdd20e38b38ed89c0b0f8030';
   private networkName = 'rinkeby';
 
-
   private _user: BehaviorSubject <ProteaUser> ;
   public user$: Observable <ProteaUser> = this._user.asObservable();
+
 
   private uport: any;
 
@@ -77,6 +77,7 @@ export class UportService {
 
     return new Promise((resolve, reject) => {
       this.uport.requestCredentials(req).then((credentials: ICredentials) => {
+<<<<<<< HEAD
         const user = new ProteaUser(this._user.getValue());
         user.MNID = credentials.networkAddress;
         user.address = this.decodeAddress(credentials.networkAddress);
@@ -84,6 +85,11 @@ export class UportService {
         user.phone = credentials.phone;
         this._user.next(user);
         resolve();
+=======
+        this.credentials = credentials;
+        console.log(this.credentials);
+        resolve(credentials);
+>>>>>>> master
       });
     });
   }

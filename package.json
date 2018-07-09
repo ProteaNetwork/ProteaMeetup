@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --poll=1000",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -16,7 +16,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^6.0.3",
+    "@angular/animations": "6.0.5",
     "@angular/cdk": "^6.1.0",
     "@angular/common": "^6.0.2",
     "@angular/compiler": "^6.0.2",

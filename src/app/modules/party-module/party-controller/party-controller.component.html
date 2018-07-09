@@ -1,10 +1,12 @@
-<!-- If checks here -->
-<p>
-  state: {{ state }}
-</p>
-
-<app-init-screen *ngIf="state == 'init'" [deployedEvents]="events" (publishContract)="onDeploy($event)" (contractAddress)="onFetch($event)"></app-init-screen>
-
-<app-admin-screen  *ngIf="state !== 'init'"></app-admin-screen>
-<app-attendee-screen *ngIf="state !== 'init'"></app-attendee-screen>
-<app-payout-screen *ngIf="state !== 'init'"></app-payout-screen>
+<div class="buffering" [ngClass]="{active: loading == true}">
+    <mat-spinner></mat-spinner>
+</div>
+<button mat-raised-button *ngIf="state !== 'init'" (click)="state = 'init'" >
+    Back
+</button>
+<app-init-screen *ngIf="state == 'init'" (selection)="onSelection($event)" ></app-init-screen>
+<app-create *ngIf="state == 'create'" (publishContract)="onDeploy($event)" ></app-create>
+<app-fetch *ngIf="state == 'fetch'" [deployedEvents]="events" (contractAddress)="onFetch($event)" ></app-fetch>
+<app-admin-screen  *ngIf="state == 'admin'"></app-admin-screen>
+<app-attendee-screen *ngIf="state == 'attendee'"></app-attendee-screen>
+<app-payout-screen *ngIf="state == 'payout'"></app-payout-screen>
