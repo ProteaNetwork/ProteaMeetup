@@ -18,8 +18,8 @@ export class UportService {
   private privateKey = 'bc10f80699eef7b564d47373eea7add5cf26de5ffdd20e38b38ed89c0b0f8030';
   private networkName = 'rinkeby';
 
-  private _user: BehaviorSubject <ProteaUser> ;
-  public readonly user$: Observable <ProteaUser> = this._user.asObservable();
+  private _user: BehaviorSubject<ProteaUser> = new BehaviorSubject<ProteaUser>(new ProteaUser);
+  public readonly user$: Observable<ProteaUser> = this._user.asObservable();
 
 
   private uport: any;
