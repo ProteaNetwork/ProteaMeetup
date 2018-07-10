@@ -20,10 +20,10 @@ export class EventService {
 
   // @TODO: Refactor, using array for displaying event info before fetching
   // Purpose: when the registry is available, this can be used to populate the dashboard
-  private _events: BehaviorSubject<ProteaParty[]>;
+  private _events: BehaviorSubject<ProteaParty[]> = new BehaviorSubject<ProteaParty[]>([]);
   public readonly events$: Observable<ProteaParty[]> = this._events.asObservable();
 
-  private _currentEvent: BehaviorSubject<ProteaParty>;
+  private _currentEvent: BehaviorSubject<ProteaParty> = new BehaviorSubject<ProteaParty>(new ProteaParty());
   public readonly currentEvent$: Observable<ProteaParty> = this._currentEvent.asObservable();
 
   private factoryContract: TruffleContract;
