@@ -1,7 +1,6 @@
 import { UportService } from './../../../shared/uport.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ProteaUser } from '../../../shared/interface/user';
-import { Subscription } from 'rxjs';
 import { EventService } from '../../../shared/event.service';
 
 @Component({
@@ -9,22 +8,15 @@ import { EventService } from '../../../shared/event.service';
   templateUrl: './payout-screen.component.html',
   styleUrls: ['./payout-screen.component.scss']
 })
-export class PayoutScreenComponent implements OnInit, OnDestroy {
-  public user: ProteaUser;
-  private user$: Subscription;
+export class PayoutScreenComponent implements OnInit {
 
-  constructor(private uportService: UportService, private eventService: EventService) {
-    this.user$ = this.uportService.user$.subscribe((_user: ProteaUser) => {
-      this.user = _user;
-    });
-   }
+  @Input() user: ProteaUser;
+
+  constructor(private uportService: UportService, private eventService: EventService) {}
 
   ngOnInit() {
   }
 
-  ngOnDestroy() {
-    this.user$.unsubscribe();
-  }
 
   public async withdrawTokens() {
     await this.eventService.withdraw();

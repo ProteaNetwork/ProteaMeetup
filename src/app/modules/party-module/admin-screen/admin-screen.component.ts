@@ -1,8 +1,7 @@
 import { UportService } from './../../../shared/uport.service';
 import { EventService } from './../../../shared/event.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ProteaParty } from '../../../shared/interface/event';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-screen',
@@ -10,18 +9,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./admin-screen.component.scss']
 })
 export class AdminScreenComponent implements OnInit {
-  public event: ProteaParty;
-  private event$: Subscription;
+  @Input() event: ProteaParty;
   public attending: string[] = [];
   public loading = false;
 
   constructor(private uportService: UportService, private eventService: EventService) {
-    this.event$ = this.eventService.currentEvent$.subscribe((_currentEvent: ProteaParty) => {
-      this.event = _currentEvent;
-    });
   }
 
-  // @TODO: remove when PoAtt is set up
   isValidAddress(address: string) {
     return this.uportService.isValidAddress(address);
   }

@@ -26,15 +26,18 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
   private user$: Subscription;
 
   constructor(private eventService: EventService, private uportService: UportService) {
-    this.events$ = this.eventService.events$.subscribe((_events: ProteaParty[]) => {
-      this.events = _events;
-    });
-    this.user$ = this.uportService.user$.subscribe((_user: ProteaUser) => {
-      this.user = _user;
-    });
-    this.currentEvent$ = this.eventService.currentEvent$.subscribe((_event: ProteaParty) => {
-      this.currentEvent = _event;
-    });
+    this.events$ = this.eventService.events$.subscribe(
+      (_events: ProteaParty[]) =>
+      this.events = _events
+    );
+    this.user$ = this.uportService.user$.subscribe(
+      (_user: ProteaUser) =>
+      this.user = _user
+    );
+    this.currentEvent$ = this.eventService.currentEvent$.subscribe(
+      (_event: ProteaParty) =>
+      this.currentEvent = _event
+    );
   }
 
   async ngOnInit() {
