@@ -1,7 +1,7 @@
-import { UportService } from './../../../shared/uport.service';
-import { TokenService } from './../../../shared/token.service';
+import { UportService } from '../../../shared/services/uport.service';
+import { TokenService } from '../../../shared/services/token.service';
 import { Component, OnInit, Input } from '@angular/core';
-import { EventService } from '../../../shared/event.service';
+import { EventService } from '../../../shared/services/event.service';
 import { ProteaParty } from '../../../shared/interface/event';
 import { ProteaUser } from '../../../shared/interface/user';
 

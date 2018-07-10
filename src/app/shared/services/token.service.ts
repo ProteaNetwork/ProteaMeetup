@@ -2,11 +2,11 @@ import { UportService } from './uport.service';
 import { Injectable } from '@angular/core';
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
-import { ProteaUser } from './interface/user';
+import { ProteaUser } from '../interface/user';
 
 
 declare let require: any;
-const tokenAbi = require('./../../../build/contracts/ERC223StandardToken.json');
+const tokenAbi = require('./../../../../build/contracts/ERC223StandardToken.json');
 
 @Injectable({
   providedIn: 'root'

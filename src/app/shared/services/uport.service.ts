@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Connect, SimpleSigner, MNID } from 'uport-connect';
-import { ICredentials } from './interface/credentials';
+import { ICredentials } from '../interface/credentials';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ProteaUser } from './interface/user';
+import { ProteaUser } from '../interface/user';
 
 declare let window: any;
 

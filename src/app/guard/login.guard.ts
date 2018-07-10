@@ -1,7 +1,7 @@
 import { ProteaUser } from './../shared/interface/user';
 import { Injectable, OnDestroy } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { UportService } from '../shared/uport.service';
+import { CanActivate, Router } from '@angular/router';
+import { UportService } from '../shared/services/uport.service';
 import { Subscription } from 'rxjs';
 
 @Injectable({

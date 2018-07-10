@@ -1,8 +1,8 @@
-import { UportService } from './../../../shared/uport.service';
+import { UportService } from '../../../shared/services/uport.service';
 import { Subscription } from 'rxjs';
 import { ProteaParty } from './../../../shared/interface/event';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventService } from '../../../shared/event.service';
+import { EventService } from '../../../shared/services/event.service';
 import { ProteaUser } from '../../../shared/interface/user';
 import { EventState } from '../enum/event-state.enum';
 

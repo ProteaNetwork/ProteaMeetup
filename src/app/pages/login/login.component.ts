@@ -1,5 +1,5 @@
 import { ProteaUser } from './../../shared/interface/user';
-import { UportService } from './../../shared/uport.service';
+import { UportService } from '../../shared/services/uport.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';

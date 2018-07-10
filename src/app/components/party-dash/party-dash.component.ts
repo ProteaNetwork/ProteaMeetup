@@ -1,5 +1,4 @@
-import { ICredentials } from './../../shared/interface/credentials';
-import { UportService } from './../../shared/uport.service';
+import { UportService } from '../../shared/services/uport.service';
 import { Component, OnInit } from '@angular/core';
 import { ProteaUser } from '../../shared/interface/user';
 import { Subscription } from 'rxjs';

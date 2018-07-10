@@ -1,5 +1,5 @@
-import { UportService } from './../../../shared/uport.service';
-import { TokenService } from '../../../shared/token.service';
+import { UportService } from '../../../shared/services/uport.service';
+import { TokenService } from '../../../shared/services/token.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProteaUser } from '../../../shared/interface/user';
 import { Subscription } from 'rxjs';

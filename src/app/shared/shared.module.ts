@@ -1,9 +1,11 @@
-import { TokenService } from './token.service';
+import { TokenService } from './services/token.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../material.module';
-import { UportService } from './uport.service';
+import { UportService } from './services/uport.service';
 import { FormsModule } from '@angular/forms';
+import { EventService } from './services/event.service';
+import { CacheService } from './services/cache.service';
 
 @NgModule({
   imports: [
@@ -11,7 +13,7 @@ import { FormsModule } from '@angular/forms';
     MaterialModule,
     FormsModule
   ],
-  providers: [ TokenService, UportService ],
+  providers: [ TokenService, UportService, EventService, CacheService ],
   declarations: [  ],
   exports: [ MaterialModule, FormsModule]
 })

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { ProteaParty } from './interface/event';
+import { ProteaParty } from '../interface/event';
 
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UportService } from './uport.service';
-import { ProteaUser } from './interface/user';
+import { ProteaUser } from '../interface/user';
 
 
 declare let require: any;
-const factoryAbi = require('./../../../build/contracts/ProteaPartyFactory.json');
-const eventAbi = require('./../../../build/contracts/ProteaParty.json');
+const factoryAbi = require('./../../../../build/contracts/ProteaPartyFactory.json');
+const eventAbi = require('./../../../../build/contracts/ProteaParty.json');
 
 @Injectable({
   providedIn: 'root'

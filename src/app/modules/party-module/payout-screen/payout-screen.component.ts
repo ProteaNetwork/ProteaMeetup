@@ -1,7 +1,7 @@
-import { UportService } from './../../../shared/uport.service';
+import { UportService } from '../../../shared/services/uport.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { ProteaUser } from '../../../shared/interface/user';
-import { EventService } from '../../../shared/event.service';
+import { EventService } from '../../../shared/services/event.service';
 
 @Component({
   selector: 'app-payout-screen',

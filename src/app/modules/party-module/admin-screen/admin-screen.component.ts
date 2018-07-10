@@ -1,5 +1,5 @@
-import { UportService } from './../../../shared/uport.service';
-import { EventService } from './../../../shared/event.service';
+import { UportService } from '../../../shared/services/uport.service';
+import { EventService } from '../../../shared/services/event.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { ProteaParty } from '../../../shared/interface/event';
 
