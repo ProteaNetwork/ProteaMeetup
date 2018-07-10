@@ -1,4 +1,5 @@
 import { Observable, Subject, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 interface CacheContent {
   expiry: number;
@@ -26,7 +27,7 @@ export class CacheService {
 
     if (this.hasValidCachedValue(key)) {
       console.log(`%cGetting from cache ${key}`, 'color: green');
-      return Observable.of(this.cache.get(key).value);
+      return of(this.cache.get(key).value);
     }
 
     if (!maxAge) {
@@ -38,7 +39,9 @@ export class CacheService {
     } else if (fallback && fallback instanceof Observable) {
       this.inFlightObservables.set(key, new Subject());
       console.log(`%c Calling api for ${key}`, 'color: purple');
-      return fallback.do((value) => { this.set(key, value, maxAge); });
+      return fallback.pipe(
+        tap((value) => { this.set(key, value, maxAge); })
+      );
     } else {
       return Observable.throw('Requested key is not available in Cache');
     }
