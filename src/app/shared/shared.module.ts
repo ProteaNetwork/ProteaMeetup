@@ -1,3 +1,4 @@
+import { LocalStorageService } from './services/local-storage.service';
 import { TokenService } from './services/token.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -13,7 +14,7 @@ import { CacheService } from './services/cache.service';
     MaterialModule,
     FormsModule
   ],
-  providers: [ TokenService, UportService, EventService, CacheService ],
+  providers: [ TokenService, UportService, EventService, CacheService, LocalStorageService ],
   declarations: [  ],
   exports: [ MaterialModule, FormsModule]
 })

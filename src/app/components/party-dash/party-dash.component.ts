@@ -1,5 +1,5 @@
 import { UportService } from '../../shared/services/uport.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProteaUser } from '../../shared/interface/user';
 import { Subscription } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './party-dash.component.html',
   styleUrls: ['./party-dash.component.scss']
 })
-export class PartyDashComponent implements OnInit {
+export class PartyDashComponent implements OnInit, OnDestroy {
   public user: ProteaUser;
   private user$: Subscription;
 
@@ -19,5 +19,9 @@ export class PartyDashComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.user$.unsubscribe();
   }
 }

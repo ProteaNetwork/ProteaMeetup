@@ -1,10 +1,8 @@
-import { Observable, Subject, of } from 'rxjs';
+import { CacheContent } from './../interface/cached-content';
+import { Observable, Subject, of, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-interface CacheContent {
-  expiry: number;
-  value: any;
-}
+
 
 /**
  * Cache Service is an observables based in-memory cache implementation
@@ -43,7 +41,7 @@ export class CacheService {
         tap((value) => { this.set(key, value, maxAge); })
       );
     } else {
-      return Observable.throw('Requested key is not available in Cache');
+      return throwError('Requested key is not available in Cache');
     }
 
   }

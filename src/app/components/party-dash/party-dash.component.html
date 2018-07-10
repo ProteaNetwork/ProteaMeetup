@@ -6,12 +6,12 @@
         <mat-card-header>
           <mat-card-title>
             <span class="mat-title">
-              Welcome {{credentials.name}}!
+              Welcome {{user?.name}}!
             </span>
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <img class="profile" [src]="credentials.avatar.uri" [alt]="credentials.name">
+          <img class="profile" [src]="user?.avatar.uri" [alt]="user?.name">
           <div>
             Some paragraph text saying hello or something then directing to the free token section
           </div>
