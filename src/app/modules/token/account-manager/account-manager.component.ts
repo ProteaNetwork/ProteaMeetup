@@ -14,7 +14,7 @@ export class AccountManagerComponent implements OnInit, OnDestroy {
   public user: ProteaUser;
   private user$: Subscription;
 
-  private transacting = false;
+  private loading = false;
 
   constructor(private uportService: UportService, private tokenService: TokenService ) {
     this.user$ = this.uportService.user$.subscribe((_user: ProteaUser) => {
@@ -38,31 +38,32 @@ export class AccountManagerComponent implements OnInit, OnDestroy {
   // Controls
 
   async loadBalances() {
+    this.loading = true;
     this.uportService.updateUserObject(await this.tokenService.updateBalances(this.user));
-
+    this.loading = false;
   }
 
   claimTokens() {
-    if (!this.transacting) {
-      this.transacting = true;
+    if (!this.loading) {
+      this.loading = true;
       this.tokenService.faucet().then((_result) => {
-        this.transacting = false;
+        this.loading = false;
         this.loadBalances();
         }, (error) => {
-        this.transacting = false;
+        this.loading = false;
         console.error('Claim total error', error);
       });
     }
   }
 
   resetAccount() {
-    if (!this.transacting) {
-      this.transacting = true;
+    if (!this.loading) {
+      this.loading = true;
       this.tokenService.resetAccount(this.user.address).then((_result) => {
-        this.transacting = false;
+        this.loading = false;
         this.loadBalances();
         }, (error) => {
-          this.transacting = false;
+          this.loading = false;
           console.error('Claim total error', error);
       });
     }
