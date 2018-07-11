@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Connect, SimpleSigner, MNID } from 'uport-connect';
-import { Credentials } from 'uport';
+import { JWT } from 'uport';
 import { ICredentials } from '../interface/credentials';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProteaUser } from '../interface/user';
@@ -34,11 +34,16 @@ export class UportService {
       network: this._networkName,
       signer: SimpleSigner(this._privateKey)
     });
-    console.log(this.uport, JSON.stringify(this.uport));
-    if (this.localStorageService.has(this._userStorageKey)) {
-      console.log('Found token, parsing');
-      this.parseStorageToken();
-    }
+    this.uport.address = this._clientId;
+    console.log(this.uport)
+    const topic = this.uport.topicFactory('access_token');
+    const tempa = JWT.verifyJWT(this.uport.credentials.settings,
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE1MzEzMDIyNjksImV4cCI6MTUzMjU5ODI2OSwiYXVkIjoiMm95R3VOTXVXMWFDb3hFTGpiZzVGZ3FqY2NaUkVlSHdOenEiLCJ0eXBlIjoibm90aWZpY2F0aW9ucyIsInZhbHVlIjoiYXJuOmF3czpzbnM6dXMtd2VzdC0yOjExMzE5NjIxNjU1ODplbmRwb2ludC9HQ00vdVBvcnQvZDhhODdiMDYtNzAzZi0zODc5LTkyMjEtYzBmYjE5ZTQ0ZWI4IiwiaXNzIjoiMm9ycUtubTZ4bVhaMWNiZkRjTTRiNmR2WWpjYmVianBSVDkifQ.n21FR82ebs5-Zy1Qh2L0emNueEyFzMr0PFNPQmsAtDI1nEPRK5baXpfporB9GvOYvK8jt2JfbnZEFAYPCCLPMg',
+    topic.url);
+    console.log(tempa);
+    // if (this.localStorageService.has(this._userStorageKey)) {
+    //   this.parseStorageToken();
+    // }
     window.addEventListener('load', (event) => {
       this.web3 = this.uport.getWeb3();
     });
@@ -50,6 +55,7 @@ export class UportService {
   private parseStorageToken() {
     const token = this.localStorageService.get(this._userStorageKey);
     try {
+
       // Taken from uport-connect/ConnectCore.js Line:136
       const topic = this.uport.topicFactory('access_token');
       const res = this.uport.credentials.receive(token, topic.url);
@@ -58,6 +64,7 @@ export class UportService {
       }
       this.uport.address = res.address;
       this.uport.publicEncKey = res.publicEncKey;
+      this.uport.firstReq = true;
     } catch (error) {
       throw(error);
     }
@@ -131,11 +138,8 @@ export class UportService {
         user.address = this.decodeMNID(credentials.networkAddress);
         user.name = credentials.name;
         user.phone = credentials.phone;
-        console.log('Token', credentials.pushToken);
         this.localStorageService.set(this._userStorageKey, credentials.pushToken);
         this._user.next(user);
-        console.log(this.uport, JSON.stringify(this.uport));
-
         resolve();
       });
     });
