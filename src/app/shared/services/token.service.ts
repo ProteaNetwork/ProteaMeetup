@@ -36,6 +36,15 @@ export class TokenService {
     // }
   }
 
+  // @TODO: Need better solution
+  public async initWait() {
+    if (!this.tokenContract) {
+      const delay = new Promise(finish => setTimeout(finish, 100));
+      await delay;
+      return await this.initWait();
+    }
+  }
+
   // @TODO convert to async
   faucet() {
     return new Promise((resolve, reject) => {

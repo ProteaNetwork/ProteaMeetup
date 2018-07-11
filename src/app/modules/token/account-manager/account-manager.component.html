@@ -1,7 +1,7 @@
 <div class="buffering" [ngClass]="{active: transacting == true}">
     <mat-spinner></mat-spinner>
 </div>
-<div class="new-user" *ngIf="issued == 0">
+<div class="new-user" *ngIf="user?.issued == 0">
   <p>
     Hi there!
     <br> Thank you for checking out Protea Party!
@@ -11,14 +11,14 @@
     Claim Gift
   </button>
 </div>
-<div class="token-details" *ngIf="issued > 0">
+<div class="token-details" *ngIf="user?.issued > 0">
   <div class="row balances">
     <div>
       <div class="label mat-title">
         Earned
       </div>
       <div class="value mat-body2">
-        {{ issued }}
+        {{ user?.issued }}
       </div>
     </div>
     <div>
@@ -26,7 +26,7 @@
         Balance
       </div>
       <div class="value mat-body2">
-        {{ balance }}
+        {{ user?.balance }}
       </div>
     </div>
   </div>

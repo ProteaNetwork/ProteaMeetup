@@ -14,7 +14,7 @@ export class LoginGuard implements CanActivate, OnDestroy {
   constructor(private uportService: UportService, private router: Router) {
     this.user$ = this.uportService.user$.subscribe(
       (user: ProteaUser) =>
-      (user.address !== '') ? this.ready = true : null );
+      (user.address !== '') ? this.ready = true : false );
   }
 
   ngOnDestroy() {

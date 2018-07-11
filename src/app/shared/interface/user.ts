@@ -11,6 +11,8 @@ export class ProteaUser {
     public isPaid = false;
     public balance = -1;
     public issued = -1;
+    public publicEncKey = '';
+    public fetched = Date.now();
 
     public constructor(init?: Partial<ProteaUser>) {
         Object.assign(this, init);

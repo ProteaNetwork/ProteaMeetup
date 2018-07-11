@@ -34,19 +34,24 @@ export class EventService {
   }
 
   private async initFactory() {
-    this.uportService.user$.subscribe(async (userObject: ProteaUser) => {
-      if (userObject.address !== '') {
-        this.factoryContract = await this.uportService.artifactsToContract(factoryAbi);
-        this.factoryContract = this.factoryContract.at(this.rinkebyFactoryAddress);
-      }
-    });
+    this.factoryContract = await this.uportService.artifactsToContract(factoryAbi);
+    this.factoryContract = this.factoryContract.at(this.rinkebyFactoryAddress);
+  }
+
+  // @TODO: Need better solution
+  public async initWait() {
+    if (!this.factoryContract) {
+      const delay = new Promise(finish => setTimeout(finish, 100));
+      await delay;
+      return await this.initWait();
+    }
   }
 
   // Factory/Registry
   public fetchAdminEvents() {
     // @TODO: this will need to be dynamic when registry architecture is up
-    return new Promise((resolve, reject) => {
-      this.factoryContract.getUserEvents(this.uportService.getAddress, async (_error, _contractArray: string[]) => {
+    return new Promise(async (resolve, reject) => {
+      this.factoryContract.getUserEvents(this.uportService.getAddress(), async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
         // If last requested
         resolve(_contractArray.map((_address: string) => {

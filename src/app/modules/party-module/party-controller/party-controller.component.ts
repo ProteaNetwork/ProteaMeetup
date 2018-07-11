@@ -41,17 +41,14 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    await this.checkEvents();
+    await this.eventService.initWait();
+    await this.eventService.fetchAdminEvents();
   }
 
   ngOnDestroy() {
     this.events$.unsubscribe();
     this.currentEvent$.unsubscribe();
     this.user$.unsubscribe();
-  }
-
-  checkEvents() {
-    this.eventService.fetchAdminEvents();
   }
 
   onSelection (_state: string) {
@@ -87,7 +84,7 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
   async onDeploy(_eventData: any) {
     this.loading = true;
     this.eventService.deployEvent(_eventData.name, _eventData.deposit, _eventData.limit, _eventData.cooldown, '').then(async result => {
-      await this.checkEvents();
+      await this.eventService.fetchAdminEvents();
       this.onFetch(this.events[this.events.length - 1].address);
     }, error => {
       console.log('Event Deploy Error', error);

@@ -22,7 +22,8 @@ export class AccountManagerComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.tokenService.initWait();
     this.loadBalances();
   }
 

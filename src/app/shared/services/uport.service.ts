@@ -15,6 +15,9 @@ export class UportService {
   private web3: any;
   public network = 0;
 
+  private _ready: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public readonly ready$: Observable<boolean> = this._ready.asObservable();
+
   private _name = 'Protea Party V1';
   private _clientId = '2oyGuNMuW1aCoxELjbg5FgqjccZREeHwNzq';
   private _privateKey = 'bc10f80699eef7b564d47373eea7add5cf26de5ffdd20e38b38ed89c0b0f8030';
@@ -22,9 +25,8 @@ export class UportService {
 
   private _userStorageKey = 'proteaCredToken';
 
-  private _user: BehaviorSubject<ProteaUser> = new BehaviorSubject<ProteaUser>(new ProteaUser);
+  private _user: BehaviorSubject<ProteaUser> = new BehaviorSubject<ProteaUser>(new ProteaUser());
   public readonly user$: Observable<ProteaUser> = this._user.asObservable();
-
 
   private uport: any;
 
@@ -34,16 +36,9 @@ export class UportService {
       network: this._networkName,
       signer: SimpleSigner(this._privateKey)
     });
-    this.uport.address = this._clientId;
-    console.log(this.uport)
-    const topic = this.uport.topicFactory('access_token');
-    const tempa = JWT.verifyJWT(this.uport.credentials.settings,
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE1MzEzMDIyNjksImV4cCI6MTUzMjU5ODI2OSwiYXVkIjoiMm95R3VOTXVXMWFDb3hFTGpiZzVGZ3FqY2NaUkVlSHdOenEiLCJ0eXBlIjoibm90aWZpY2F0aW9ucyIsInZhbHVlIjoiYXJuOmF3czpzbnM6dXMtd2VzdC0yOjExMzE5NjIxNjU1ODplbmRwb2ludC9HQ00vdVBvcnQvZDhhODdiMDYtNzAzZi0zODc5LTkyMjEtYzBmYjE5ZTQ0ZWI4IiwiaXNzIjoiMm9ycUtubTZ4bVhaMWNiZkRjTTRiNmR2WWpjYmVianBSVDkifQ.n21FR82ebs5-Zy1Qh2L0emNueEyFzMr0PFNPQmsAtDI1nEPRK5baXpfporB9GvOYvK8jt2JfbnZEFAYPCCLPMg',
-    topic.url);
-    console.log(tempa);
-    // if (this.localStorageService.has(this._userStorageKey)) {
-    //   this.parseStorageToken();
-    // }
+    if (this.localStorageService.has(this._userStorageKey)) {
+      this.parseCachedUser();
+    }
     window.addEventListener('load', (event) => {
       this.web3 = this.uport.getWeb3();
     });
@@ -52,22 +47,13 @@ export class UportService {
   /**
    * Checks localStorage for a previous login token
    */
-  private parseStorageToken() {
-    const token = this.localStorageService.get(this._userStorageKey);
-    try {
-
-      // Taken from uport-connect/ConnectCore.js Line:136
-      const topic = this.uport.topicFactory('access_token');
-      const res = this.uport.credentials.receive(token, topic.url);
-      if (res && res.pushToken) {
-        this.uport.pushToken = res.pushToken;
-      }
-      this.uport.address = res.address;
-      this.uport.publicEncKey = res.publicEncKey;
-      this.uport.firstReq = true;
-    } catch (error) {
-      throw(error);
-    }
+  private async parseCachedUser() {
+    // @TODO: need a cleaner solution
+    const user = new ProteaUser(JSON.parse(this.localStorageService.get(this._userStorageKey)));
+    this.uport.address = user.address;
+    this.uport.publicEncKey = user.publicEncKey;
+    this._user.next(user);
+    // this.uport.firstReq = false;
   }
 
   /**
@@ -88,10 +74,7 @@ export class UportService {
   /**
    * Returns current user session address
    */
-  public getAddress() {
-    console.log('I think its here');
-    const temp = this._user.getValue().address;
-    console.log('Nope');
+  public getAddress(): string {
     return this._user.getValue().address;
   }
 
@@ -138,7 +121,9 @@ export class UportService {
         user.address = this.decodeMNID(credentials.networkAddress);
         user.name = credentials.name;
         user.phone = credentials.phone;
-        this.localStorageService.set(this._userStorageKey, credentials.pushToken);
+        user.publicEncKey = credentials.publicEncKey;
+        user.fetched = Date.now();
+        this.localStorageService.set(this._userStorageKey, JSON.stringify(user));
         this._user.next(user);
         resolve();
       });
