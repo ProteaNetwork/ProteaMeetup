@@ -15,9 +15,6 @@ export class UportService {
   private web3: any;
   public network = 0;
 
-  private _ready: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public readonly ready$: Observable<boolean> = this._ready.asObservable();
-
   private _name = 'Protea Party V1';
   private _clientId = '2oyGuNMuW1aCoxELjbg5FgqjccZREeHwNzq';
   private _privateKey = 'bc10f80699eef7b564d47373eea7add5cf26de5ffdd20e38b38ed89c0b0f8030';
@@ -48,12 +45,29 @@ export class UportService {
    * Checks localStorage for a previous login token
    */
   private async parseCachedUser() {
-    // @TODO: need a cleaner solution
     const user = new ProteaUser(JSON.parse(this.localStorageService.get(this._userStorageKey)));
-    this.uport.address = user.address;
-    this.uport.publicEncKey = user.publicEncKey;
     this._user.next(user);
-    // this.uport.firstReq = false;
+    // Checking if uPort log in data is valid, if not the modal will pop up again
+    // if (await this.verifyPushToken(user.pushToken)) {
+    //   this.uport.pushToken = user.pushToken;
+    //   this.uport.publicEncKey = user.publicEncKey;
+    //   this.uport.address = user.address;
+    //   this.uport.firstReq = false;
+    //   this._user.next(user);
+    // }
+  }
+
+  /**
+   * This function is to verify cached tokens to ensure user object is valid according to uPort
+   * @param pushToken User Pushtoken
+   */
+  private async verifyPushToken(pushToken: string) {
+    const topic = this.uport.topicFactory('access_token');
+    const res = await JWT.verifyJWT(this.uport.credentials.settings, pushToken, topic.url);
+    if (!res) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -118,13 +132,16 @@ export class UportService {
       this.uport.requestCredentials(req).then((credentials: ICredentials) => {
         const user = new ProteaUser(this._user.getValue());
         user.MNID = credentials.networkAddress;
+        user.avatar = credentials.avatar.uri;
         user.address = this.decodeMNID(credentials.networkAddress);
         user.name = credentials.name;
         user.phone = credentials.phone;
         user.publicEncKey = credentials.publicEncKey;
-        user.fetched = Date.now();
+        user.pushToken = credentials.pushToken;
         this.localStorageService.set(this._userStorageKey, JSON.stringify(user));
         this._user.next(user);
+        console.log(this.uport, JSON.stringify(this.uport));
+
         resolve();
       });
     });

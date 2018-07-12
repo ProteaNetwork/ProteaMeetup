@@ -1,12 +1,12 @@
 <div class="buffering" [ngClass]="{active: loading == true}">
     <mat-spinner></mat-spinner>
 </div>
-<button mat-raised-button *ngIf="state !== 'init'" (click)="state = 'init'" >
+<button mat-raised-button *ngIf="state !== 'INIT'" (click)="state = 'INIT'" >
     Back
 </button>
-<app-init-screen *ngIf="state == 'init'" (selection)="onSelection($event)" ></app-init-screen>
-<app-create *ngIf="state == 'create'" (publishContract)="onDeploy($event)" ></app-create>
-<app-fetch *ngIf="state == 'fetch'" [deployedEvents]="events" (contractAddress)="onFetch($event)" ></app-fetch>
-<app-admin-screen  *ngIf="state == 'admin'"></app-admin-screen>
-<app-attendee-screen *ngIf="state == 'attendee'"></app-attendee-screen>
-<app-payout-screen *ngIf="state == 'payout'"></app-payout-screen>
+<app-init-screen *ngIf="state == 'INIT'" (selection)="onSelection($event)" ></app-init-screen>
+<app-create *ngIf="state == 'CREATE'" (publishContract)="onDeploy($event)" ></app-create>
+<app-fetch *ngIf="state == 'FETCH'" [deployedEvents]="events" (contractAddress)="onFetch($event)" ></app-fetch>
+<app-admin-screen  *ngIf="state == 'ADMIN'"></app-admin-screen>
+<app-attendee-screen *ngIf="state == 'ATTENDEE'"></app-attendee-screen>
+<app-payout-screen *ngIf="state == 'PAYOUT'"></app-payout-screen>

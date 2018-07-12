@@ -1,5 +1,5 @@
-import { UportService } from '../../../shared/services/uport.service';
-import { ProteaParty } from './../../../shared/interface/event';
+import { UportService } from '../../../../shared/services/uport.service';
+import { ProteaParty } from './../../../../shared/interface/event';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
@@ -9,13 +9,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class FetchComponent  {
   public loading = false;
-  public events: string[];
+  public events: ProteaParty[];
 
   @Input() deployedEvents: ProteaParty[];
   @Output() contractAddress = new EventEmitter<string>();
 
 
-  constructor(private uportService: UportService) { }
+  constructor(private uportService: UportService) {
+  }
 
   isValidAddress(address: string) {
     return this.uportService.isValidAddress(address);

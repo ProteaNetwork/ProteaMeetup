@@ -1,3 +1,4 @@
+import { EventState } from './../../enum/event-state.enum';
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
@@ -12,10 +13,10 @@ export class InitScreenComponent {
   constructor() { }
 
   public fetch() {
-    this.selection.emit('fetch');
+    this.selection.emit(EventState.FETCH);
   }
 
   public create() {
-    this.selection.emit('create');
+    this.selection.emit(EventState.CREATE);
   }
 }

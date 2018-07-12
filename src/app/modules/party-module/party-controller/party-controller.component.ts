@@ -12,12 +12,12 @@ import { EventState } from '../enum/event-state.enum';
   styleUrls: ['./party-controller.component.scss']
 })
 export class PartyControllerComponent implements OnInit, OnDestroy {
-  // @TODO: swap to enum & observable
+  // @TODO: Change to component resolver
   public state: EventState = EventState.INIT;
-  public loading = false;
+  public loading = true;
 
   public events: ProteaParty[];
-  private  events$: Subscription;
+  private events$: Subscription;
 
   public currentEvent: ProteaParty;
   private currentEvent$: Subscription;
@@ -28,7 +28,7 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
   constructor(private eventService: EventService, private uportService: UportService) {
     this.events$ = this.eventService.events$.subscribe(
       (_events: ProteaParty[]) =>
-      this.events = _events
+        this.events = _events
     );
     this.user$ = this.uportService.user$.subscribe(
       (_user: ProteaUser) =>
@@ -42,6 +42,7 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.eventService.initWait();
+    this.loading = false;
     await this.eventService.fetchAdminEvents();
   }
 
@@ -87,7 +88,7 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
       await this.eventService.fetchAdminEvents();
       this.onFetch(this.events[this.events.length - 1].address);
     }, error => {
-      console.log('Event Deploy Error', error);
+      console.error('Event Deploy Error', error);
       this.loading = false;
     });
   }

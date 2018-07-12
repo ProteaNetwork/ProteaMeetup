@@ -12,7 +12,7 @@ export class ProteaUser {
     public balance = -1;
     public issued = -1;
     public publicEncKey = '';
-    public fetched = Date.now();
+    public pushToken = '';
 
     public constructor(init?: Partial<ProteaUser>) {
         Object.assign(this, init);

@@ -3,7 +3,7 @@ import { ProteaParty } from '../interface/event';
 
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, pipe } from 'rxjs';
 import { UportService } from './uport.service';
 import { ProteaUser } from '../interface/user';
 
@@ -50,13 +50,31 @@ export class EventService {
   // Factory/Registry
   public fetchAdminEvents() {
     // @TODO: this will need to be dynamic when registry architecture is up
+
     return new Promise(async (resolve, reject) => {
       this.factoryContract.getUserEvents(this.uportService.getAddress(), async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
-        // If last requested
-        resolve(_contractArray.map((_address: string) => {
-          return new ProteaParty({address: _address});
-        }));
+        // Clone of current events
+        const events = this._events.getValue();
+
+        // Checks
+        const checkNew = (_address: string)  => pipe(fetchExisting, isNew);
+
+        const fetchExisting = (_address: string)  => events.findIndex(isFound, _address);
+
+        function isFound(_item: ProteaParty) {
+          return _item.address === this;
+        }
+
+        const isNew = (_index: number) => _index === -1;
+
+        // Updating with fetched
+        this._events.next(
+          events.concat(_contractArray.filter(checkNew).map(
+            (_address: string) => new ProteaParty({address: _address})))
+        );
+
+        resolve();
       });
     });
   }

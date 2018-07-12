@@ -1,6 +1,8 @@
 export enum EventState {
-    INIT = 'init',
-    ADMIN = 'admin',
-    ATTENDEE = 'attendee',
-    PAYOUT = 'payout'
+    INIT = 'INIT',
+    CREATE= 'CREATE',
+    FETCH = 'FETCH',
+    ADMIN = 'ADMIN',
+    ATTENDEE = 'ATTENDEE',
+    PAYOUT = 'PAYOUT'
 }

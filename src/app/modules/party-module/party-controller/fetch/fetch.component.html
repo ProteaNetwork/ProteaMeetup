@@ -11,7 +11,7 @@
     </p>
     <mat-select [(value)]="selectedEvent.value">
       <mat-option value="">Select one of your meetups</mat-option>
-      <mat-option *ngFor="let event of deployedEvents" [value]="event">{{event}}</mat-option>
+      <mat-option *ngFor="let event of deployedEvents" [value]="event.address">{{event.address}}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field hintLabel="Please enter a valid address">

@@ -36,7 +36,6 @@ export class AccountManagerComponent implements OnInit, OnDestroy {
   }
 
   // Controls
-
   async loadBalances() {
     this.loading = true;
     this.uportService.updateUserObject(await this.tokenService.updateBalances(this.user));

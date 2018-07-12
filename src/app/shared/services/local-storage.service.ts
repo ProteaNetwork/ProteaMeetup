@@ -17,17 +17,27 @@ export class LocalStorageService {
   }
 
   /**
-   * Sets the value with key in the cache
-   * Notifies all observers of the new value
+   * Sets the value with key in localstorage
+   * @param key storage key
+   * @param value storage value
    */
   set(key: string, value: any): void {
     localStorage.setItem(key, value);
   }
 
   /**
-   * Checks if the a key exists in cache
+   * Checks if the a key exists in localstorage
+   * @param key storage key
    */
   has(key: string): boolean {
     return localStorage.getItem(key) !== null ? true : false;
+  }
+
+  /**
+   * Removes key stored in localstorage
+   * @param key storage key
+   */
+  delete(key: string) {
+    localStorage.removeItem(key);
   }
 }
