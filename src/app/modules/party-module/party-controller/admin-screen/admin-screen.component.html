@@ -13,12 +13,12 @@
         (Needs to be wired)
       </div>
     </div>
-    <div *ngIf="event.ended === 'true'">
+    <div *ngIf="event?.ended">
       <div class="label mat-title">
         This event has ended
       </div>
     </div>
-    <div *ngIf="event?.ended === 'false'">
+    <div *ngIf="!vent?.ended">
       <div class="label mat-title">
         Number tickets available:
       </div>
@@ -26,7 +26,7 @@
         {{event?.limitOfParticipants - event?.registered}} / {{event?.limitOfParticipants}}
       </div>
     </div>
-    <div *ngIf="event?.ended  === 'false'">
+    <div *ngIf="!event?.ended">
       <div class="label mat-title">
         RSVP stake:
       </div>
@@ -37,7 +37,7 @@
   </div>
 </div>
 <div class="controls">
-  <div class="control" *ngIf="event?.ended === 'false'">
+  <div class="control" *ngIf="!event?.ended">
     <mat-form-field>
       <input matInput type="number" #newLimit [min]="event?.registered" [placeholder]="event?.limitOfParticipants">
       <mat-hint align="end">{{ newLimit.value === event.limitOfParticipants ? "Valid" : "Invalid" }}</mat-hint>
@@ -46,7 +46,7 @@
       Change participant limit
     </button>
   </div>
-  <div class="attend-control" *ngIf="event?.ended === 'false'">
+  <div class="attend-control" *ngIf="!event?.ended">
     <ul>
       <li *ngFor="let attendee of attending">{{attendee}}</li>
     </ul>
@@ -60,10 +60,10 @@
       Submit to event contract
     </button>
   </div>
-  <button mat-raised-button (click)="endEvent()" *ngIf="event?.ended === 'false'">
+  <button mat-raised-button (click)="endEvent()" *ngIf="!event?.ended">
     End & Payback
   </button>
-  <button mat-raised-button (click)="cancelEvent()" *ngIf="event?.ended  === 'false'">
+  <button mat-raised-button (click)="cancelEvent()" *ngIf="!event?.ended">
     Cancel Event
   </button>
   <button mat-raised-button [disabled]="true">

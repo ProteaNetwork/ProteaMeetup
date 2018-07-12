@@ -10,6 +10,6 @@
 <app-init-screen *ngIf="state == 'INIT'" (selection)="onSelection($event)" ></app-init-screen>
 <app-create *ngIf="state == 'CREATE'" (publishContract)="onDeploy($event)" ></app-create>
 <app-fetch *ngIf="state == 'FETCH'" [deployedEvents]="events" (contractAddress)="onFetch($event)" ></app-fetch>
-<app-admin-screen  *ngIf="state == 'ADMIN'"></app-admin-screen>
+<app-admin-screen  *ngIf="state == 'ADMIN'" [event]="currentEvent" ></app-admin-screen>
 <app-attendee-screen *ngIf="state == 'ATTENDEE'"></app-attendee-screen>
 <app-payout-screen *ngIf="state == 'PAYOUT'"></app-payout-screen>
