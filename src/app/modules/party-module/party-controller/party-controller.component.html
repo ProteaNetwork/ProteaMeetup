@@ -4,6 +4,9 @@
 <button mat-raised-button *ngIf="state !== 'INIT'" (click)="state = 'INIT'" >
     Back
 </button>
+<span>
+    {{state}}
+</span>
 <app-init-screen *ngIf="state == 'INIT'" (selection)="onSelection($event)" ></app-init-screen>
 <app-create *ngIf="state == 'CREATE'" (publishContract)="onDeploy($event)" ></app-create>
 <app-fetch *ngIf="state == 'FETCH'" [deployedEvents]="events" (contractAddress)="onFetch($event)" ></app-fetch>

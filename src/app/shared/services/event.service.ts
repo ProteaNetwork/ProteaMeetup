@@ -121,6 +121,7 @@ export class EventService {
 
     event.cancelled = await this.checkCancelled();
 
+    console.log(event);
     this._currentEvent.next(event);
 
   }
@@ -239,7 +240,7 @@ export class EventService {
 
   public hasAttended() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isAttended(this.uportService.getAddress, (_error, _status) => {
+      this.eventContract.isAttended(this.uportService.getAddress(), (_error, _status) => {
         if (_error) {
           reject(_error);
         }
@@ -250,7 +251,7 @@ export class EventService {
 
   public isAdmin() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isAdmin(this.uportService.getAddress, (_error, _status) => {
+      this.eventContract.isAdmin(this.uportService.getAddress(), (_error, _status) => {
         if (_error) {
           reject(_error);
         }
@@ -261,7 +262,7 @@ export class EventService {
 
   public isPaid() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isPaid(this.uportService.getAddress, (_error, _status) => {
+      this.eventContract.isPaid(this.uportService.getAddress(), (_error, _status) => {
         if (_error) {
           reject(_error);
         }
@@ -272,7 +273,7 @@ export class EventService {
 
   public isRegistered() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isRegistered(this.uportService.getAddress, (_error, _status) => {
+      this.eventContract.isRegistered(this.uportService.getAddress(), (_error, _status) => {
         if (_error) {
           console.error('isRegistered Error', );
           reject(_error);

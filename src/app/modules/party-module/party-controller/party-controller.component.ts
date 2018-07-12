@@ -59,27 +59,22 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
 
   async onFetch(_address: string) {
     this.loading = true;
-    if (await this.eventService.fetchEvent(_address)) {
-      await this.fetchUserState();
-      if (this.user.isAdmin) {
-        this.state = EventState.ADMIN;
-      } else {
-        if (this.currentEvent.ended) {
-          this.state = EventState.PAYOUT;
-        } else {
-          this.state = EventState.ATTENDEE;
-        }
-      }
-      this.loading = false;
-
+    await this.eventService.fetchEvent(_address);
+    await this.fetchUserState();
+    if (this.user.isAdmin) {
+      this.state = EventState.ADMIN;
     } else {
-      // Error
-      this.loading = false;
+      if (this.currentEvent.ended) {
+        this.state = EventState.PAYOUT;
+      } else {
+        this.state = EventState.ATTENDEE;
+      }
     }
+    this.loading = false;
   }
 
   async fetchUserState() {
-    this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
+    await this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
   }
 
   async onDeploy(_eventData: any) {

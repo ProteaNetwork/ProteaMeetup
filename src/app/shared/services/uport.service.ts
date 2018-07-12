@@ -140,7 +140,6 @@ export class UportService {
         user.pushToken = credentials.pushToken;
         this.localStorageService.set(this._userStorageKey, JSON.stringify(user));
         this._user.next(user);
-        console.log(this.uport, JSON.stringify(this.uport));
 
         resolve();
       });
