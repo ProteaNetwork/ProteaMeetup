@@ -2,6 +2,7 @@ import { UportService } from '../../../../shared/services/uport.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { ProteaUser } from '../../../../shared/interface/user';
 import { EventService } from '../../../../shared/services/event.service';
+import { ProteaMeetup } from '../../../../shared/interface/event';
 
 @Component({
   selector: 'app-payout-screen',
@@ -10,7 +11,8 @@ import { EventService } from '../../../../shared/services/event.service';
 })
 export class PayoutScreenComponent implements OnInit {
 
-  @Input() user: ProteaUser;
+  @Input() public user: ProteaUser;
+  @Input() public event: ProteaMeetup;
 
   constructor(private uportService: UportService, private eventService: EventService) {}
 

@@ -1,3 +1,16 @@
-<button mat-raised-button (click)="withdrawTokens()" [disabled]="userPaid">
-  Withdraw tokens
-</button>
+<!-- @TODO: Possibly redundant -->
+<div class="notRegistered" *ngIf="user.isRegistered === 'false'">
+  <span>
+    You are not registered for this event
+  </span>
+</div>
+<div class="withdraw" *ngIf="user.isPaid === 'false' && event.ended === 'true'">
+  <button mat-raised-button (click)="withdrawTokens()" [disabled]="userPaid">
+    Withdraw tokens
+  </button>
+</div>
+<div class="wasPaid" >
+  <span *ngIf="user.isPaid === 'true'">
+    You have withdraw your tokens sucessfully
+  </span>
+</div>

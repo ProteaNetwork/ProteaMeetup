@@ -1,3 +1,6 @@
+<div class="buffering" [ngClass]="{active: loading == true}">
+  <mat-spinner></mat-spinner>
+</div>
 <div class="event-details">
   <div class="label">
     <h3 class="mat-title">
@@ -21,11 +24,11 @@
     </div>
   </div>
 </div>
-<div class="pending-rsvp " >
-  <button mat-raised-button (click)="rsvp()" [disabled]="event?.deposit > balance">
+<div class="pending-rsvp" *ngIf="!user?.isRegistered">
+  <button mat-raised-button (click)="rsvp()" [disabled]="event?.deposit > user?.balance">
     RSVP Now
   </button>
 </div>
-<div class="rsvp-confirmed mat-body2" *ngIf="userRsvp === 'true'">
+<div class="rsvp-confirmed mat-body2"  *ngIf="user?.isRegistered">
   You have RSVP'd for {{event?.name}}
 </div>

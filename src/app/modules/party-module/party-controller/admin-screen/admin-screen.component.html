@@ -2,10 +2,13 @@
   <mat-spinner></mat-spinner>
 </div>
 <div class="event-details">
-  <div class="label mat-title">
-    <h3>
+  <div class="label">
+    <h3 class="mat-title">
       {{event?.name}}
     </h3>
+    <h4 class="mat-body2">
+      {{event?.address}}
+    </h4>
   </div>
   <div class="row data">
     <div>
@@ -73,7 +76,8 @@
     Clear Remaining ETH (Not wired yet)
   </button>
 </div>
-<div class="checking-tools">
+<!-- @TODO: replace with user grid manager -->
+<!-- <div class="checking-tools">
   <div class="control">
     <mat-form-field hintLabel="Please enter a valid address">
       <input matInput #checkUser maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
@@ -83,4 +87,4 @@
       Check user state (Notwired up yet)
     </button>
   </div>
-</div>
+</div> -->
