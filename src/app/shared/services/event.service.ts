@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProteaParty } from '../interface/event';
+import { ProteaMeetup } from '../interface/event';
 
 import { default as TruffleContract } from 'truffle-contract';
 import to from 'await-to-js';
@@ -20,11 +20,11 @@ export class EventService {
 
   // @TODO: Refactor, using array for displaying event info before fetching
   // Purpose: when the registry is available, this can be used to populate the dashboard
-  private _events: BehaviorSubject<ProteaParty[]> = new BehaviorSubject<ProteaParty[]>([]);
-  public readonly events$: Observable<ProteaParty[]> = this._events.asObservable();
+  private _events: BehaviorSubject<ProteaMeetup[]> = new BehaviorSubject<ProteaMeetup[]>([]);
+  public readonly events$: Observable<ProteaMeetup[]> = this._events.asObservable();
 
-  private _currentEvent: BehaviorSubject<ProteaParty> = new BehaviorSubject<ProteaParty>(new ProteaParty());
-  public readonly currentEvent$: Observable<ProteaParty> = this._currentEvent.asObservable();
+  private _currentEvent: BehaviorSubject<ProteaMeetup> = new BehaviorSubject<ProteaMeetup>(new ProteaMeetup());
+  public readonly currentEvent$: Observable<ProteaMeetup> = this._currentEvent.asObservable();
 
   private factoryContract: TruffleContract;
   private eventContract: TruffleContract;
@@ -62,7 +62,7 @@ export class EventService {
 
         const fetchExisting = (_address: string)  => events.findIndex(isFound, _address);
 
-        function isFound(_item: ProteaParty) {
+        function isFound(_item: ProteaMeetup) {
           return _item.address === this;
         }
 
@@ -71,7 +71,7 @@ export class EventService {
         // Updating with fetched
         this._events.next(
           events.concat(_contractArray.filter(checkNew).map(
-            (_address: string) => new ProteaParty({address: _address})))
+            (_address: string) => new ProteaMeetup({address: _address})))
         );
 
         resolve();
@@ -102,8 +102,8 @@ export class EventService {
   }
 
   private async fetchState() {
-    const event = new ProteaParty();
-    // Event state
+    const event = new ProteaMeetup();
+
     event.name =  await this.getEventName();
     event.deposit = await this.getDeposit();
     event.address = this.eventContract.address;
@@ -121,8 +121,10 @@ export class EventService {
 
     event.cancelled = await this.checkCancelled();
 
-    console.log(event);
     this._currentEvent.next(event);
+  }
+
+  private updateEventEntry(_event: ProteaMeetup) {
 
   }
 

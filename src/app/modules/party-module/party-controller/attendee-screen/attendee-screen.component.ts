@@ -2,7 +2,7 @@ import { UportService } from '../../../../shared/services/uport.service';
 import { TokenService } from '../../../../shared/services/token.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { EventService } from '../../../../shared/services/event.service';
-import { ProteaParty } from '../../../../shared/interface/event';
+import { ProteaMeetup } from '../../../../shared/interface/event';
 import { ProteaUser } from '../../../../shared/interface/user';
 
 @Component({
@@ -11,7 +11,7 @@ import { ProteaUser } from '../../../../shared/interface/user';
   styleUrls: ['./attendee-screen.component.scss']
 })
 export class AttendeeScreenComponent implements OnInit {
-  @Input() event: ProteaParty;
+  @Input() event: ProteaMeetup;
   @Input() user: ProteaUser;
 
   constructor(private eventService: EventService, private tokenService: TokenService, private uportService: UportService) {

@@ -1,7 +1,7 @@
 import { UportService } from '../../../../shared/services/uport.service';
 import { EventService } from '../../../../shared/services/event.service';
 import { Component, OnInit, Input } from '@angular/core';
-import { ProteaParty } from '../../../../shared/interface/event';
+import { ProteaMeetup } from '../../../../shared/interface/event';
 
 @Component({
   selector: 'app-admin-screen',
@@ -9,7 +9,7 @@ import { ProteaParty } from '../../../../shared/interface/event';
   styleUrls: ['./admin-screen.component.scss']
 })
 export class AdminScreenComponent implements OnInit {
-  @Input() event: ProteaParty;
+  @Input() event: ProteaMeetup;
   public attending: string[] = [];
   public loading = false;
 

@@ -1,6 +1,6 @@
 import { UportService } from '../../../shared/services/uport.service';
 import { Subscription } from 'rxjs';
-import { ProteaParty } from './../../../shared/interface/event';
+import { ProteaMeetup } from './../../../shared/interface/event';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventService } from '../../../shared/services/event.service';
 import { ProteaUser } from '../../../shared/interface/user';
@@ -16,10 +16,10 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
   public state: EventState = EventState.INIT;
   public loading = true;
 
-  public events: ProteaParty[];
+  public events: ProteaMeetup[];
   private events$: Subscription;
 
-  public currentEvent: ProteaParty;
+  public currentEvent: ProteaMeetup;
   private currentEvent$: Subscription;
 
   public user: ProteaUser;
@@ -27,7 +27,7 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
 
   constructor(private eventService: EventService, private uportService: UportService) {
     this.events$ = this.eventService.events$.subscribe(
-      (_events: ProteaParty[]) =>
+      (_events: ProteaMeetup[]) =>
         this.events = _events
     );
     this.user$ = this.uportService.user$.subscribe(
@@ -35,7 +35,7 @@ export class PartyControllerComponent implements OnInit, OnDestroy {
       this.user = _user
     );
     this.currentEvent$ = this.eventService.currentEvent$.subscribe(
-      (_event: ProteaParty) =>
+      (_event: ProteaMeetup) =>
       this.currentEvent = _event
     );
   }

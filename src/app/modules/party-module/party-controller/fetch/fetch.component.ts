@@ -1,5 +1,5 @@
 import { UportService } from '../../../../shared/services/uport.service';
-import { ProteaParty } from './../../../../shared/interface/event';
+import { ProteaMeetup } from './../../../../shared/interface/event';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
@@ -9,9 +9,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class FetchComponent  {
   public loading = false;
-  public events: ProteaParty[];
+  public events: ProteaMeetup[];
 
-  @Input() deployedEvents: ProteaParty[];
+  @Input() deployedEvents: ProteaMeetup[];
   @Output() contractAddress = new EventEmitter<string>();
 
 
