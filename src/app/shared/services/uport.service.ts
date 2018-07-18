@@ -46,15 +46,15 @@ export class UportService {
    */
   private async parseCachedUser() {
     const user = new ProteaUser(JSON.parse(this.localStorageService.get(this._userStorageKey)));
-    this._user.next(user);
     // Checking if uPort log in data is valid, if not the modal will pop up again
-    // if (await this.verifyPushToken(user.pushToken)) {
-    //   this.uport.pushToken = user.pushToken;
-    //   this.uport.publicEncKey = user.publicEncKey;
-    //   this.uport.address = user.address;
-    //   this.uport.firstReq = false;
-    //   this._user.next(user);
-    // }
+    if (await this.verifyPushToken(user.pushToken)) {
+      // @TODO: check expire
+      this.uport.pushToken = user.pushToken;
+      this.uport.publicEncKey = user.publicEncKey;
+      this.uport.address = user.address;
+      this.uport.firstReq = false;
+      this._user.next(user);
+    }
   }
 
   /**

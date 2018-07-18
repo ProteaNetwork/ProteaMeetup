@@ -224,7 +224,7 @@ export class EventService {
         if (_error) {
           reject(_error);
         }
-        resolve(_status);
+        resolve(<boolean>_status.toString());
       });
     });
   }
