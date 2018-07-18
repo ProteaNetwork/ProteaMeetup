@@ -1,25 +1,27 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.21;
 
-import "./ERC223/SafeMath.sol";
-import "./ERC223/ERC223.sol";
-import "./ERC223/ERC20.sol";
-import "./ERC223/ERC223Receiver.sol";
+import "../ERC223/SafeMath.sol";
+import "../ERC223/ERC223.sol";
+import "../ERC223/ERC20.sol";
+import "../ERC223/ERC223Receiver.sol";
+import "../utils/AddressUtils.sol";
 
-contract ERC223StandardToken is ERC20, ERC223 {
+contract ProteaToken is ERC20, ERC223 {
     using SafeMath for uint;
+    using AddressUtils for address;
+
     string internal _name;
     string internal _symbol;
     uint8 internal _decimals;
     uint256 internal _totalSupply;
-
     uint256 internal _issuingAmount;
 
     mapping (address => uint256) internal balances;
     mapping (address => mapping (address => uint256)) internal allowed;
     // Tracks all earned tokens, not transfered
-    mapping(address => uint) internal issued;
+    mapping(address => uint) internal earned;
 
-    event TokensIssued(address account, uint amount);
+    event TokensEarned(address account, uint amount);
 
     constructor(string name, string symbol, uint8 decimals, uint256 totalSupply, uint256 tokenIssuingAmount) public {
         _issuingAmount = tokenIssuingAmount;   
@@ -32,7 +34,7 @@ contract ERC223StandardToken is ERC20, ERC223 {
         balances[this] = _totalSupply.sub(init);  
         
         balances[msg.sender] = init;               
-        issued[msg.sender] = init;               
+        earned[msg.sender] = init;               
        
     }
     function name()
@@ -64,11 +66,11 @@ contract ERC223StandardToken is ERC20, ERC223 {
     }
 
     function faucet() public {
-        require(issued[msg.sender] == 0);
+        require(earned[msg.sender] == 0);
         balances[this] = balances[this].sub(_issuingAmount);
         balances[msg.sender] = balances[msg.sender].add(_issuingAmount);
-        issued[msg.sender] = issued[msg.sender].add(_issuingAmount);
-        emit TokensIssued(msg.sender, _issuingAmount);
+        earned[msg.sender] = earned[msg.sender].add(_issuingAmount);
+        emit TokensEarned(msg.sender, _issuingAmount);
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
@@ -84,8 +86,8 @@ contract ERC223StandardToken is ERC20, ERC223 {
         return balances[_owner];
     }
 
-    function totalIssuedOf(address _owner) public view returns (uint256 issuedTotal) {
-        return issued[_owner];
+    function totalEarnedOf(address _owner) public view returns (uint256 earnedTotal) {
+        return earned[_owner];
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
@@ -129,7 +131,7 @@ contract ERC223StandardToken is ERC20, ERC223 {
    
     function transfer(address _to, uint _value, bytes _data) public {
         require(_value > 0);
-        if(isContract(_to)) {
+        if(_to.isContract()) {
             ERC223Receiver receiver = ERC223Receiver(_to);
             receiver.tokenFallback(msg.sender, _value, _data);
         }
@@ -138,22 +140,11 @@ contract ERC223StandardToken is ERC20, ERC223 {
         emit Transfer(msg.sender, _to, _value, _data);
     }
     
-    function isContract(address _addr) private view returns (bool is_contract) {
-        uint length;
-        assembly {
-            //retrieve the size of the code on target address, this needs assembly
-            length := extcodesize(_addr)
-        }
-        return (length>0);
+    function returnToken(address _to, uint _total, uint _initial) external {
+        transfer(_to, _total);
+        uint reward = _total.sub(_initial);
+        earned[_to] = earned[_to].add(reward);
+        emit TokensEarned(_to, reward);
     }
 
-    event AccountReset(address userAddress, uint256 balance);
-
-    // Debugging during party stage
-    function resetAccount(address _account) public {
-        balances[this] = balances[this].add(balances[_account]);
-        balances[_account] = 0;
-        issued[_account] = 0;
-        emit AccountReset(_account, balances[_account]);
-    }
 }

@@ -1,40 +1,30 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.21;
 
-import "./GroupAdmin.sol";
-import "./ERC223/ERC223.sol";
-import "./ERC223/ERC223Receiver.sol";
-import "./zeppelin/lifecycle/Destructible.sol";
+import "../../utils/GroupAdmin.sol";
+import "../../token/ProteaToken.sol";
+import "../../ERC223/ERC223Receiver.sol";
+import "../MeetupLibrary.sol";
+import "./ProteaMeetupManager.sol";
 
-contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
-    ERC223 internal token;
+contract ProteaMeetup is GroupAdmin, ERC223Receiver {
+    ProteaToken internal token;
+    ProteaMeetupManager internal dataRegistry;
 
     // TODO: Could save gas changing to private on some
-    string public name;
-    uint256 public deposit;
-    uint public limitOfParticipants;
-    uint public registered;
-    uint public attended;
-    bool public ended;
-    bool public cancelled;
-    uint public endedAt;
-    uint public coolingPeriod;
-    uint256 public payoutAmount;
-    string public encryption;
+    string internal name;
+    uint256 internal deposit;
+    uint internal limitOfParticipants;
+    uint internal endedAt;
+    uint internal coolingPeriod;
+    uint256 internal payoutAmount;
+    string internal encryption;
 
-    mapping(address => Participant) public participants;
-    mapping(uint => address) public participantsIndex;
+    // Possibly not needed, depends on gas
+    uint internal registered;
+    uint internal attended;
 
     // // For keeping track of the deposits made to the events account
     mapping(address => uint) public deposited;
-    bool paid;
-
-
-    struct Participant {
-        address addr;
-        address identity;
-        bool attended;
-        bool paid;
-    }
 
     struct TKN {
         address sender;
@@ -43,28 +33,32 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
         bytes4 sig;
     }
 
-    event RegisterEvent(address addr);
-    event AttendEvent(address addr);
-    event PaybackEvent(uint256 _payout);
-    event WithdrawEvent(address addr, uint256 _payout);
+    // Need to audit event costs
+    event RegisterEvent(address indexed _user, address indexed _event);
+    event AttendEvent(address indexed _user, address indexed _event);
     event CancelEvent();
     event ClearEvent(address addr, uint256 leftOver);
 
-    // Token
 
     /* Modifiers */
     modifier onlyActive {
-        require(!ended);
+        require(dataRegistry.getEventState(address(this)) = 0);
         _;
     }
 
     modifier onlyEnded {
-        require(ended);
+        // All states above 0 currently are an ended state
+        require(dataRegistry.getEventState(address(this)) > 0);
         _;
     }
 
     modifier onlyToken {
         require(msg.sender == address(token));
+        _;
+    }
+    
+    modifier spaceAvailable{
+        require(registered < limitOfParticipants);
         _;
     }
 
@@ -78,11 +72,12 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
         address _tokenAddress, 
         string _encryption
         ) public {
-        token = ERC223(_tokenAddress);
+        token = ProteaToken(_tokenAddress);
+        dataRegistry = ProteaMeetupManager(_tokenAddress);
         if (bytes(_name).length != 0) {
             name = _name;
         } else {
-            name = "Test";
+            name = "Protea Meetup";
         }
 
         if (_deposit != 0) {
@@ -95,6 +90,7 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
             limitOfParticipants = _limitOfParticipants;
         } else {
             limitOfParticipants = 20;
+    
         }
 
         if (_coolingPeriod != 0) {
@@ -108,28 +104,23 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
         }
     }
 
-    function registerInternal(address _from, uint _value) internal onlyActive {
+    function registerInternal(address _from, uint _value) internal onlyActive spaceAvailable {
+        // Leaving ability to add more as a donation option, not directly exposed in UI
         require(_value >= deposit);
-        require(registered < limitOfParticipants);
         require(!isRegistered(_from));
         deposited[_from] += _value;
-        registered++;
-        participantsIndex[registered] = _from;
-        // Leaving Identity field open for Proof of Attendance
-        participants[_from] = Participant(_from, address(0), false, false);
+
+        dataRegistry.registerAttendee(_from, "");
+
         emit RegisterEvent(_from);
     }
 
     function withdraw() external onlyEnded {
         require(payoutAmount > 0);
-        Participant storage participant = participants[msg.sender];
-        require(participant.addr == msg.sender);
-        require(cancelled || participant.attended);
-        require(participant.paid == false);
+        require(dataRegistry.getEventState(address(this)) == 2 || dataRegistry.getAttendeeState(address(this), msg.sender) == 2);
 
-        participant.paid = true;
-        transfer(payoutAmount);
-        emit WithdrawEvent(msg.sender, payoutAmount);
+        dataRegistry.confirmPaid(msg.sender);
+        returnToken(payoutAmount);
     }
 
     // /* Views */
@@ -138,15 +129,15 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
     }
 
     function isRegistered(address _addr) view public returns(bool) {
-        return participants[_addr].addr != address(0);
+        return dataRegistry.getAttendeeState(address(this), _addr) > 0;
     }
 
     function isAttended(address _addr) view public returns(bool) {
-        return isRegistered(_addr) && participants[_addr].attended;
+        return dataRegistry.getAttendeeState(address(this), _addr) == 2;
     }
 
     function isPaid(address _addr) view public returns(bool) {
-        return isRegistered(_addr) && participants[_addr].paid;
+        return dataRegistry.getAttendeeState(address(this), _addr) == 3;
     }
 
     function payout() view public returns(uint256) {
@@ -156,27 +147,28 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
 
     // /* Admin only functions */
 
-    function payback() external onlyOwner onlyActive {
+    function endEvent() external onlyOwner onlyActive {
         payoutAmount = payout();
-        ended = true;
-        endedAt = now;
-        emit PaybackEvent(payoutAmount);
+        dataRegistry.setEventState(1);
+        endedAt = now; // solium-disable-line security/no-block-members
     }
 
     function cancel() external onlyOwner onlyActive {
         payoutAmount = deposit;
-        cancelled = true;
-        ended = true;
-        endedAt = now;
+        dataRegistry.setEventState(3);
+        endedAt = now; // solium-disable-line security/no-block-members
         emit CancelEvent();
     }
 
-    /* return the remaining of balance if there are any unclaimed after cooling period */
+    /*  */
+    /**
+     * @dev Return the remaining of balance if there are any unclaimed after cooling period   
+     */
     function clear() external onlyOwner onlyEnded {
-        require(now > endedAt + coolingPeriod);
-        require(ended);
+        require(now > endedAt + coolingPeriod);  // solium-disable-line security/no-block-members
+        require(dataRegistry.getEventState(address(this)) > 0);
         uint leftOver = totalBalance();
-        transfer(leftOver);
+        ProteaToken.transfer(owner, leftOver);
         emit ClearEvent(owner, leftOver);
     }
 
@@ -191,22 +183,18 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
             require(isRegistered(_addr));
             require(!isAttended(_addr));
             emit AttendEvent(_addr);
-            participants[_addr].attended = true;
+            dataRegistry.confirmAttendee(_addr);
             attended++;
-            // Identity rewards functions could happen here
-
         }
     }
 
-    function transfer(uint _amount) internal returns(bool) {
-        return token.transfer(msg.sender, _amount);
+    function returnToken(uint _amount) internal returns(bool) {
+        return token.returnToken(msg.sender, _amount, deposit);
     }
 
     // ERC223 compliance
-    function tokenFallback(address _from, uint _value, bytes _data) external {
-        require(msg.sender == address(token));
-
+    function tokenFallback(address _from, uint _value, bytes _data) external onlyToken {
         registerInternal(_from, _value);
-
     }
+
 }
