@@ -12,7 +12,10 @@ contract ProteaMeetupManager {
     mapping(address => address[]) internal userEvents;
     // State: 0: Active, 1: Ended, 2: Cancelled 
     mapping(address => uint) internal eventStates;
-    mapping(address => mapping(address => MeetupLibrary.Attendee[])) internal attendees;
+    // Event => Attendees
+    mapping(address => address[]) internal attendees;
+    // Event => Attendee data
+    mapping(address => mapping(address => MeetupLibrary.Attendee)) internal attendeeData;
 
     constructor(address _tokenContract) public{
         tokenContract = _tokenContract;
@@ -48,8 +51,8 @@ contract ProteaMeetupManager {
         return userEvents[_adminAddress];
     }
 
-    function getEventState(address _event) view public {
-        return eventStates[_event];
+    function getEventState(address _event) view public returns(uint state) {
+        state = eventStates[_event];
     }
 
     // Consider making specific functions
@@ -58,28 +61,34 @@ contract ProteaMeetupManager {
     }
 
     // Need to consider security here
-    function getAttendee(address _event, address _address) view public {
-        return attendees[_event][_address];
+    // function getAttendee(address _event, address _address) view public returns(MeetupLibrary.Attendee attendee) {
+    function getAttendee(address _event, address _address) view public returns(string identity, uint8 state) {
+        identity = attendeeData[_event][_address].identity;
+        state = attendeeData[_event][_address].state;
     }
 
-    function getAttendeeState(address _event, address _address) view public {
-        return attendees[_event][_address].state;
+    function getAttendeeState(address _event, address _address) view public returns(uint state) {
+        state = attendeeData[_event][_address].state;
     }
     
-    function getAttendeeIdentity(address _event, address _address) view public {
-        return attendees[_event][_address].identity;
+    function getAttendeeIdentity(address _event, address _address) view public returns(string identity) {
+        identity = attendeeData[_event][_address].identity;
     }
 
-    function registerAttendee(address _address, string _identity) external {
-        MeetupLibrary.Attendee storage attendee = new MeetupLibrary.Attendee(_identity, 1);
-        attendees[msg.sender][_address] = attendee;
+    function registerAttendee(address _address, string _identity) external returns(bool success) {
+        MeetupLibrary.Attendee memory attendee = MeetupLibrary.Attendee(_identity, 1);
+        attendees[msg.sender].push(_address);
+        attendeeData[msg.sender][_address] = attendee;
+        success = true;
     }
 
-    function confirmAttendee(address _address) external {
-        attendees[msg.sender][_address].state = 2;
+    function confirmAttendee(address _address) external returns(bool success){
+        attendeeData[msg.sender][_address].state = 2;
+        success = true;
     }
 
-    function confirmPaid(address _address) external {
-        attendees[msg.sender][_address].state = 3;
+    function confirmPaid(address _address) external returns(bool success){
+        attendeeData[msg.sender][_address].state = 3;
+        success = true;
     }
 }

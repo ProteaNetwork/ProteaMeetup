@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.24;
 
 import "../utils/GroupAdmin.sol";
 
@@ -10,12 +10,16 @@ contract VersionManager is GroupAdmin {
     string internal title;
     mapping(address => address[]) internal versions;
 
-    constructor(string _title) {
+    constructor(string _title) public {
         title = _title;
     }
 
     event NewVersionSet(address indexed _token, address indexed _factory);
     event VersionRemoved(address indexed _token, address indexed _factory);
+
+    function getName() view public returns(string name){
+        name = title;
+    }
 
     function setVersion(address _token, address _version) onlyAdmin public {
         versions[_token].push(_version);
@@ -23,11 +27,17 @@ contract VersionManager is GroupAdmin {
     }
 
     function removeFactory(address _token, address _version) onlyAdmin public {
-        delete versions[_token][_version];
+        address[] storage versionsArr = versions[_token];
+        for(uint i = 0; i < versionsArr.length; i++) {
+            if(versionsArr[i] == _version){
+                delete versions[_token][i];
+                break;
+            }
+        }
         emit VersionRemoved(_token, _version);
     }
 
-    function getVersions(address _token) view public returns(address) {
+    function getVersions(address _token) view public returns(address[]) {
         return versions[_token];
     }
 }

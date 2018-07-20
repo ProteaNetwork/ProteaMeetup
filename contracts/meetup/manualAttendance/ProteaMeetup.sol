@@ -42,7 +42,7 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
 
     /* Modifiers */
     modifier onlyActive {
-        require(dataRegistry.getEventState(address(this)) = 0);
+        require(dataRegistry.getEventState(address(this)) == 0);
         _;
     }
 
@@ -112,7 +112,7 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
 
         dataRegistry.registerAttendee(_from, "");
 
-        emit RegisterEvent(_from);
+        emit RegisterEvent(_from, address(this));
     }
 
     function withdraw() external onlyEnded {
@@ -168,7 +168,7 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
         require(now > endedAt + coolingPeriod);  // solium-disable-line security/no-block-members
         require(dataRegistry.getEventState(address(this)) > 0);
         uint leftOver = totalBalance();
-        ProteaToken.transfer(owner, leftOver);
+        token.transfer(owner, leftOver);
         emit ClearEvent(owner, leftOver);
     }
 
@@ -182,14 +182,15 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
             address _addr = _addresses[i];
             require(isRegistered(_addr));
             require(!isAttended(_addr));
-            emit AttendEvent(_addr);
+            emit AttendEvent(_addr, address(this));
             dataRegistry.confirmAttendee(_addr);
             attended++;
         }
     }
 
-    function returnToken(uint _amount) internal returns(bool) {
-        return token.returnToken(msg.sender, _amount, deposit);
+    function returnToken(uint _amount) internal returns(bool success) {
+        token.returnToken(msg.sender, _amount, deposit);
+        success = true;
     }
 
     // ERC223 compliance
