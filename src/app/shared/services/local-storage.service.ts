@@ -38,6 +38,7 @@ export class LocalStorageService {
    * @param key storage key
    */
   delete(key: string) {
-    localStorage.removeItem(key);
+      console.log(`%cClearing key from localstorage ${key}`, 'color: green');
+      localStorage.removeItem(key);
   }
 }

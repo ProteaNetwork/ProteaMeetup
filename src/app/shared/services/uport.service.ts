@@ -54,6 +54,8 @@ export class UportService {
       this.uport.address = user.address;
       this.uport.firstReq = false;
       this._user.next(user);
+    } else {
+      this.localStorageService.delete(this._userStorageKey);
     }
   }
 
@@ -64,10 +66,12 @@ export class UportService {
   private async verifyPushToken(pushToken: string) {
     const topic = this.uport.topicFactory('access_token');
     const res = await JWT.verifyJWT(this.uport.credentials.settings, pushToken, topic.url);
-    if (!res) {
-      return false;
+    if (res) {
+      if (new Date(<number>res.payload.iat * 1000).getUTCSeconds() > Date.now()) {
+        return true;
+      }
     }
-    return true;
+    return false;
   }
 
   /**
