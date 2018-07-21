@@ -14,6 +14,8 @@ export class PayoutScreenComponent implements OnInit {
   @Input() public user: ProteaUser;
   @Input() public event: ProteaMeetup;
 
+  loading = false;
+
   constructor(private uportService: UportService, private eventService: EventService) {}
 
   ngOnInit() {
@@ -21,7 +23,11 @@ export class PayoutScreenComponent implements OnInit {
 
 
   public async withdrawTokens() {
-    await this.eventService.withdraw();
-    this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
+    if (!this.loading) {
+      this.loading = true;
+      await this.eventService.withdraw();
+      this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
+      this.loading = false;
+    }
   }
 }

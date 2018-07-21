@@ -5,7 +5,7 @@ import "./ERC223/ERC223.sol";
 import "./ERC223/ERC223Receiver.sol";
 import "./zeppelin/lifecycle/Destructible.sol";
 
-contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
+contract ProteaMeetup is Destructible, GroupAdmin, ERC223Receiver {
     ERC223 internal token;
 
     // TODO: Could save gas changing to private on some
@@ -26,8 +26,6 @@ contract ProteaParty is Destructible, GroupAdmin, ERC223Receiver {
 
     // // For keeping track of the deposits made to the events account
     mapping(address => uint) public deposited;
-    bool paid;
-
 
     struct Participant {
         address addr;

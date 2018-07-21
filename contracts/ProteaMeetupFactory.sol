@@ -1,12 +1,12 @@
 pragma solidity ^0.4.20;
 
-import "./ProteaParty.sol";
+import "./ProteaMeetup.sol";
 
-contract ProteaPartyFactory {
+contract ProteaMeetupFactory {
 
     address private tokenContract;
 
-    event ProteaPartyDeployed(address partyAddress);
+    event ProteaMeetupDeployed(address meetupAddress);
 
     mapping(address => address[]) deployed;
 
@@ -14,7 +14,7 @@ contract ProteaPartyFactory {
         tokenContract = _tokenContract;
     }
 
-    function deployParty(
+    function deploymeetup(
         string _name, 
         uint256 _deposit, 
         uint _limitOfParticipants, 
@@ -22,18 +22,18 @@ contract ProteaPartyFactory {
         string _encryption
         ) public {
         
-        ProteaParty party = new ProteaParty(
+        ProteaMeetup meetup = new ProteaMeetup(
             _name, 
             _deposit, 
             _limitOfParticipants, 
             _coolingPeriod, 
             tokenContract, 
             _encryption);
-        party.transferOwnership(msg.sender);
+        meetup.transferOwnership(msg.sender);
         
-        deployed[msg.sender].push(address(party));
+        deployed[msg.sender].push(address(meetup));
 
-        emit ProteaPartyDeployed(address(party));
+        emit ProteaMeetupDeployed(address(meetup));
     }
 
     function getRegisteredToken() view public returns(address) {

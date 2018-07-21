@@ -12,6 +12,7 @@ declare let require: any;
 const factoryAbi = require('./../../../../build/contracts/ProteaPartyFactory.json');
 const eventAbi = require('./../../../../build/contracts/ProteaParty.json');
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -46,6 +47,7 @@ export class EventService {
       return await this.initWait();
     }
   }
+  
 
   // Factory/Registry
   public fetchAdminEvents() {
@@ -92,7 +94,6 @@ export class EventService {
     });
   }
 
-
   // Event functions
   public async fetchEvent(_address: string) {
     // @TODO: need to run a call to confirm the contract before setting
@@ -106,6 +107,7 @@ export class EventService {
 
     event.name =  await this.getEventName();
     event.deposit = await this.getDeposit();
+    event.totalBalance = await this.getTotalStake();
     event.address = this.eventContract.address;
     event.limitOfParticipants = await this.getLimit();
     event.registered = await this.getRegistered();
@@ -122,10 +124,17 @@ export class EventService {
     event.cancelled = await this.checkCancelled();
 
     this._currentEvent.next(event);
+
+    this.updateEventEntry(event);
   }
 
   private updateEventEntry(_event: ProteaMeetup) {
-
+    function isFound(_item: ProteaMeetup) {
+      return _item.address === this;
+    }
+    const events = this._events.getValue();
+    this._events.getValue()[events.findIndex(isFound, _event.address)] = _event;
+    this._events.next(events);
   }
 
   public async fetchUserEventData(_userObject: ProteaUser) {
@@ -214,6 +223,17 @@ export class EventService {
           reject(_error);
         }
         resolve( _cooling.toNumber());
+      });
+    });
+  }
+
+  public getTotalStake() {
+    return new Promise<number>((resolve, reject) => {
+      this.eventContract.totalBalance((_error, _totalBalance) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve(_totalBalance.toNumber());
       });
     });
   }
