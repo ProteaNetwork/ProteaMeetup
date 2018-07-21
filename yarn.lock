@@ -7074,6 +7074,16 @@ tmp@0.0.x:
   dependencies:
     os-tmpdir "~1.0.2"
 
+tns-core-modules-widgets@next:
+  version "4.2.0-2018-07-18-03"
+  resolved "https://registry.yarnpkg.com/tns-core-modules-widgets/-/tns-core-modules-widgets-4.2.0-2018-07-18-03.tgz#bce75022ad06a21d5f5132a40f99bbb283b23de2"
+
+tns-core-modules@^4.2.0-2018-07-21-02:
+  version "4.2.0-2018-07-21-02"
+  resolved "https://registry.yarnpkg.com/tns-core-modules/-/tns-core-modules-4.2.0-2018-07-21-02.tgz#a9a192eef712d3a9d697b673e45066b8f6331ce3"
+  dependencies:
+    tns-core-modules-widgets next
+
 to-array@0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/to-array/-/to-array-0.1.4.tgz#17e6c11f73dd4f3d74cda7a4ff3238e9ad9bf890"

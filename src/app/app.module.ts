@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PartyDashComponent } from './components/party-dash/party-dash.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { LoginComponent } from './pages/login/login.component';
+import { HeaderComponent } from './components/header/header.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { LoginComponent } from './pages/login/login.component';
     AppComponent,
     PartyDashComponent,
     LandingPageComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

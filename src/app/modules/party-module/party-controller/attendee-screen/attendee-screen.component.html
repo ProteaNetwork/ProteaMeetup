@@ -7,7 +7,7 @@
       {{event?.name}}
     </h3>
   </div>
-  <div *ngIf="!event?.ended">
+  <div *ngIf="event.ended === 'false'">
     <div class="label mat-title">
       RSVP stake:
     </div>
@@ -15,20 +15,20 @@
       {{event?.deposit}}
     </div>
   </div>
-  <div *ngIf="!event?.ended">
+  <div *ngIf="event.ended === 'false'">
     <div class="label mat-title">
       Number tickets available:
     </div>
     <div class="value mat-body2">
-      {{event?.limitOfParticipants - event?.registered}} / {{event?.limitOfParticipants}}
+      {{event?.limitOfParticipants - event?.registered}}
     </div>
   </div>
 </div>
-<div class="pending-rsvp" *ngIf="!user?.isRegistered">
+<div class="pending-rsvp" *ngIf="user.isRegistered === 'false'">
   <button mat-raised-button (click)="rsvp()" [disabled]="event?.deposit > user?.balance">
     RSVP Now
   </button>
 </div>
-<div class="rsvp-confirmed mat-body2"  *ngIf="user?.isRegistered">
+<div class="rsvp-confirmed mat-body2"  *ngIf="user.isRegistered === 'true'">
   You have RSVP'd for {{event?.name}}
 </div>

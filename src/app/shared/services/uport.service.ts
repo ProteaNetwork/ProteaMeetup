@@ -55,7 +55,7 @@ export class UportService {
       this.uport.firstReq = false;
       this._user.next(user);
     } else {
-      // this.localStorageService.delete(this._userStorageKey);
+      this.localStorageService.delete(this._userStorageKey);
     }
   }
 
@@ -68,8 +68,6 @@ export class UportService {
     const res = await JWT.verifyJWT(this.uport.credentials.settings, pushToken, topic.url);
     if (res) {
       if (new Date(<number>res.payload.exp * 1000).getTime() > Date.now()) {
-        console.log(new Date(<number>res.payload.exp * 1000).getTime());
-        console.log(Date.now())
         return true;
       }
     }
@@ -120,6 +118,11 @@ export class UportService {
    */
   public async login() {
     await this.requestCredentials(['name', 'avatar', 'phone']);
+  }
+
+  public logout() {
+    this.localStorageService.delete(this._userStorageKey);
+    this._user.next(null);
   }
 
   /**
