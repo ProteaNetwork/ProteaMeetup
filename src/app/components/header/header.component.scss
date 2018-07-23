@@ -1,0 +1,29 @@
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 20px 0;
+    .logo {
+        img {
+            max-width: 100px;
+        }
+    }
+    .logout {
+        cursor: pointer;
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+
+        visibility: hidden;
+        opacity: 0;
+        transition-duration: 200ms;
+        &.active{
+            visibility: visible;
+            opacity: 1;
+        }
+        span {
+            font-size: 18px;
+            display: block;
+        }
+    }
+}

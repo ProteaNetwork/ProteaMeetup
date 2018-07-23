@@ -1,4 +1,4 @@
-export class ProteaParty {
+export class ProteaMeetup {
     public address = '';
     public name  = '';
     public limitOfParticipants = 0;
@@ -14,7 +14,7 @@ export class ProteaParty {
     public endAt = 0;
     public cooledDown = 0;
 
-    public constructor(init?: Partial<ProteaParty>) {
+    public constructor(init?: Partial<ProteaMeetup>) {
         Object.assign(this, init);
     }
 }

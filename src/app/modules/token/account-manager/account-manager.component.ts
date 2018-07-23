@@ -1,6 +1,8 @@
-import { TokenService } from '../../../shared/token.service';
-import { Web3Service } from './../../../shared/web3.service';
-import { Component, OnInit } from '@angular/core';
+import { UportService } from '../../../shared/services/uport.service';
+import { TokenService } from '../../../shared/services/token.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ProteaUser } from '../../../shared/interface/user';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -8,66 +10,59 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './account-manager.component.html',
   styleUrls: ['./account-manager.component.scss']
 })
-export class AccountManagerComponent implements OnInit {
-  public balance = -1;
-  public issued = -1;
-  private transacting = false;
+export class AccountManagerComponent implements OnInit, OnDestroy {
+  public user: ProteaUser;
+  private user$: Subscription;
 
-  constructor(private web3: Web3Service, private tokenService: TokenService ) {
+  private loading = false;
+
+  constructor(private uportService: UportService, private tokenService: TokenService ) {
+    this.user$ = this.uportService.user$.subscribe((_user: ProteaUser) => {
+      this.user = _user;
+    });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.tokenService.initWait();
     this.loadBalances();
   }
 
+  ngOnDestroy() {
+    this.user$.unsubscribe();
+  }
+
   isValidAddress(address: string) {
-    return this.web3.isValidAddress(address);
+    return this.uportService.isValidAddress(address);
   }
 
   // Controls
-
-  loadBalances() {
-    this.loadBalance();
-    this.loadTotal();
-  }
-
-  loadTotal() {
-    this.tokenService.getIssuedTotal().then((_totalIssued: number) => {
-      this.issued = _totalIssued;
-    }, (error: any) => {
-      console.error('Load Total Error', error);
-    });
-  }
-
-  loadBalance() {
-    this.tokenService.getBalance().then((_balance: number) => {
-      this.balance = _balance;
-    }, (error: any) => {
-      console.error('Load balance error', error);
-    });
+  async loadBalances() {
+    this.loading = true;
+    this.uportService.updateUserObject(await this.tokenService.updateBalances(this.user));
+    this.loading = false;
   }
 
   claimTokens() {
-    if (!this.transacting) {
-      this.transacting = true;
+    if (!this.loading) {
+      this.loading = true;
       this.tokenService.faucet().then((_result) => {
-        this.transacting = false;
+        this.loading = false;
         this.loadBalances();
         }, (error) => {
-        this.transacting = false;
+        this.loading = false;
         console.error('Claim total error', error);
       });
     }
   }
 
   resetAccount() {
-    if (!this.transacting) {
-      this.transacting = true;
-      this.tokenService.resetAccount().then((_result) => {
-        this.transacting = false;
+    if (!this.loading) {
+      this.loading = true;
+      this.tokenService.resetAccount(this.user.address).then((_result) => {
+        this.loading = false;
         this.loadBalances();
         }, (error) => {
-          this.transacting = false;
+          this.loading = false;
           console.error('Claim total error', error);
       });
     }

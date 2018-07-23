@@ -1,31 +1,30 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Web3Service } from './../shared/web3.service';
+import { ProteaUser } from './../shared/interface/user';
+import { Injectable, OnDestroy } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { UportService } from '../shared/services/uport.service';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LoginGuard implements CanActivate {
-  private attempts = 10;
+export class LoginGuard implements CanActivate, OnDestroy {
+  private ready: boolean;
+  private user$: Subscription;
 
-  constructor(private web3: Web3Service, private router: Router) {}
-
-  async canActivate(): Promise<boolean> {
-    const valid = await this.queryServiceState();
-    if (!valid) {
-      this.router.navigate(['/login']);
-    }
-    return valid;
+  constructor(private uportService: UportService, private router: Router) {
+    this.user$ = this.uportService.user$.subscribe(
+      (user: ProteaUser) =>
+      (user.address !== '') ? this.ready = true : false );
   }
 
-  private async queryServiceState() {
-    for (let i = 0; i < this.attempts; i++) {
-      const delay = new Promise(resolve => setTimeout(resolve, 200));
-      await delay;
-      if (this.web3.ready) {
-        return true;
-      }
+  ngOnDestroy() {
+    this.user$.unsubscribe();
+  }
+
+  canActivate(): boolean {
+    if (!this.ready) {
+      this.router.navigate(['/login']);
     }
-    return false;
+    return this.ready;
   }
 }

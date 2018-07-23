@@ -1,70 +1,89 @@
-import { Component, OnInit } from '@angular/core';
-import { EventService } from '../../../shared/event.service';
+import { UportService } from '../../../shared/services/uport.service';
+import { Subscription } from 'rxjs';
+import { ProteaMeetup } from './../../../shared/interface/event';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { EventService } from '../../../shared/services/event.service';
+import { ProteaUser } from '../../../shared/interface/user';
+import { EventState } from '../enum/event-state.enum';
 
 @Component({
   selector: 'app-party-controller',
   templateUrl: './party-controller.component.html',
   styleUrls: ['./party-controller.component.scss']
 })
-export class PartyControllerComponent implements OnInit {
-  // @TODO: swap to enum
-  public state = 'init';
-  public loading = false;
+export class PartyControllerComponent implements OnInit, OnDestroy {
+  // @TODO: Change to component resolver
+  public state: EventState = EventState.INIT;
+  public loading = true;
 
-  public events: string[];
+  public events: ProteaMeetup[];
+  private events$: Subscription;
 
-  constructor(private eventService: EventService) { }
+  public currentEvent: ProteaMeetup;
+  private currentEvent$: Subscription;
+
+  public user: ProteaUser;
+  private user$: Subscription;
+
+  constructor(private eventService: EventService, private uportService: UportService) {
+    this.events$ = this.eventService.events$.subscribe(
+      (_events: ProteaMeetup[]) =>
+        this.events = _events
+    );
+    this.user$ = this.uportService.user$.subscribe(
+      (_user: ProteaUser) =>
+      this.user = _user
+    );
+    this.currentEvent$ = this.eventService.currentEvent$.subscribe(
+      (_event: ProteaMeetup) =>
+      this.currentEvent = _event
+    );
+  }
 
   async ngOnInit() {
-    await this.checkEvents();
+    await this.eventService.initWait();
+    this.loading = false;
+    await this.eventService.fetchAdminEvents();
   }
 
-  checkEvents() {
-    return new Promise((resolve, reject) => {
-      this.eventService.fetchAdminEvents().then((results: string[]) => {
-        console.log(results);
-        this.events = results;
-        resolve();
-      }, error => {
-        console.log('Event Fetch Error', error);
-        reject(error);
-      });
-    });
+  ngOnDestroy() {
+    this.events$.unsubscribe();
+    this.currentEvent$.unsubscribe();
+    this.user$.unsubscribe();
   }
+
   onSelection (_state: string) {
-    this.state = _state;
+    this.state = EventState[_state];
   }
 
 
   async onFetch(_address: string) {
     this.loading = true;
-    if (await this.eventService.fetchEvent(_address)) {
-      if (this.eventService.userAdmin) {
-        this.state = 'admin';
-      } else {
-        if (this.eventService.event.ended) {
-          this.state = 'payout';
-        } else {
-          this.state = 'attendee';
-        }
-      }
-      this.loading = false;
-
+    await this.eventService.fetchEvent(_address);
+    await this.fetchUserState();
+    if (this.user.isAdmin) {
+      this.state = EventState.ADMIN;
     } else {
-      // Error
-      this.loading = false;
+      if (this.currentEvent.ended) {
+        this.state = EventState.PAYOUT;
+      } else {
+        this.state = EventState.ATTENDEE;
+      }
     }
+    this.loading = false;
+  }
+
+  async fetchUserState() {
+    await this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
   }
 
   async onDeploy(_eventData: any) {
     this.loading = true;
     this.eventService.deployEvent(_eventData.name, _eventData.deposit, _eventData.limit, _eventData.cooldown, '').then(async result => {
-      console.log('waiting')
-      await this.checkEvents();
-      console.log('fetching')
-      this.onFetch(this.events[this.events.length - 1]);
+      await this.eventService.fetchAdminEvents();
+      this.onFetch(this.events[this.events.length - 1].address);
     }, error => {
-      console.log('Event Deploy Error', error);
+      console.error('Event Deploy Error', error);
       this.loading = false;
     });
   }
