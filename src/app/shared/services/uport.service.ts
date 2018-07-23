@@ -15,7 +15,7 @@ export class UportService {
   private web3: any;
   public network = 0;
 
-  private _name = 'Protea Party V1';
+  private _name = 'Protea Meetup V1';
   private _clientId = '2oyGuNMuW1aCoxELjbg5FgqjccZREeHwNzq';
   private _privateKey = 'bc10f80699eef7b564d47373eea7add5cf26de5ffdd20e38b38ed89c0b0f8030';
   private _networkName = 'rinkeby';

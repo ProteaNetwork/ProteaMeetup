@@ -1,17 +1,17 @@
 import { UportService } from '../../../shared/services/uport.service';
 import { Subscription } from 'rxjs';
-import { ProteaMeetup } from './../../../shared/interface/event';
+import { ProteaMeetup } from '../../../shared/interface/event';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventService } from '../../../shared/services/event.service';
 import { ProteaUser } from '../../../shared/interface/user';
 import { EventState } from '../enum/event-state.enum';
 
 @Component({
-  selector: 'app-party-controller',
-  templateUrl: './party-controller.component.html',
-  styleUrls: ['./party-controller.component.scss']
+  selector: 'app-meetup-controller',
+  templateUrl: './meetup-controller.component.html',
+  styleUrls: ['./meetup-controller.component.scss']
 })
-export class PartyControllerComponent implements OnInit, OnDestroy {
+export class MeetupControllerComponent implements OnInit, OnDestroy {
   // @TODO: Change to component resolver
   public state: EventState = EventState.INIT;
   public loading = true;

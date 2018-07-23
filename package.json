@@ -1,8 +1,8 @@
 {
-  "name": "Protea-Party",
+  "name": "Protea-Meetup",
   "version": "0.1.0",
   "main": "index.js",
-  "repository": "https://github.com/ProteaNetwork/Protea-Party.git",
+  "repository": "https://github.com/ProteaNetwork/Protea-Meetup.git",
   "author": "Ryan Noble <ryanjnoble@gmail.com>",
   "license": "MIT",
   "scripts": {

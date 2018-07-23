@@ -9,8 +9,8 @@ import { ProteaUser } from '../interface/user';
 
 
 declare let require: any;
-const factoryAbi = require('./../../../../build/contracts/ProteaPartyFactory.json');
-const eventAbi = require('./../../../../build/contracts/ProteaParty.json');
+const factoryAbi = require('./../../../../build/contracts/ProteaMeetupFactory.json');
+const eventAbi = require('./../../../../build/contracts/ProteaMeetup.json');
 
 
 @Injectable({
@@ -47,7 +47,6 @@ export class EventService {
       return await this.initWait();
     }
   }
-  
 
   // Factory/Registry
   public fetchAdminEvents() {
@@ -83,7 +82,7 @@ export class EventService {
 
   public deployEvent(_name: string, _deposit: number, _limit: number, _coolingPeriod: number, _encryption: string): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
-      this.factoryContract.deployParty(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
+      this.factoryContract.deployMeetup(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }

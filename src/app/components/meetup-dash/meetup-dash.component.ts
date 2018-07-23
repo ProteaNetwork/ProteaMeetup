@@ -4,11 +4,11 @@ import { ProteaUser } from '../../shared/interface/user';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-party-dash',
-  templateUrl: './party-dash.component.html',
-  styleUrls: ['./party-dash.component.scss']
+  selector: 'app-meetup-dash',
+  templateUrl: './meetup-dash.component.html',
+  styleUrls: ['./meetup-dash.component.scss']
 })
-export class PartyDashComponent implements OnInit, OnDestroy {
+export class MeetupDashComponent implements OnInit, OnDestroy {
   public user: ProteaUser;
   private user$: Subscription;
 

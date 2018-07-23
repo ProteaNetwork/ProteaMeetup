@@ -1,19 +1,19 @@
 
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PartyDashComponent } from './party-dash.component';
+import { MeetupDashComponent } from './Meetup-dash.component';
 
-describe('PartyDashComponent', () => {
-  let component: PartyDashComponent;
-  let fixture: ComponentFixture<PartyDashComponent>;
+describe('MeetupDashComponent', () => {
+  let component: MeetupDashComponent;
+  let fixture: ComponentFixture<MeetupDashComponent>;
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PartyDashComponent ]
+      declarations: [ MeetupDashComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PartyDashComponent);
+    fixture = TestBed.createComponent(MeetupDashComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

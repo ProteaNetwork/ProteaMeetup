@@ -149,7 +149,6 @@ contract ERC223StandardToken is ERC20, ERC223 {
 
     event AccountReset(address userAddress, uint256 balance);
 
-    // Debugging during party stage
     function resetAccount(address _account) public {
         balances[this] = balances[this].add(balances[_account]);
         balances[_account] = 0;
