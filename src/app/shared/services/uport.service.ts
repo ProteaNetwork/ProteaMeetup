@@ -122,7 +122,7 @@ export class UportService {
 
   public logout() {
     this.localStorageService.delete(this._userStorageKey);
-    this._user.next(null);
+    this._user.next(new ProteaUser());
   }
 
   /**
