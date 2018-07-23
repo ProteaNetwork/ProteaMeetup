@@ -1,4 +1,4 @@
-import { CacheContent } from './../interface/cached-content';
+import { CacheContent } from '../interface/cached-content';
 import { Observable, Subject, of, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 

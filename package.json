@@ -1,8 +1,8 @@
 {
-  "name": "Protea-Party",
+  "name": "Protea-Meetup",
   "version": "0.1.0",
   "main": "index.js",
-  "repository": "https://github.com/ProteaNetwork/Protea-Party.git",
+  "repository": "https://github.com/ProteaNetwork/Protea-Meetup.git",
   "author": "Ryan Noble <ryanjnoble@gmail.com>",
   "license": "MIT",
   "scripts": {
@@ -33,6 +33,7 @@
     "core-js": "^2.5.4",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.2.1",
+    "tns-core-modules": "^4.2.0-2018-07-21-02",
     "truffle-contract": "^3.0.5",
     "uport-connect": "^0.7.3",
     "web3": "^0.20.5",

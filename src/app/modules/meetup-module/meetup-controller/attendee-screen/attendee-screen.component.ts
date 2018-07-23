@@ -13,6 +13,7 @@ import { ProteaUser } from '../../../../shared/interface/user';
 export class AttendeeScreenComponent implements OnInit {
   @Input() event: ProteaMeetup;
   @Input() user: ProteaUser;
+  loading = false;
 
   constructor(private eventService: EventService, private tokenService: TokenService, private uportService: UportService) {
   }
@@ -22,9 +23,13 @@ export class AttendeeScreenComponent implements OnInit {
   }
 
   async rsvp() {
-    await this.tokenService.transfer(this.event.address, this.event.deposit);
-    this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
-    this.updateBalances();
+    if (!this.loading) {
+      this.loading = true;
+      await this.tokenService.transfer(this.event.address, this.event.deposit);
+      this.uportService.updateUserObject(await this.eventService.fetchUserEventData(this.user));
+      this.updateBalances();
+      this.loading = false;
+    }
   }
 
   private async updateBalances() {

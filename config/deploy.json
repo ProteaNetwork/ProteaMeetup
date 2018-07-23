@@ -6,7 +6,7 @@
       "issuingAmount":1000,
       "symbol":"PTT"
     },
-    "ProteaParty":{
+    "ProteaMeetup":{
       "name":"Test",
       "deposit":200,
       "limitOfParticipants": 20,

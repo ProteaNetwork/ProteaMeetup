@@ -15,7 +15,7 @@ export class UportService {
   private web3: any;
   public network = 0;
 
-  private _name = 'Protea Party V1';
+  private _name = 'Protea Meetup V1';
   private _clientId = '2oyGuNMuW1aCoxELjbg5FgqjccZREeHwNzq';
   private _privateKey = 'bc10f80699eef7b564d47373eea7add5cf26de5ffdd20e38b38ed89c0b0f8030';
   private _networkName = 'rinkeby';
@@ -54,6 +54,8 @@ export class UportService {
       this.uport.address = user.address;
       this.uport.firstReq = false;
       this._user.next(user);
+    } else {
+      this.localStorageService.delete(this._userStorageKey);
     }
   }
 
@@ -64,10 +66,12 @@ export class UportService {
   private async verifyPushToken(pushToken: string) {
     const topic = this.uport.topicFactory('access_token');
     const res = await JWT.verifyJWT(this.uport.credentials.settings, pushToken, topic.url);
-    if (!res) {
-      return false;
+    if (res) {
+      if (new Date(<number>res.payload.exp * 1000).getTime() > Date.now()) {
+        return true;
+      }
     }
-    return true;
+    return false;
   }
 
   /**
@@ -114,6 +118,11 @@ export class UportService {
    */
   public async login() {
     await this.requestCredentials(['name', 'avatar', 'phone']);
+  }
+
+  public logout() {
+    this.localStorageService.delete(this._userStorageKey);
+    this._user.next(new ProteaUser());
   }
 
   /**

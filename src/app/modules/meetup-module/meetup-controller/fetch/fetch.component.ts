@@ -1,5 +1,5 @@
 import { UportService } from '../../../../shared/services/uport.service';
-import { ProteaMeetup } from './../../../../shared/interface/event';
+import { ProteaMeetup } from '../../../../shared/interface/event';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({

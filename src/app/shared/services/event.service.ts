@@ -9,8 +9,9 @@ import { ProteaUser } from '../interface/user';
 
 
 declare let require: any;
-const factoryAbi = require('./../../../../build/contracts/ProteaPartyFactory.json');
-const eventAbi = require('./../../../../build/contracts/ProteaParty.json');
+const factoryAbi = require('./../../../../build/contracts/ProteaMeetupFactory.json');
+const eventAbi = require('./../../../../build/contracts/ProteaMeetup.json');
+
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +82,7 @@ export class EventService {
 
   public deployEvent(_name: string, _deposit: number, _limit: number, _coolingPeriod: number, _encryption: string): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
-      this.factoryContract.deployParty(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
+      this.factoryContract.deployMeetup(_name, _deposit, _limit, _coolingPeriod, _encryption, async (_error, _txHash) => {
         let error, result;
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
@@ -91,7 +92,6 @@ export class EventService {
       });
     });
   }
-
 
   // Event functions
   public async fetchEvent(_address: string) {
@@ -106,6 +106,7 @@ export class EventService {
 
     event.name =  await this.getEventName();
     event.deposit = await this.getDeposit();
+    event.totalBalance = await this.getTotalStake();
     event.address = this.eventContract.address;
     event.limitOfParticipants = await this.getLimit();
     event.registered = await this.getRegistered();
@@ -122,10 +123,17 @@ export class EventService {
     event.cancelled = await this.checkCancelled();
 
     this._currentEvent.next(event);
+
+    this.updateEventEntry(event);
   }
 
   private updateEventEntry(_event: ProteaMeetup) {
-
+    function isFound(_item: ProteaMeetup) {
+      return _item.address === this;
+    }
+    const events = this._events.getValue();
+    this._events.getValue()[events.findIndex(isFound, _event.address)] = _event;
+    this._events.next(events);
   }
 
   public async fetchUserEventData(_userObject: ProteaUser) {
@@ -214,6 +222,17 @@ export class EventService {
           reject(_error);
         }
         resolve( _cooling.toNumber());
+      });
+    });
+  }
+
+  public getTotalStake() {
+    return new Promise<number>((resolve, reject) => {
+      this.eventContract.totalBalance((_error, _totalBalance) => {
+        if (_error) {
+          reject(_error);
+        }
+        resolve(_totalBalance.toNumber());
       });
     });
   }

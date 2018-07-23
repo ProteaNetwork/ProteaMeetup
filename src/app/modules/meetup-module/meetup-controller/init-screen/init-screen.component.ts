@@ -1,4 +1,4 @@
-import { EventState } from './../../enum/event-state.enum';
+import { EventState } from '../../enum/event-state.enum';
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
