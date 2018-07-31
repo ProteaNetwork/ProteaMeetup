@@ -1,7 +1,7 @@
 
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MeetupDashComponent } from './Meetup-dash.component';
+import { MeetupDashComponent } from './meetup-dash.component';
 
 describe('MeetupDashComponent', () => {
   let component: MeetupDashComponent;
