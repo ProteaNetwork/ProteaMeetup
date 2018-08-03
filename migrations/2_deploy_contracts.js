@@ -1,16 +1,17 @@
 const ProteaMeetup = artifacts.require("ProteaMeetup");
-const ProteaMeetupFactory = artifacts.require("ProteaMeetupFactory")
-const ERC223Standard = artifacts.require("ERC223StandardToken");
+const ProteaMeetupManager = artifacts.require("ProteaMeetupManager")
+const ProteaToken = artifacts.require("ProteaToken");
+const VersionManager = artifacts.require("VersionManager");
 
 const fs = require('fs');
 const deployConfig = JSON.parse(fs.readFileSync('../config/deploy.json'));
 
 
-const initialSupply = deployConfig.ERC223CompliantToken.initialSupply;
-const name = deployConfig.ERC223CompliantToken.name;
-const decimalUnits = deployConfig.ERC223CompliantToken.decimals;
-const issuingAmount = deployConfig.ERC223CompliantToken.issuingAmount;
-const tokenSymbol = deployConfig.ERC223CompliantToken.symbol;
+const initialSupply = deployConfig.ProteaToken.initialSupply;
+const name = deployConfig.ProteaToken.name;
+const decimalUnits = deployConfig.ProteaToken.decimals;
+const issuingAmount = deployConfig.ProteaToken.issuingAmount;
+const tokenSymbol = deployConfig.ProteaToken.symbol;
 
 const conferenceName = deployConfig.ProteaMeetup.name;
 const deposit = deployConfig.ProteaMeetup.deposit;
@@ -20,9 +21,16 @@ const encryption = deployConfig.ProteaMeetup.encryption;
 
 
 module.exports = async function (deployer, network, accounts) {
-    await deployer.deploy(ERC223Standard, name, tokenSymbol, decimalUnits, initialSupply, issuingAmount);
+    await Promise.all([
+        deployer.deploy(ProteaToken, name, tokenSymbol, decimalUnits, initialSupply, issuingAmount),
+        deployer.deploy(VersionManager, "Event Manager Version Manager"),
+    ])   
 
-    await deployer.deploy(ProteaMeetupFactory, ERC223Standard.address);
+    await deployer.deploy(ProteaMeetupManager, ProteaToken.address);
+
+    const factoryVersionInstance = await VersionManager.deployed();
+
+    await factoryVersionInstance.setVersion(ProteaToken.address, ProteaMeetupManager.address);
 
     // let event = await deployer.deploy(ProteaMeetup, conferenceName, deposit, limitOfParticipants,
     //     coolingPeriod, ERC223Standard.address, encryption);

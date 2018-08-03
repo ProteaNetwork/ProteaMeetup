@@ -37,6 +37,7 @@ contract ProteaToken is ERC20, ERC223 {
         earned[msg.sender] = init;               
        
     }
+    
     function name()
         public
         view

@@ -1,5 +1,5 @@
 {
-    "ERC223CompliantToken":{
+    "ProteaToken":{
       "initialSupply": 42000000,
       "name": "Protea Token V1 Debug",
       "decimals": 2, 

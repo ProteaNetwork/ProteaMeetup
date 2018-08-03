@@ -1,5 +1,6 @@
 pragma solidity ^0.4.21;
 
+// Notes: Not using explicit Enum so it's a bit more dynamic down the line
 library MeetupLibrary {
     // State: 0: Inactive, 1: Registered, 2: Confirmed, 3: Paid
     struct Attendee {

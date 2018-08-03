@@ -6,10 +6,12 @@ import "../utils/GroupAdmin.sol";
  * @title A version manager for Protea iterations
  * @dev this allows new versions of Protea contracts to be managed
  */
-contract VersionManager is GroupAdmin {
-    string internal title;
-    mapping(address => address[]) internal versions;
 
+contract VersionManager is GroupAdmin {
+    string internal title; 
+    mapping(address => address[]) internal versions;
+    mapping(address => mapping(address => uint)) internal versionIndex;
+ 
     constructor(string _title) public {
         title = _title;
     }
@@ -21,19 +23,23 @@ contract VersionManager is GroupAdmin {
         name = title;
     }
 
+    // Gas used: 72458
     function setVersion(address _token, address _version) onlyAdmin public {
         versions[_token].push(_version);
+        versionIndex[_token][_version] = versions[_token].length-1;
         emit NewVersionSet(_token, _version);
     }
 
-    function removeFactory(address _token, address _version) onlyAdmin public {
-        address[] storage versionsArr = versions[_token];
-        for(uint i = 0; i < versionsArr.length; i++) {
-            if(versionsArr[i] == _version){
-                delete versions[_token][i];
-                break;
-            }
+    // Gas used: 35251
+    function removeVersion(address _token, address _version) onlyAdmin public {
+        uint index = versionIndex[_token][_version];
+        if (0 > index) return;
+
+        if (versions[_token].length > 1) {
+            versions[_token][index] = versions[_token][versions[_token].length-1];
+            delete(versions[_token][versions[_token].length-1]); 
         }
+        versions[_token].length--;
         emit VersionRemoved(_token, _version);
     }
 

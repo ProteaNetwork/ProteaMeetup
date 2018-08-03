@@ -26,8 +26,7 @@ module.exports = {
     rinkeby: {
       provider: new HDWalletProvider(MNEMONIC, 'https://rinkeby.infura.io/' + INFURA_API_KEY),
       network_id: 4,
-      gas: 3000000,
-      gasPrice: 21
+      gasPrice: 5000000000,
     }
   },
   solc: {
@@ -38,11 +37,11 @@ module.exports = {
   }
 };
 
-for (let networkName in NETWORK_IDS) {
-  module.exports.networks[ networkName ] = {
-    provider: new HDWalletProvider(MNEMONIC, 'https://' + networkName + '.infura.io/' + INFURA_API_KEY),
-    network_id: NETWORK_IDS[networkName],
-    gas: 6500000,
-    gasPrice: 21
-  };
-}
+// for (let networkName in NETWORK_IDS) {
+//   module.exports.networks[ networkName ] = {
+//     provider: new HDWalletProvider(MNEMONIC, 'https://' + networkName + '.infura.io/' + INFURA_API_KEY),
+//     network_id: NETWORK_IDS[networkName],
+//     gas: 6500000,
+//     gasPrice: 21
+//   };
+// }
