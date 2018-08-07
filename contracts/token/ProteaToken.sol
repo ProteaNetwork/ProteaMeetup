@@ -66,7 +66,7 @@ contract ProteaToken is ERC20, ERC223 {
         return _totalSupply;
     }
 
-    function faucet() public {
+    function claimGift() public {
         require(earned[msg.sender] == 0);
         balances[this] = balances[this].sub(_issuingAmount);
         balances[msg.sender] = balances[msg.sender].add(_issuingAmount);
@@ -83,11 +83,11 @@ contract ProteaToken is ERC20, ERC223 {
         return true;
     }
 
-    function balanceOf(address _owner) public view returns (uint256 balance) {
+    function balanceOf(address _owner) public view returns (uint256) {
         return balances[_owner];
     }
 
-    function totalEarnedOf(address _owner) public view returns (uint256 earnedTotal) {
+    function totalEarnedOf(address _owner) public view returns (uint256) {
         return earned[_owner];
     }
 
