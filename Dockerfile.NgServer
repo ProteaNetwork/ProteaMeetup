@@ -22,3 +22,5 @@ RUN yarn run build
 # Deploy application
 EXPOSE 4200
 CMD [ "yarn", "run", "start" ]
+
+# ng serve --poll=1000 --host 0.0.0.0 --disable-host-check
