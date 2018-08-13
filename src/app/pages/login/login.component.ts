@@ -1,4 +1,4 @@
-import { ProteaUser } from './../../shared/interface/user';
+import { ProteaUser } from '../../shared/interface/user';
 import { UportService } from '../../shared/services/uport.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';

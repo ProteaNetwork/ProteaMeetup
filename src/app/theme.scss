@@ -26,3 +26,11 @@ $protea-app-theme:      mat-light-theme($protea-app-primary, $protea-app-accent,
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($protea-app-theme);
+
+app-root{
+    min-height: 100%;
+}
+app-login, app-landing-page{
+    min-height: calc(100vh - 275px);
+    display: block;
+}
