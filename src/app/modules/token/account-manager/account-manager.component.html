@@ -1,17 +1,7 @@
 <div class="buffering" [ngClass]="{active: loading == true}">
   <mat-spinner></mat-spinner>
 </div>
-<div class="new-user" *ngIf="user?.issued == 0">
-  <p>
-    Hi there!
-    <br> Thank you for checking out Protea Meetup!
-    <br> As a token of our thanks, please click the button for some complimentary Protea!
-  </p>
-  <button mat-raised-button (click)="claimTokens()">
-    Claim Gift
-  </button>
-</div>
-<div class="token-details" *ngIf="user?.issued > 0">
+<div class="token-details">
   <h3 class="mat-h2">
     Balances
   </h3>
@@ -20,7 +10,7 @@
       <span class="label mat-h4">
         Earned
       </span>
-      <span class="value mat-body2">
+      <span class="value mat-body">
         {{ user?.issued }}
       </span>
     </div>
@@ -28,7 +18,7 @@
       <span class="label mat-h4">
         Tokens
       </span>
-      <span class="value mat-body2">
+      <span class="value mat-body">
         {{ user?.balance }}
       </span>
     </div>
