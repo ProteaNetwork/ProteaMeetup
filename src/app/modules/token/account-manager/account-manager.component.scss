@@ -1,17 +1,14 @@
 .token-details{
-    text-align: left;
+    margin-top: 20px;
     .balances{
-        display: flex;
-        flex-direction: row;
-        text-align: center;
-        justify-content: space-around;
     }
     .refresh{
-        left: 50%;
-        position: relative;
-        transform: translateX(-50%);
     }
 }
 .row{
-    margin: 15px 0;
+    > * {
+        display: inline-block;
+        width: 50%;
+        min-width: 150px;
+    }
 }
