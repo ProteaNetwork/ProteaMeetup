@@ -61,10 +61,11 @@ export class MeetupControllerComponent implements OnInit, OnDestroy {
     this.loading = true;
     await this.eventService.fetchEvent(_address);
     await this.fetchUserState();
-    if (this.user.isAdmin) {
+    
+    if (this.user.isAdmin === true) {
       this.state = EventState.ADMIN;
     } else {
-      if (this.currentEvent.ended) {
+      if (this.currentEvent.ended === true) {
         this.state = EventState.PAYOUT;
       } else {
         this.state = EventState.ATTENDEE;

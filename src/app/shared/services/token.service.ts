@@ -12,7 +12,7 @@ const tokenAbi = require('./../../../../build/contracts/ERC223StandardToken.json
   providedIn: 'root'
 })
 export class TokenService {
-  private rinkebyTokenAddress = '0x689065ac51ca79c891f5b9292b5da15231858baa';
+  private rinkebyTokenAddress = '0x03c7258bc679daab3aaddd09ffe647f1fd0415e1';
   private tokenContract: TruffleContract;
   // Duplicated bool in account manager as random double request were sent to device even with this
   private transacting = false;
@@ -104,22 +104,4 @@ export class TokenService {
     return newUser;
   }
 
-  // Debug
-  resetAccount(_address: string) {
-    return new Promise((resolve, reject) => {
-      if (!this.transacting) {
-        this.transacting = true;
-        this.tokenContract.resetAccount(_address, async (_error, _txHash) => {
-          if (_error) { reject(_error); }
-          // Request placed
-          let error, result;
-          [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
-          if (!result.blockNumber) { reject(error); }
-          // Transation mined
-          this.transacting = false;
-          resolve(result);
-        });
-      }
-    });
-  }
 }

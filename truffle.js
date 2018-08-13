@@ -6,6 +6,7 @@ require('dotenv').config();
 const INFURA_API_KEY = process.env.INFURA_API_KEY;
 const MNEMONIC = process.env.MNEMONIC;
 const HDWalletProvider = require('truffle-hdwallet-provider');
+const WALLET_INDEX = process.env.WALLET_INDEX; // HDwallet needs to know which account based off the seed to generate
 
 const NETWORK_IDS = {
   // mainnet: 1,
@@ -24,10 +25,8 @@ module.exports = {
       network_id: "*"
     },
     rinkeby: {
-      provider: new HDWalletProvider(MNEMONIC, 'https://rinkeby.infura.io/' + INFURA_API_KEY),
-      network_id: 4,
-      gas: 3000000,
-      gasPrice: 21
+      provider: () => new HDWalletProvider(MNEMONIC, 'https://rinkeby.infura.io/' + INFURA_API_KEY, WALLET_INDEX),
+      network_id: 4
     }
   },
   solc: {
@@ -38,11 +37,11 @@ module.exports = {
   }
 };
 
-for (let networkName in NETWORK_IDS) {
-  module.exports.networks[ networkName ] = {
-    provider: new HDWalletProvider(MNEMONIC, 'https://' + networkName + '.infura.io/' + INFURA_API_KEY),
-    network_id: NETWORK_IDS[networkName],
-    gas: 6500000,
-    gasPrice: 21
-  };
-}
+// for (let networkName in NETWORK_IDS) {
+//   module.exports.networks[ networkName ] = {
+//     provider: new HDWalletProvider(MNEMONIC, 'https://' + networkName + '.infura.io/' + INFURA_API_KEY),
+//     network_id: NETWORK_IDS[networkName],
+//     gas: 6500000,
+//     gasPrice: 21
+//   };
+// }

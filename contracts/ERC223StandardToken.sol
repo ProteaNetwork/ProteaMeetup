@@ -1,12 +1,16 @@
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.21;
 
 import "./ERC223/SafeMath.sol";
 import "./ERC223/ERC223.sol";
 import "./ERC223/ERC20.sol";
 import "./ERC223/ERC223Receiver.sol";
+import "./zeppelin/lifecycle/Pausable.sol";
+import "./zeppelin/AddressUtils.sol";
 
-contract ERC223StandardToken is ERC20, ERC223 {
+
+contract ERC223StandardToken is ERC20, ERC223, Pausable {
     using SafeMath for uint;
+    using AddressUtils for address;
     string internal _name;
     string internal _symbol;
     uint8 internal _decimals;
@@ -64,16 +68,16 @@ contract ERC223StandardToken is ERC20, ERC223 {
     }
 
     function faucet() public {
-        require(issued[msg.sender] == 0);
+        require(issued[msg.sender] == 0, "User already active");
         balances[this] = balances[this].sub(_issuingAmount);
         balances[msg.sender] = balances[msg.sender].add(_issuingAmount);
         issued[msg.sender] = issued[msg.sender].add(_issuingAmount);
         emit TokensIssued(msg.sender, _issuingAmount);
     }
 
-    function transfer(address _to, uint256 _value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[msg.sender]);
+    function transfer(address _to, uint256 _value) public whenNotPaused returns (bool) {
+        require(_to != address(0), "Target Address invalid");
+        require(_value <= balances[msg.sender], "Insufficient funds");
         balances[msg.sender] = SafeMath.sub(balances[msg.sender], _value);
         balances[_to] = SafeMath.add(balances[_to], _value);
         emit Transfer(msg.sender, _to, _value);
@@ -88,10 +92,10 @@ contract ERC223StandardToken is ERC20, ERC223 {
         return issued[_owner];
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]);
+    function transferFrom(address _from, address _to, uint256 _value) public whenNotPaused returns (bool) {
+        require(_to != address(0), "Target address invalid");
+        require(_value <= balances[_from], "Insufficient funds");
+        require(_value <= allowed[_from][msg.sender], "Insufficient allowance");
 
         balances[_from] = SafeMath.sub(balances[_from], _value);
         balances[_to] = SafeMath.add(balances[_to], _value);
@@ -127,9 +131,9 @@ contract ERC223StandardToken is ERC20, ERC223 {
         return true;
     }
    
-    function transfer(address _to, uint _value, bytes _data) public {
-        require(_value > 0);
-        if(isContract(_to)) {
+    function transfer(address _to, uint _value, bytes _data) public whenNotPaused {
+        require(_value > 0, "Transfer amount invalid");
+        if(_to.isContract()) {
             ERC223Receiver receiver = ERC223Receiver(_to);
             receiver.tokenFallback(msg.sender, _value, _data);
         }
@@ -137,22 +141,11 @@ contract ERC223StandardToken is ERC20, ERC223 {
         balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value, _data);
     }
-    
-    function isContract(address _addr) private view returns (bool is_contract) {
-        uint length;
-        assembly {
-            //retrieve the size of the code on target address, this needs assembly
-            length := extcodesize(_addr)
-        }
-        return (length>0);
-    }
 
-    event AccountReset(address userAddress, uint256 balance);
-
-    function resetAccount(address _account) public {
-        balances[this] = balances[this].add(balances[_account]);
-        balances[_account] = 0;
-        issued[_account] = 0;
-        emit AccountReset(_account, balances[_account]);
+    function returnToken(address _to, uint _total, uint _initial) external {
+        transfer(_to, _total);
+        uint reward = _total.sub(_initial);
+        issued[_to] = issued[_to].add(reward);
+        emit TokensIssued(_to, reward);
     }
 }

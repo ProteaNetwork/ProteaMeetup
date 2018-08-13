@@ -55,17 +55,4 @@ export class AccountManagerComponent implements OnInit, OnDestroy {
     }
   }
 
-  resetAccount() {
-    if (!this.loading) {
-      this.loading = true;
-      this.tokenService.resetAccount(this.user.address).then((_result) => {
-        this.loading = false;
-        this.loadBalances();
-        }, (error) => {
-          this.loading = false;
-          console.error('Claim total error', error);
-      });
-    }
-  }
-
 }

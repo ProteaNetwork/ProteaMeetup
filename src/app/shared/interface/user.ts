@@ -1,3 +1,4 @@
+// NOTES: TypeScript unable to correctly parse boolean, always treats as string
 export class ProteaUser {
     public name = '';
     public avatar = '';
@@ -5,10 +6,10 @@ export class ProteaUser {
     public MNID = '';
     public phone = '';
     public email = '';
-    public isAdmin = false;
-    public isRegistered = false;
-    public hasAttended = false;
-    public isPaid = false;
+    public isAdmin: boolean = false;
+    public isRegistered: boolean = false;
+    public hasAttended: boolean = false;
+    public isPaid: boolean = false;
     public balance = -1;
     public issued = -1;
     public publicEncKey = '';

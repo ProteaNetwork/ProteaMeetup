@@ -17,7 +17,7 @@ const eventAbi = require('./../../../../build/contracts/ProteaMeetup.json');
   providedIn: 'root'
 })
 export class EventService {
-  private rinkebyFactoryAddress = '0x68f384b61566ebf74f3c79289eef9c78ad03a457';
+  private rinkebyFactoryAddress = '0xd7A9db53254A25Af491C10757eb1A8274969552b';
 
   // @TODO: Refactor, using array for displaying event info before fetching
   // Purpose: when the registry is available, this can be used to populate the dashboard
@@ -143,6 +143,7 @@ export class EventService {
     user.isRegistered = await this.isRegistered();
     user.isPaid = await this.isPaid();
     user.hasAttended = await this.hasAttended();
+    console.log(user);
     return user;
   }
 
@@ -239,55 +240,55 @@ export class EventService {
 
   public checkEnded() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.ended((_error, _status) => {
+      this.eventContract.ended((_error, _status: string) => {
         if (_error) {
           reject(_error);
         }
-        resolve(<boolean>_status.toString());
+        resolve(JSON.parse(_status));
       });
     });
   }
 
   public checkCancelled() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.cancelled((_error, _status) => {
+      this.eventContract.cancelled((_error, _status: string) => {
         if (_error) {
           reject(_error);
         }
-        resolve(<boolean>_status.toString());
+        resolve(JSON.parse(_status));
       });
     });
   }
 
   public hasAttended() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isAttended(this.uportService.getAddress(), (_error, _status) => {
+      this.eventContract.isAttended(this.uportService.getAddress(), (_error, _status: string) => {
         if (_error) {
           reject(_error);
         }
-        resolve(<boolean>_status.toString());
+        resolve(JSON.parse(_status));
       });
     });
   }
 
   public isAdmin() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isAdmin(this.uportService.getAddress(), (_error, _status) => {
+      this.eventContract.isAdmin(this.uportService.getAddress(), (_error, _status: string) => {
         if (_error) {
           reject(_error);
         }
-        resolve(<boolean>_status.toString());
+        resolve(JSON.parse(_status));
       });
     });
   }
 
   public isPaid() {
     return new Promise<boolean>((resolve, reject) => {
-      this.eventContract.isPaid(this.uportService.getAddress(), (_error, _status) => {
+      this.eventContract.isPaid(this.uportService.getAddress(), (_error, _status: string) => {
         if (_error) {
           reject(_error);
         }
-        resolve(<boolean>_status.toString());
+        resolve(JSON.parse(_status));
       });
     });
   }
@@ -299,7 +300,7 @@ export class EventService {
           console.error('isRegistered Error', );
           reject(_error);
         }
-        resolve(<boolean>_status.toString());
+        resolve(JSON.parse(_status));
       });
     });
   }

@@ -14,7 +14,7 @@ contract ProteaMeetupFactory {
         tokenContract = _tokenContract;
     }
 
-    function deploymeetup(
+    function deployMeetup(
         string _name, 
         uint256 _deposit, 
         uint _limitOfParticipants, 
@@ -36,11 +36,11 @@ contract ProteaMeetupFactory {
         emit ProteaMeetupDeployed(address(meetup));
     }
 
-    function getRegisteredToken() view public returns(address) {
+    function getRegisteredToken() public view returns(address) {
         return tokenContract;
     }
 
-    function getUserEvents(address _adminAddress) view public returns(address[]) {
+    function getUserEvents(address _adminAddress) public view returns(address[]) {
         return deployed[_adminAddress];
     }
 }
