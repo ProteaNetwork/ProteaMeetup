@@ -13,6 +13,7 @@ import { MeetupDashComponent } from './components/meetup-dash/meetup-dash.compon
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { HeaderComponent } from './components/header/header.component';
     MeetupDashComponent,
     LandingPageComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

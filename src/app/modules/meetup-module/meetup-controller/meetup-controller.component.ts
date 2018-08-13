@@ -1,6 +1,6 @@
 import { UportService } from '../../../shared/services/uport.service';
 import { Subscription } from 'rxjs';
-import { ProteaMeetup } from './../../../shared/interface/event';
+import { ProteaMeetup } from '../../../shared/interface/event';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventService } from '../../../shared/services/event.service';
 import { ProteaUser } from '../../../shared/interface/user';

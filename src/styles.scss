@@ -30,6 +30,9 @@ body {
     opacity: 0;
     visibility: hidden;
     transition-duration: 200ms;
+    &.fixed{
+        position: fixed;
+    }
     >* {
         opacity: 0;
         visibility: hidden;

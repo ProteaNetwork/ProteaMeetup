@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { UportService } from './../../shared/services/uport.service';
+import { UportService } from '../../shared/services/uport.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
