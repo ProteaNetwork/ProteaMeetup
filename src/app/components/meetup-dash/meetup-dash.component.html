@@ -1,52 +1,23 @@
-<div class="grid-container">
-  <mat-grid-list cols="12">
-    <mat-grid-tile colspan="3" rowspan="3">
-      <mat-card class="dashboard-card">
-        <mat-card-header>
-          <mat-card-title>
-            <span class="mat-title">
-              Welcome {{user?.name}}!
-            </span>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="dashboard-card-content">
-          <img class="profile" [src]="user?.avatar" [alt]="user?.name">
-          <div>
-            {{user?.address}}
-          </div>
-          <div>
-            Some paragraph text saying hello or something then directing to the free token section
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="4" rowspan="3">
-      <mat-card class="dashboard-card">
-        <mat-card-header>
-          <mat-card-title>
-            <span class="mat-title">
-              Protea Token Manager
-            </span>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="dashboard-card-content">
-          <app-account-manager></app-account-manager>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="5" rowspan="5">
-      <mat-card class="dashboard-card">
-        <mat-card-header>
-          <mat-card-title>
-            <span class="mat-title">
-              Protea Meetup Manager
-            </span>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="dashboard-card-content">
-          <app-meetup-controller></app-meetup-controller>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+<div class="top">
+  <div class="profile">
+    <h2 class="mat-title">
+      Welcome {{user?.name}}!
+    </h2>
+    <div class="profile-image">
+      <img [src]="user?.avatar" [alt]="user?.name">
+    </div>
+    <div class="wallet-address">
+      <span>Wallet address: </span>  <a  href="https://rinkeby.etherscan.io/address/{{user?.address}}">{{user?.address}}</a> 
+    </div>
+  </div>
+  <div class="token-management">
+    <app-account-manager></app-account-manager>
+  </div>
+</div>
+
+<div class="bottom">
+  <h2 class="mat-title">
+    Protea Meetup Manager
+  </h2>
+  <app-meetup-controller></app-meetup-controller>
 </div>
