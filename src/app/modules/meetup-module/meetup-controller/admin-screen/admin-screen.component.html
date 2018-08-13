@@ -10,36 +10,34 @@
       {{event?.address}}
     </h4>
   </div>
-  <div class="row data">
-    <div>
-      <div class="label mat-title">
-        Total Staked:
-      </div>
-      <div class="value mat-body2">
-        (Needs to be wired)
-      </div>
-    </div>
-    <div *ngIf="event.ended">
-      <div class="label mat-title">
-        This event has ended
-      </div>
-    </div>
-    <div *ngIf="!event.ended">
-      <div class="label mat-title">
-        Number tickets available:
-      </div>
-      <div class="value mat-body2">
-        {{event?.limitOfParticipants - event?.registered}} / {{event?.limitOfParticipants}}
-      </div>
-    </div>
-    <div *ngIf="!event.ended">
-      <div class="label mat-title">
-        RSVP stake:
-      </div>
-      <div class="value mat-body2">
-        {{event?.deposit}}
-      </div>
-    </div>
+  <div class="row">
+    <span class="label mat-h4">
+      Total Staked:
+    </span>
+    <span class="value mat-body">
+      (Needs to be wired)
+    </span>
+  </div>
+  <div *ngIf="!event.ended" class="row data">
+    <span class="label mat-h4">
+      Number tickets available:
+    </span>
+    <span class="value mat-body">
+      {{event?.limitOfParticipants - event?.registered}} / {{event?.limitOfParticipants}}
+    </span>
+  </div>
+  <div *ngIf="!event.ended" class="row data">
+    <span class="label mat-h4">
+      RSVP stake:
+    </span>
+    <span class="value mat-body">
+      {{event?.deposit}}
+    </span>
+  </div>
+  <div *ngIf="event.ended" class="row">
+    <span class="label mat-h4">
+      This event has ended
+    </span>
   </div>
 </div>
 <div class="controls">

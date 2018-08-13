@@ -3,15 +3,27 @@
         display: block;
     }
 }
-.data {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: row;
-}
+// .data {
+//     display: flex;
+//     justify-content: space-around;
+//     flex-direction: row;
+// }
 mat-form-field {
+
     display: block;
     margin: 15px 0;
 }
 button {
     margin: 5px;
+}
+.row{
+    box-sizing: border-box;
+    padding-left: 15px;
+    > span {
+        display: inline-block;
+        &:first-child{
+            width: 40%;
+            min-width: 100px;
+        }
+    }
 }
