@@ -1,25 +1,20 @@
-.grid-container {
-  margin: 20px;
+.top , .bottom{
+  background-color: white;
+  box-sizing: border-box;
+  padding: 20px;
 }
-
-.dashboard-card {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
-}
-
-.more-button {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-}
-
-.dashboard-card-content {
-  text-align: center;
+.bottom{
+  margin-top: 30px;
 }
 
 .profile {
-  max-width: 200px;
+  width: 100%;
+  .profile-image {
+    text-align: center;
+  }
+  img {
+    max-width: 200px;
+    border: 1px solid gray;
+  }
 }
+
