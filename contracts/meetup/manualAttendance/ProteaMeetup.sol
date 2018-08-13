@@ -42,23 +42,23 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
 
     /* Modifiers */
     modifier onlyActive {
-        require(dataRegistry.getEventState(address(this)) == 0);
+        require(dataRegistry.getEventState(address(this)) == 0, "Event not active");
         _;
     }
 
     modifier onlyEnded {
         // All states above 0 currently are an ended state
-        require(dataRegistry.getEventState(address(this)) > 0);
+        require(dataRegistry.getEventState(address(this)) > 0, "Event has not ended");
         _;
     }
 
     modifier onlyToken {
-        require(msg.sender == address(token));
+        require(msg.sender == address(token), "Invalid token");
         _;
     }
     
     modifier spaceAvailable{
-        require(registered < limitOfParticipants);
+        require(registered < limitOfParticipants, "No RSVP slots available");
         _;
     }
 
@@ -106,8 +106,8 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
 
     function registerInternal(address _from, uint _value) internal onlyActive spaceAvailable {
         // Leaving ability to add more as a donation option, not directly exposed in UI
-        require(_value >= deposit);
-        require(!isRegistered(_from));
+        require(_value >= deposit, "Insufficient funds");
+        require(!isRegistered(_from), "User already registered");
         deposited[_from] += _value;
 
         dataRegistry.registerAttendee(_from, "");
@@ -116,31 +116,34 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
     }
 
     function withdraw() external onlyEnded {
-        require(payoutAmount > 0);
-        require(dataRegistry.getEventState(address(this)) == 2 || dataRegistry.getAttendeeState(address(this), msg.sender) == 2);
-
+        require(payoutAmount > 0, "No available payout");
+        require(
+            dataRegistry.getEventState(address(this)) == 2 || 
+            dataRegistry.getAttendeeState(address(this), msg.sender) == 2
+            ,"Event not cancelled or User not attended"
+        );
         dataRegistry.confirmPaid(msg.sender);
         returnToken(payoutAmount);
     }
 
     // /* Views */
-    function totalBalance() view public returns(uint256) {
+    function totalBalance() public view returns(uint256) {
         return token.balanceOf(this);
     }
 
-    function isRegistered(address _addr) view public returns(bool) {
+    function isRegistered(address _addr) public view returns(bool) {
         return dataRegistry.getAttendeeState(address(this), _addr) > 0;
     }
 
-    function isAttended(address _addr) view public returns(bool) {
+    function isAttended(address _addr) public view returns(bool) {
         return dataRegistry.getAttendeeState(address(this), _addr) == 2;
     }
 
-    function isPaid(address _addr) view public returns(bool) {
+    function isPaid(address _addr) public view returns(bool) {
         return dataRegistry.getAttendeeState(address(this), _addr) == 3;
     }
 
-    function payout() view public returns(uint256) {
+    function payout() public view returns(uint256) {
         if (attended == 0) return 0;
         return uint(totalBalance()) / uint(attended);
     }
@@ -165,8 +168,8 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
      * @dev Return the remaining of balance if there are any unclaimed after cooling period   
      */
     function clear() external onlyOwner onlyEnded {
-        require(now > endedAt + coolingPeriod);  // solium-disable-line security/no-block-members
-        require(dataRegistry.getEventState(address(this)) > 0);
+        require(now > endedAt + coolingPeriod, "Cool down incomplete");  // solium-disable-line security/no-block-members
+        require(dataRegistry.getEventState(address(this)) > 1, "Event still active");
         uint leftOver = totalBalance();
         token.transfer(owner, leftOver);
         emit ClearEvent(owner, leftOver);
@@ -180,8 +183,8 @@ contract ProteaMeetup is GroupAdmin, ERC223Receiver {
     function attend(address[] _addresses) public onlyAdmin onlyActive {
         for (uint i = 0; i < _addresses.length; i++) {
             address _addr = _addresses[i];
-            require(isRegistered(_addr));
-            require(!isAttended(_addr));
+            require(isRegistered(_addr), "Account not registered");
+            require(!isAttended(_addr), "Account is already attending");
             emit AttendEvent(_addr, address(this));
             dataRegistry.confirmAttendee(_addr);
             attended++;

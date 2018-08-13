@@ -11,7 +11,7 @@ contract GroupAdmin is Ownable {
     address[] public admins;
 
     modifier onlyAdmin() {
-        require(isAdmin(msg.sender));
+        require(isAdmin(msg.sender), "Account not admin");
         _;
     }
 
@@ -35,7 +35,7 @@ contract GroupAdmin is Ownable {
         }
     }
 
-    function getAdmins() view public returns(address[]) {
+    function getAdmins() public view  returns(address[]) {
         address[] memory adminsList = new address[](admins.length + 1);
         for (uint i = 0; i < admins.length; i++) {
             adminsList[i] = admins[i];
@@ -44,7 +44,7 @@ contract GroupAdmin is Ownable {
         return adminsList;
     }
 
-    function numOfAdmins() view public returns(uint) {
+    function numOfAdmins() public view returns(uint) {
         return admins.length;
     }
 

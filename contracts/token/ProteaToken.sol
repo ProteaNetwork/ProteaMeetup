@@ -67,7 +67,7 @@ contract ProteaToken is ERC20, ERC223 {
     }
 
     function claimGift() public {
-        require(earned[msg.sender] == 0);
+        require(earned[msg.sender] == 0, "Account already active");
         balances[this] = balances[this].sub(_issuingAmount);
         balances[msg.sender] = balances[msg.sender].add(_issuingAmount);
         earned[msg.sender] = earned[msg.sender].add(_issuingAmount);
@@ -75,8 +75,8 @@ contract ProteaToken is ERC20, ERC223 {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[msg.sender]);
+        require(_to != address(0), "Address is null");
+        require(_value <= balances[msg.sender], "Insufficient funds");
         balances[msg.sender] = SafeMath.sub(balances[msg.sender], _value);
         balances[_to] = SafeMath.add(balances[_to], _value);
         emit Transfer(msg.sender, _to, _value);
@@ -92,9 +92,9 @@ contract ProteaToken is ERC20, ERC223 {
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]);
+        require(_to != address(0), "Address is null");
+        require(_value <= balances[_from], "Insufficient funds");
+        require(_value <= allowed[_from][msg.sender], "Insufficient allowance");
 
         balances[_from] = SafeMath.sub(balances[_from], _value);
         balances[_to] = SafeMath.add(balances[_to], _value);
@@ -131,7 +131,7 @@ contract ProteaToken is ERC20, ERC223 {
     }
    
     function transfer(address _to, uint _value, bytes _data) public {
-        require(_value > 0);
+        require(_value > 0, "Tranfering 0 or less, can't continue");
         if(_to.isContract()) {
             ERC223Receiver receiver = ERC223Receiver(_to);
             receiver.tokenFallback(msg.sender, _value, _data);

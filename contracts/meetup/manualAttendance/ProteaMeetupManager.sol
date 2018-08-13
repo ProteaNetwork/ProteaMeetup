@@ -43,15 +43,15 @@ contract ProteaMeetupManager {
         emit ProteaMeetupDeployed(address(meetup));
     }
 
-    function getRegisteredToken() view public returns(address) {
+    function getRegisteredToken() public view returns(address) {
         return tokenContract;
     }
 
-    function getUserEvents(address _adminAddress) view public returns(address[]) {
+    function getUserEvents(address _adminAddress) public view returns(address[]) {
         return userEvents[_adminAddress];
     }
 
-    function getEventState(address _event) view public returns(uint state) {
+    function getEventState(address _event) public view returns(uint state) {
         state = eventStates[_event];
     }
 
@@ -62,16 +62,16 @@ contract ProteaMeetupManager {
 
     // Need to consider security here
     // function getAttendee(address _event, address _address) view public returns(MeetupLibrary.Attendee attendee) {
-    function getAttendee(address _event, address _address) view public returns(string identity, uint8 state) {
+    function getAttendee(address _event, address _address) public view returns(string identity, uint8 state) {
         identity = attendeeData[_event][_address].identity;
         state = attendeeData[_event][_address].state;
     }
 
-    function getAttendeeState(address _event, address _address) view public returns(uint state) {
+    function getAttendeeState(address _event, address _address) public view returns(uint state) {
         state = attendeeData[_event][_address].state;
     }
     
-    function getAttendeeIdentity(address _event, address _address) view public returns(string identity) {
+    function getAttendeeIdentity(address _event, address _address) public view returns(string identity) {
         identity = attendeeData[_event][_address].identity;
     }
 

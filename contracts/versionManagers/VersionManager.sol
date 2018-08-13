@@ -19,19 +19,19 @@ contract VersionManager is GroupAdmin {
     event NewVersionSet(address indexed _token, address indexed _factory);
     event VersionRemoved(address indexed _token, address indexed _factory);
 
-    function getName() view public returns(string name){
+    function getName() public view returns(string name) {
         name = title;
     }
 
     // Gas used: 72458
-    function setVersion(address _token, address _version) onlyAdmin public {
+    function setVersion(address _token, address _version) public onlyAdmin  {
         versions[_token].push(_version);
         versionIndex[_token][_version] = versions[_token].length-1;
         emit NewVersionSet(_token, _version);
     }
 
     // Gas used: 35251
-    function removeVersion(address _token, address _version) onlyAdmin public {
+    function removeVersion(address _token, address _version) public onlyAdmin  {
         uint index = versionIndex[_token][_version];
         if (0 > index) return;
 
@@ -43,7 +43,7 @@ contract VersionManager is GroupAdmin {
         emit VersionRemoved(_token, _version);
     }
 
-    function getVersions(address _token) view public returns(address[]) {
+    function getVersions(address _token) public view returns(address[]) {
         return versions[_token];
     }
 }
