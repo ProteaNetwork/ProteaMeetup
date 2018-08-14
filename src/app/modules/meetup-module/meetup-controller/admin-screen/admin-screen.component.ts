@@ -43,6 +43,7 @@ export class AdminScreenComponent implements OnInit {
       this.loading = true;
       await this.eventService.manualConfirmAttend(this.attending);
       // Display confirmation of sorts
+      this.attending = [];
       this.loading = false;
     }
   }

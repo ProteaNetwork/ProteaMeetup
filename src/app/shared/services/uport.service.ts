@@ -28,16 +28,20 @@ export class UportService {
   private uport: any;
 
   constructor(private localStorageService: LocalStorageService) {
-    this.uport = new Connect(this._name, {
-      clientId: this._clientId,
-      network: this._networkName,
-      signer: SimpleSigner(this._privateKey)
-    });
+    this.initUport();
     if (this.localStorageService.has(this._userStorageKey)) {
       this.parseCachedUser();
     }
     window.addEventListener('load', (event) => {
       this.web3 = this.uport.getWeb3();
+    });
+  }
+
+  private initUport() {
+    this.uport = new Connect(this._name, {
+      clientId: this._clientId,
+      network: this._networkName,
+      signer: SimpleSigner(this._privateKey)
     });
   }
 
@@ -123,6 +127,7 @@ export class UportService {
   public logout() {
     this.localStorageService.delete(this._userStorageKey);
     this._user.next(new ProteaUser());
+    this.initUport();
   }
 
   /**

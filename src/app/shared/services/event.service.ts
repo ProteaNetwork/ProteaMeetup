@@ -51,7 +51,7 @@ export class EventService {
   // Factory/Registry
   public fetchAdminEvents() {
     // @TODO: this will need to be dynamic when registry architecture is up
-
+    // ISSUE: adding duplication when logging out and logging in
     return new Promise(async (resolve, reject) => {
       this.factoryContract.getUserEvents(this.uportService.getAddress(), async (_error, _contractArray: string[]) => {
         if (!_contractArray) { reject(_error); }
@@ -143,7 +143,6 @@ export class EventService {
     user.isRegistered = await this.isRegistered();
     user.isPaid = await this.isPaid();
     user.hasAttended = await this.hasAttended();
-    console.log(user);
     return user;
   }
 
