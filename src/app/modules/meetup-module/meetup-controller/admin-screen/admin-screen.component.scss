@@ -4,14 +4,28 @@
     }
 }
 
-// .data {
-//     display: flex;
-//     justify-content: space-around;
-//     flex-direction: row;
-// }
 mat-form-field {
     display: block;
     margin: 15px 0;
+}
+
+.limit{
+    display: flex !important;
+    justify-content: left;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .mat-h3{
+        display: block;
+        width: 100%;
+        margin: 0;
+    }
+    mat-form-field{
+        margin-left: 15px;
+    }
+    button{
+        margin-left: 15px;
+    }
 }
 
 button {
@@ -73,4 +87,10 @@ button {
             right: 0;
         }
     }
+}
+
+.buttons{
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
 }

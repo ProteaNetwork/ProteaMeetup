@@ -1,12 +1,11 @@
 <div class="buffering" [ngClass]="{active: loading == true}">
     <mat-spinner></mat-spinner>
 </div>
-<button mat-raised-button class="back" *ngIf="state !== 'INIT'" (click)="state = 'INIT'" >
+<button mat-raised-button class="back" *ngIf="state !== 'FETCH'" (click)="state = 'FETCH'" >
     Back
 </button>
-<app-init-screen *ngIf="state == 'INIT'" (selection)="onSelection($event)" ></app-init-screen>
 <app-create *ngIf="state == 'CREATE'" (publishContract)="onDeploy($event)" ></app-create>
-<app-fetch *ngIf="state == 'FETCH'" [deployedEvents]="events" (contractAddress)="onFetch($event)" ></app-fetch>
+<app-fetch *ngIf="state == 'FETCH'" [deployedEvents]="events" (contractAddress)="onFetch($event)" (createNewEvent)="onCreate()"></app-fetch>
 <app-admin-screen  *ngIf="state == 'ADMIN'" [event]="currentEvent" ></app-admin-screen>
 <app-attendee-screen *ngIf="state == 'ATTENDEE'" [event]="currentEvent" [user]="user"></app-attendee-screen>
 <app-payout-screen *ngIf="state == 'PAYOUT'" [event]="currentEvent" [user]="user"></app-payout-screen>

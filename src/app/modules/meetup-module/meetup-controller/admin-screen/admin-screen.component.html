@@ -44,7 +44,10 @@
   </div>
 </div>
 <div class="controls">
-  <div class="control" *ngIf="!event.ended">
+  <div class="control limit" *ngIf="!event.ended">
+    <span class="mat-h3">
+      Change participant limit
+    </span>
     <mat-form-field>
       <input matInput type="number" #newLimit [min]="event?.registered" [placeholder]="event?.limitOfParticipants">
       <mat-hint align="end">{{ newLimit.value === event.limitOfParticipants ? "Valid" : "Invalid" }}</mat-hint>
@@ -54,38 +57,31 @@
     </button>
   </div>
   <div class="attend-control" *ngIf="!event.ended">
-    <ul>
-      <li *ngFor="let attendee of attending">{{attendee}}</li>
-    </ul>
+
     <mat-form-field hintLabel="Please enter a valid address">
       <input matInput #attendInput maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
     </mat-form-field>
     <button mat-raised-button (click)="addToSubmission(attendInput.value)" [disabled]="attending.indexOf(attendInput.value) >= 0 || !isValidAddress(attendInput.value)">
       Add to list
     </button>
+    <ul>
+      <li *ngFor="let attendee of attending">
+        <a class="mat-body" href="https://rinkeby.etherscan.io/address/{{attendee}}">{{attendee}}</a>
+      </li>
+    </ul>
     <button mat-raised-button (click)="manualSubmitAttendance()" [disabled]="!attending.length > 0">
-      Submit to event contract
+      Confirm attendance
     </button>
   </div>
-  <button mat-raised-button (click)="endEvent()" *ngIf="!event.ended">
-    End & Payback
-  </button>
-  <button mat-raised-button (click)="cancelEvent()" *ngIf="!event.ended">
-    Cancel Event
-  </button>
-  <button mat-raised-button [disabled]="true">
+  <div class="buttons">
+    <button mat-raised-button (click)="endEvent()" *ngIf="!event.ended">
+      End & Payback
+    </button>
+    <button mat-raised-button (click)="cancelEvent()" *ngIf="!event.ended">
+      Cancel Event
+    </button>
+  </div>
+  <!-- <button mat-raised-button [disabled]="true">
     Clear Remaining ETH (Not wired yet)
-  </button>
+  </button> -->
 </div>
-<!-- @TODO: replace with user grid manager -->
-<!-- <div class="checking-tools">
-  <div class="control">
-    <mat-form-field hintLabel="Please enter a valid address">
-      <input matInput #checkUser maxlength="42" placeholder="0x8888f1f195afa192cfee860698584c030f4c9db1">
-      <mat-hint align="end">{{ isValidAddress(checkUser.value) ? "Valid" : "Invalid" }}</mat-hint>
-    </mat-form-field>
-    <button mat-raised-button [disabled]="!isValidAddress(checkUser.value)">
-      Check user state (Notwired up yet)
-    </button>
-  </div>
-</div> -->

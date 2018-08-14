@@ -13,7 +13,7 @@ import { EventState } from '../enum/event-state.enum';
 })
 export class MeetupControllerComponent implements OnInit, OnDestroy {
   // @TODO: Change to component resolver
-  public state: EventState = EventState.INIT;
+  public state: EventState = EventState.FETCH;
   public loading = true;
 
   public events: ProteaMeetup[];
@@ -87,6 +87,10 @@ export class MeetupControllerComponent implements OnInit, OnDestroy {
       console.error('Event Deploy Error', error);
       this.loading = false;
     });
+  }
+
+  onCreate() {
+    this.state = EventState.CREATE;
   }
 }
 

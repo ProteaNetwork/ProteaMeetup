@@ -2,3 +2,9 @@ mat-form-field {
     display: block;
     margin: 15px 0;
 }
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

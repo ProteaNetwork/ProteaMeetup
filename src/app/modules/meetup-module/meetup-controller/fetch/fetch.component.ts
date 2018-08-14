@@ -13,6 +13,7 @@ export class FetchComponent  {
 
   @Input() deployedEvents: ProteaMeetup[];
   @Output() contractAddress = new EventEmitter<string>();
+  @Output() createNewEvent = new EventEmitter<any>();
 
 
   constructor(private uportService: UportService) {
@@ -27,4 +28,7 @@ export class FetchComponent  {
     this.contractAddress.emit(address);
   }
 
+  createEvent() {
+    this.createNewEvent.emit();
+  }
 }
