@@ -36,7 +36,7 @@
     "rxjs-compat": "^6.2.1",
     "tns-core-modules": "^4.2.0-2018-07-21-02",
     "truffle-contract": "^3.0.5",
-    "uport-connect": "^0.7.3",
+    "uport-connect": "^0.7.5",
     "web3": "^0.20.5",
     "web3-typescript-typings": "^0.10.2",
     "zone.js": "^0.8.26"
