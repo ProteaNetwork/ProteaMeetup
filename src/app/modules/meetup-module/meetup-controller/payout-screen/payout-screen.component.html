@@ -22,7 +22,7 @@
 </div>
 <div class="withdraw" *ngIf="!user.isPaid && event.ended">
   <h4 class="mat-h2">
-    Your tokens are available for withdraw
+    Your tokens are available to withdraw
   </h4>
   <button mat-raised-button (click)="withdrawTokens()" [disabled]="userPaid">
     Withdraw tokens
@@ -30,6 +30,6 @@
 </div>
 <div class="wasPaid" *ngIf="user.isRegistered && event.ended && user.isPaid">
   <h4 class="mat-h2">
-    You have withdraw your tokens sucessfully
+    You have withdrawn your tokens sucessfully!
   </h4>
 </div>

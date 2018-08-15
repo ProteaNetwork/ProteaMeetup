@@ -5,6 +5,7 @@ import { EventService } from '../../../../shared/services/event.service';
 import { ProteaMeetup } from '../../../../shared/interface/event';
 import { ProteaUser } from '../../../../shared/interface/user';
 
+
 @Component({
   selector: 'app-attendee-screen',
   templateUrl: './attendee-screen.component.html',
