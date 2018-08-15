@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   checkWeb3() {
     this.userData = this.uportService.user$.subscribe((user: ProteaUser) => {
       if (user.address !== '') {
-        this.router.navigate(['/']);
+        this.router.navigate(['/home']);
       }
     });
   }
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   async loginUport() {
     this.fetching = true;
     await this.uportService.login();
-    // May need to leave it here unless we add an error, 
+    // May need to leave it here unless we add an error,
     // depends on if one is availabel in uport connect
   }
 }

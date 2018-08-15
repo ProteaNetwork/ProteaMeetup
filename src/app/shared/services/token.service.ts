@@ -75,6 +75,7 @@ export class TokenService {
         [error, result] = await to(this.uportService.getTransactionReceiptMined(_txHash));
         if (!result) { reject(error); }
         // Transation mined
+        resolve();
       });
     });
   }
