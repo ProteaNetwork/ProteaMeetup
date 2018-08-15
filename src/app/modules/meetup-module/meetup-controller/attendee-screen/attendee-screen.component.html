@@ -10,7 +10,7 @@
   <div class="row">
     <div class="wallet-address label">
       <span class="mat-h4">Address: </span>
-      <a class="mat-body" href="https://rinkeby.etherscan.io/address/{{event?.address}}">{{event?.address}}</a>
+      <a class="mat-body"target="_blank" href="https://rinkeby.etherscan.io/address/{{event?.address}}">{{event?.address}}</a>
     </div>
   </div>
   <div *ngIf="!event.ended" class="row data">
@@ -26,13 +26,13 @@
       This event has ended
     </span>
   </div>
-  <div *ngIf="!event.ended">
-    <div class="label mat-title">
+  <div *ngIf="!event.ended" class="row">
+    <span class="label mat-h4">
       Number tickets available:
-    </div>
-    <div class="value mat-body">
+    </span>
+    <span class="value mat-body">
       {{event?.limitOfParticipants - event?.registered}}
-    </div>
+    </span>
   </div>
 </div>
 
