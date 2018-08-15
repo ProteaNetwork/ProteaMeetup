@@ -2,6 +2,19 @@
 <div class="buffering" [ngClass]="{active: loading == true}">
   <mat-spinner></mat-spinner>
 </div>
+<div class="event-details">
+  <div class="row">
+    <h3 class="label mat-title">
+      {{event?.name}}
+    </h3>
+  </div>
+  <div class="row">
+    <div class="wallet-address label">
+      <span class="mat-h4">Address: </span>
+      <a class="mat-body" href="https://rinkeby.etherscan.io/address/{{event?.address}}">{{event?.address}}</a>
+    </div>
+  </div>
+</div>
 <div class="notRegistered" *ngIf="!user.isRegistered && !event.ended">
   <h4 class="mat-h2">
       You are not registered for this event
