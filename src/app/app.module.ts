@@ -14,6 +14,7 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { LoginComponent } from './pages/login/login.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { DirectLinkComponent } from './components/direct-link/direct-link.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { FooterComponent } from './components/footer/footer.component';
     LandingPageComponent,
     LoginComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    DirectLinkComponent
   ],
   imports: [
     BrowserModule,
