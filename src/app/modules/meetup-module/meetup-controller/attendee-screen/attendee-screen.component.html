@@ -2,33 +2,45 @@
   <mat-spinner></mat-spinner>
 </div>
 <div class="event-details">
-  <div class="label">
-    <h3 class="mat-title">
+  <div class="row">
+    <h3 class="label mat-title">
       {{event?.name}}
     </h3>
   </div>
-  <div *ngIf="event.ended === 'false'">
-    <div class="label mat-title">
-      RSVP stake:
-    </div>
-    <div class="value mat-body2">
-      {{event?.deposit}}
+  <div class="row">
+    <div class="wallet-address label">
+      <span class="mat-h4">Address: </span>
+      <a class="mat-body"target="_blank" href="https://rinkeby.etherscan.io/address/{{event?.address}}">{{event?.address}}</a>
     </div>
   </div>
-  <div *ngIf="event.ended === 'false'">
-    <div class="label mat-title">
+  <div *ngIf="!event.ended" class="row data">
+    <span class="label mat-h4">
+      RSVP stake:
+    </span>
+    <span class="value mat-body">
+      {{event?.deposit}}
+    </span>
+  </div>
+  <div *ngIf="event.ended" class="row">
+    <span class="label mat-h4">
+      This event has ended
+    </span>
+  </div>
+  <div *ngIf="!event.ended" class="row">
+    <span class="label mat-h4">
       Number tickets available:
-    </div>
-    <div class="value mat-body2">
+    </span>
+    <span class="value mat-body">
       {{event?.limitOfParticipants - event?.registered}}
-    </div>
+    </span>
   </div>
 </div>
-<div class="pending-rsvp" *ngIf="user.isRegistered === 'false'">
+
+<div class="pending-rsvp" *ngIf="!user.isRegistered">
   <button mat-raised-button (click)="rsvp()" [disabled]="event?.deposit > user?.balance">
     RSVP Now
   </button>
 </div>
-<div class="rsvp-confirmed mat-body2"  *ngIf="user.isRegistered === 'true'">
-  You have RSVP'd for {{event?.name}}
+<div class="rsvp-confirmed mat-h3"  *ngIf="user.isRegistered">
+  Your RSVP was successful for {{event?.name}}
 </div>

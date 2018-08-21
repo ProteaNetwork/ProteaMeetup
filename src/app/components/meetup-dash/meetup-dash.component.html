@@ -6,15 +6,14 @@
     <div class="profile-image">
       <img [src]="user?.avatar" [alt]="user?.name">
     </div>
-    <div class="wallet-address">
-      <span>Wallet address: </span>  <a  href="https://rinkeby.etherscan.io/address/{{user?.address}}">{{user?.address}}</a> 
+    <div class="wallet-address mat-body">
+      <span>Wallet address: </span>  <a target="_blank" href="https://rinkeby.etherscan.io/address/{{user?.address}}">{{user?.address}}</a> 
     </div>
   </div>
   <div class="token-management">
     <app-account-manager></app-account-manager>
   </div>
 </div>
-
 <div class="bottom">
   <h2 class="mat-title">
     Protea Meetup Manager

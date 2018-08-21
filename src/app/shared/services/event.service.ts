@@ -30,6 +30,9 @@ export class EventService {
   private factoryContract: TruffleContract;
   private eventContract: TruffleContract;
 
+  // TODO: Refactor
+  public directEvent: string;
+
   constructor(private uportService: UportService) {
     this.initFactory();
   }

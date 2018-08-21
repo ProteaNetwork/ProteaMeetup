@@ -44,12 +44,21 @@ export class MeetupControllerComponent implements OnInit, OnDestroy {
     await this.eventService.initWait();
     this.loading = false;
     await this.eventService.fetchAdminEvents();
+    this.checkForDirect();
   }
 
   ngOnDestroy() {
     this.events$.unsubscribe();
     this.currentEvent$.unsubscribe();
     this.user$.unsubscribe();
+  }
+
+  checkForDirect() {
+    const directEvent = this.eventService.directEvent;
+    if (this.uportService.isValidAddress(directEvent)) {
+      this.eventService.directEvent = '';
+      this.onFetch(directEvent);
+    }
   }
 
   onSelection (_state: string) {

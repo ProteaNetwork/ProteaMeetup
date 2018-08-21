@@ -10,7 +10,7 @@
   <div class="row">
     <div class="wallet-address label">
       <span class="mat-h4">Address: </span>
-      <a class="mat-body" href="https://rinkeby.etherscan.io/address/{{event?.address}}">{{event?.address}}</a>
+      <a class="mat-body" target="_blank" href="https://rinkeby.etherscan.io/address/{{event?.address}}">{{event?.address}}</a>
     </div>
   </div>
   <div class="row">
@@ -66,7 +66,7 @@
     </button>
     <ul>
       <li *ngFor="let attendee of attending">
-        <a class="mat-body" href="https://rinkeby.etherscan.io/address/{{attendee}}">{{attendee}}</a>
+        <a class="mat-body" target="_blank" href="https://rinkeby.etherscan.io/address/{{attendee}}">{{attendee}}</a>
       </li>
     </ul>
     <button mat-raised-button (click)="manualSubmitAttendance()" [disabled]="!attending.length > 0">

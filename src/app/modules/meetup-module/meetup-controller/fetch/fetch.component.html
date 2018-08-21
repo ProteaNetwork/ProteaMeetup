@@ -1,12 +1,12 @@
 <div class="fetchArea">
-  <h3>
+  <h3 class="mat-h2">
     Access event
   </h3>
-  <p>
+  <p class="mat-body">
     If you are looking for a specific event, please input it's contract address and hit the fetch button.
   </p>
   <mat-form-field *ngIf="deployedEvents?.length > 0">
-    <p>
+    <p class="mat-body">
       You can select meet ups that you are owner of from the drop down
     </p>
     <mat-select [(value)]="selectedEvent.value">
