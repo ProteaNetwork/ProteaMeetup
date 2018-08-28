@@ -60,7 +60,7 @@ typings/
 # next.js build output
 .next
 
-
+/dist
 /build
 /installed_contracts
 # Elastic Beanstalk Files
