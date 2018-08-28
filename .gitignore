@@ -63,3 +63,7 @@ typings/
 /dist
 /build
 /installed_contracts
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
